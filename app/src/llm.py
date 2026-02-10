@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
 from .config import settings
-from .prompts import sql_system_prompt, sql_schema, data_analyst_prompt
+from .prompts import sql_system_prompt, data_analyst_prompt
 from schema import SqlResponse
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
@@ -36,18 +36,18 @@ class BaseAgent:
 
 class SQLAgent(BaseAgent):
     def __init__(self):
-        super().__init__(sql_system_prompt + "\n" + sql_schema)
+        super().__init__(sql_system_prompt)
     
-    def sql_agent(question: str):
+    def sql_agent(self, question: str):
         schema = SqlResponse
-        return SQLAgent().base_agent(question=question, schema=schema)
+        return self.base_agent(question=question, schema=schema)
 
 class DataAnalystAgent(BaseAgent):
     def __init__(self):
         super().__init__(data_analyst_prompt)
     
-    def data_analyst(question: str, data: str):
+    def data_analyst(self, question: str, data: str):
         schema = None
-        return DataAnalystAgent().base_agent(question=question, data=data)
+        return self.base_agent(question=question, data=data)
 
     

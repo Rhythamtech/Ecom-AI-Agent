@@ -1,73 +1,5 @@
 from langchain_core.prompts import ChatPromptTemplate
 
-sql_schema = """
-            CREATE TABLE metadata (
-                [Table] nvarchar(25) NULL,
-                [Field] varchar(60) NULL,
-                [Description] varchar(128) NULL
-            )
-
-            CREATE TABLE orders (
-                order_id int,
-                created_at DATETIME,
-                session_id int,
-                user_id int,
-                primary_product_id	int,
-                items_purchased	int,
-                price_usd float,
-                price_inr float, -- Calculate via usd to inr
-                cogs_usd float,
-                cogs_inr float  -- Calculate via usd to inr
-            )
-
-            CREATE TABLE order_items (
-                order_item_id int,
-                order_id int,
-                created_at DATETIME,
-                product_id	int,
-                is_primary_item int,    
-                price_usd float,
-                price_inr float, -- Calculate via usd to inr
-                cogs_usd float,
-                cogs_inr float  -- Calculate via usd to inr
-            )
-
-            CREATE TABLE products (
-                product_id int,
-                created_at DATETIME,
-                product_name varchar(128) NULL
-            )
-
-
-            CREATE TABLE pageviews (
-                pageview_id	int,
-                created_at DATETIME,
-                session_id	int,
-                pageview_url nvarchar(256) NULL
-            )
-
-
-            CREATE TABLE sessions (
-                session_id int,
-                created_at	DATETIME,
-                user_id	int ,
-                is_repeat_session int,
-                utm_source varchar(60) NULL,
-                utm_campaign VARCHAR(128) NULL,
-                utm_content	VARCHAR(128) NULL,
-                device_type VARCHAR(60) NULL,
-                http_referer NVARCHAR(128) NULL,
-            ) 
-
-            CREATE TABLE refunds (
-                refund_id int,
-                created_at DATETIME ,
-                order_item_id int,
-                order_id int,
-                refund_amount_usd	float,
-                refund_amount_inr	float, -- Calculate via usd to inr
-            )
-            """
 
 sql_system_prompt = """
 You are a expert senior data analyst having experience of 5+ years in SQL database.
@@ -95,7 +27,7 @@ Based on the shared data, and question ask by business analyst, answer the quest
 
 ## Rules
 1. You must double check your answer before resulting it as final answer.
-2. Your response must be relevant to the question asked.
+2. Your response must be relevant, simple & short in language and easy to understand for a business person.
 3. The shared data is correct and accurate. Write what you see in the data. Do a perfect analysis.
 4. Need share your views analysis on the data, Provide best possible insights.
 """

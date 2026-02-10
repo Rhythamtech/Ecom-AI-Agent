@@ -1,14 +1,36 @@
-# Python-generated files
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[oc]
+*.py[cod]
+*$py.class
+
+# OS X
+.DS_Store
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# Environment variables
+.env
+
+# IDEs
+.vscode/
+.idea/
+
+# Project-specific
+files/
+plan.md
+
+# Distribution / packaging
 build/
 dist/
 wheels/
-*.egg-info
+*.egg-info/
 
-# Virtual environments
-.venv
-.env
-plan.md
-files/
-db-ingestion/
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+notes.txt
