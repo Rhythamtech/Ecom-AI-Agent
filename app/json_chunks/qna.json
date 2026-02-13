@@ -1,1047 +1,705 @@
 [
   {
-    "id": "logic_net_revenue_last_30_days",
-    "text": "What is the total net revenue for the last 30 days?",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue",
-      "logic_id": "net_revenue",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_net_revenue_monthly_2025",
-    "text": "Show me net revenue broken down by month for 2025.",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue",
-      "logic_id": "net_revenue",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_net_revenue_by_category",
-    "text": "Which product category has the highest net revenue?",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue",
-      "logic_id": "net_revenue",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_net_revenue_wow_comparison",
-    "text": "What was the net revenue for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue",
-      "logic_id": "net_revenue",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_net_revenue_top_5_ytd",
-    "text": "Show top 5 net revenue contributors for the current year.",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue",
-      "logic_id": "net_revenue",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_gross_revenue_last_30_days",
-    "text": "What is the total gross revenue for the last 30 days?",
-    "pseudo_sql": "SELECT SUM(priceusd) FROM orderitems",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue",
-      "logic_id": "gross_revenue",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_gross_revenue_monthly_2025",
-    "text": "Show me gross revenue broken down by month for 2025.",
-    "pseudo_sql": "SELECT SUM(priceusd) FROM orderitems",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue",
-      "logic_id": "gross_revenue",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_gross_revenue_by_category",
-    "text": "Which product category has the highest gross revenue?",
-    "pseudo_sql": "SELECT SUM(priceusd) FROM orderitems",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue",
-      "logic_id": "gross_revenue",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_gross_revenue_wow_comparison",
-    "text": "What was the gross revenue for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT SUM(priceusd) FROM orderitems",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue",
-      "logic_id": "gross_revenue",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_gross_revenue_top_5_ytd",
-    "text": "Show top 5 gross revenue contributors for the current year.",
-    "pseudo_sql": "SELECT SUM(priceusd) FROM orderitems",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue",
-      "logic_id": "gross_revenue",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_gross_profit_last_30_days",
-    "text": "What is the total gross profit for the last 30 days?",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0) - oi.cogsusd) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit",
-      "logic_id": "gross_profit",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_gross_profit_monthly_2025",
-    "text": "Show me gross profit broken down by month for 2025.",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0) - oi.cogsusd) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit",
-      "logic_id": "gross_profit",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_gross_profit_by_category",
-    "text": "Which product category has the highest gross profit?",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0) - oi.cogsusd) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit",
-      "logic_id": "gross_profit",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_gross_profit_wow_comparison",
-    "text": "What was the gross profit for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0) - oi.cogsusd) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit",
-      "logic_id": "gross_profit",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_gross_profit_top_5_ytd",
-    "text": "Show top 5 gross profit contributors for the current year.",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0) - oi.cogsusd) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit",
-      "logic_id": "gross_profit",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_cogs_last_30_days",
-    "text": "What is the total cogs for the last 30 days?",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0) - oi.cogsusd) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit",
-      "logic_id": "cogs",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_cogs_monthly_2025",
-    "text": "Show me cogs broken down by month for 2025.",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0) - oi.cogsusd) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit",
-      "logic_id": "cogs",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_cogs_by_category",
-    "text": "Which product category has the highest cogs?",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0) - oi.cogsusd) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit",
-      "logic_id": "cogs",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_cogs_wow_comparison",
-    "text": "What was the cogs for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0) - oi.cogsusd) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit",
-      "logic_id": "cogs",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_cogs_top_5_ytd",
-    "text": "Show top 5 cogs contributors for the current year.",
-    "pseudo_sql": "SELECT SUM(oi.priceusd - COALESCE(r.refund, 0) - oi.cogsusd) FROM orderitems oi LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit",
-      "logic_id": "cogs",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_currency_usd_last_30_days",
-    "text": "What is the total currency usd for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "currency",
-      "logic_id": "currency_usd",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_currency_usd_monthly_2025",
-    "text": "Show me currency usd broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "currency",
-      "logic_id": "currency_usd",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_currency_usd_by_category",
-    "text": "Which product category has the highest currency usd?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "currency",
-      "logic_id": "currency_usd",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_currency_usd_wow_comparison",
-    "text": "What was the currency usd for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "currency",
-      "logic_id": "currency_usd",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_currency_usd_top_5_ytd",
-    "text": "Show top 5 currency usd contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "currency",
-      "logic_id": "currency_usd",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_last_touch_attribution_last_30_days",
-    "text": "What is the total last touch attribution for the last 30 days?",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "last_touch_attribution",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_last_touch_attribution_monthly_2025",
-    "text": "Show me last touch attribution broken down by month for 2025.",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "last_touch_attribution",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_last_touch_attribution_by_category",
-    "text": "Which product category has the highest last touch attribution?",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "last_touch_attribution",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_last_touch_attribution_wow_comparison",
-    "text": "What was the last touch attribution for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "last_touch_attribution",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_last_touch_attribution_top_5_ytd",
-    "text": "Show top 5 last touch attribution contributors for the current year.",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "last_touch_attribution",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_direct_traffic_last_30_days",
-    "text": "What is the total direct traffic for the last 30 days?",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "direct_traffic",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_direct_traffic_monthly_2025",
-    "text": "Show me direct traffic broken down by month for 2025.",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "direct_traffic",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_direct_traffic_by_category",
-    "text": "Which product category has the highest direct traffic?",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "direct_traffic",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_direct_traffic_wow_comparison",
-    "text": "What was the direct traffic for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "direct_traffic",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_direct_traffic_top_5_ytd",
-    "text": "Show top 5 direct traffic contributors for the current year.",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "direct_traffic",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_organic_referral_last_30_days",
-    "text": "What is the total organic referral for the last 30 days?",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "organic_referral",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_organic_referral_monthly_2025",
-    "text": "Show me organic referral broken down by month for 2025.",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "organic_referral",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_organic_referral_by_category",
-    "text": "Which product category has the highest organic referral?",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "organic_referral",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_organic_referral_wow_comparison",
-    "text": "What was the organic referral for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "organic_referral",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_organic_referral_top_5_ytd",
-    "text": "Show top 5 organic referral contributors for the current year.",
-    "pseudo_sql": "SELECT s.utmsource, SUM(oi.priceusd - COALESCE(r.refund, 0)) FROM sessions s JOIN orders o ON s.sessionid = o.sessionid JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution",
-      "logic_id": "organic_referral",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_session_conversion_last_30_days",
-    "text": "What is the total session conversion for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(DISTINCT o.orderid)::FLOAT / COUNT(DISTINCT s.sessionid) FROM sessions s LEFT JOIN orders o ON s.sessionid = o.sessionid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "conversion",
-      "logic_id": "session_conversion",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_session_conversion_monthly_2025",
-    "text": "Show me session conversion broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(DISTINCT o.orderid)::FLOAT / COUNT(DISTINCT s.sessionid) FROM sessions s LEFT JOIN orders o ON s.sessionid = o.sessionid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "conversion",
-      "logic_id": "session_conversion",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_session_conversion_by_category",
-    "text": "Which product category has the highest session conversion?",
-    "pseudo_sql": "SELECT COUNT(DISTINCT o.orderid)::FLOAT / COUNT(DISTINCT s.sessionid) FROM sessions s LEFT JOIN orders o ON s.sessionid = o.sessionid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "conversion",
-      "logic_id": "session_conversion",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_session_conversion_wow_comparison",
-    "text": "What was the session conversion for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(DISTINCT o.orderid)::FLOAT / COUNT(DISTINCT s.sessionid) FROM sessions s LEFT JOIN orders o ON s.sessionid = o.sessionid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "conversion",
-      "logic_id": "session_conversion",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_session_conversion_top_5_ytd",
-    "text": "Show top 5 session conversion contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(DISTINCT o.orderid)::FLOAT / COUNT(DISTINCT s.sessionid) FROM sessions s LEFT JOIN orders o ON s.sessionid = o.sessionid",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "conversion",
-      "logic_id": "session_conversion",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_active_user_last_30_days",
-    "text": "What is the total active user for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation",
-      "logic_id": "active_user",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_active_user_monthly_2025",
-    "text": "Show me active user broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation",
-      "logic_id": "active_user",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_active_user_by_category",
-    "text": "Which product category has the highest active user?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation",
-      "logic_id": "active_user",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_active_user_wow_comparison",
-    "text": "What was the active user for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation",
-      "logic_id": "active_user",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_active_user_top_5_ytd",
-    "text": "Show top 5 active user contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation",
-      "logic_id": "active_user",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_repeat_customer_last_30_days",
-    "text": "What is the total repeat customer for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation",
-      "logic_id": "repeat_customer",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_repeat_customer_monthly_2025",
-    "text": "Show me repeat customer broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation",
-      "logic_id": "repeat_customer",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_repeat_customer_by_category",
-    "text": "Which product category has the highest repeat customer?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation",
-      "logic_id": "repeat_customer",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_repeat_customer_wow_comparison",
-    "text": "What was the repeat customer for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation",
-      "logic_id": "repeat_customer",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_repeat_customer_top_5_ytd",
-    "text": "Show top 5 repeat customer contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation",
-      "logic_id": "repeat_customer",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_primary_vs_addon_last_30_days",
-    "text": "What is the total primary vs addon for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "merchandising",
-      "logic_id": "primary_vs_addon",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_primary_vs_addon_monthly_2025",
-    "text": "Show me primary vs addon broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "merchandising",
-      "logic_id": "primary_vs_addon",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_primary_vs_addon_by_category",
-    "text": "Which product category has the highest primary vs addon?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "merchandising",
-      "logic_id": "primary_vs_addon",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_primary_vs_addon_wow_comparison",
-    "text": "What was the primary vs addon for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "merchandising",
-      "logic_id": "primary_vs_addon",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_primary_vs_addon_top_5_ytd",
-    "text": "Show top 5 primary vs addon contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "merchandising",
-      "logic_id": "primary_vs_addon",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_best_sellers_last_30_days",
-    "text": "What is the total best sellers for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "performance",
-      "logic_id": "best_sellers",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_best_sellers_monthly_2025",
-    "text": "Show me best sellers broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "performance",
-      "logic_id": "best_sellers",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_best_sellers_by_category",
-    "text": "Which product category has the highest best sellers?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "performance",
-      "logic_id": "best_sellers",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_best_sellers_wow_comparison",
-    "text": "What was the best sellers for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "performance",
-      "logic_id": "best_sellers",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_best_sellers_top_5_ytd",
-    "text": "Show top 5 best sellers contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "performance",
-      "logic_id": "best_sellers",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_canonical_joins_last_30_days",
-    "text": "What is the total canonical joins for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "dataengineering",
-      "subtopic": "joins",
-      "logic_id": "canonical_joins",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_canonical_joins_monthly_2025",
-    "text": "Show me canonical joins broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "dataengineering",
-      "subtopic": "joins",
-      "logic_id": "canonical_joins",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_canonical_joins_by_category",
-    "text": "Which product category has the highest canonical joins?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "dataengineering",
-      "subtopic": "joins",
-      "logic_id": "canonical_joins",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_canonical_joins_wow_comparison",
-    "text": "What was the canonical joins for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "dataengineering",
-      "subtopic": "joins",
-      "logic_id": "canonical_joins",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_canonical_joins_top_5_ytd",
-    "text": "Show top 5 canonical joins contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "dataengineering",
-      "subtopic": "joins",
-      "logic_id": "canonical_joins",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_aov_last_30_days",
-    "text": "What is the total aov for the last 30 days?",
-    "pseudo_sql": "SELECT AVG(net_rev) FROM (SELECT o.orderid, SUM(oi.priceusd - COALESCE(r.refund, 0)) as net_rev FROM orders o JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid GROUP BY 1 HAVING net_rev > 0) t",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "aov",
-      "logic_id": "aov",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_aov_monthly_2025",
-    "text": "Show me aov broken down by month for 2025.",
-    "pseudo_sql": "SELECT AVG(net_rev) FROM (SELECT o.orderid, SUM(oi.priceusd - COALESCE(r.refund, 0)) as net_rev FROM orders o JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid GROUP BY 1 HAVING net_rev > 0) t",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "aov",
-      "logic_id": "aov",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_aov_by_category",
-    "text": "Which product category has the highest aov?",
-    "pseudo_sql": "SELECT AVG(net_rev) FROM (SELECT o.orderid, SUM(oi.priceusd - COALESCE(r.refund, 0)) as net_rev FROM orders o JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid GROUP BY 1 HAVING net_rev > 0) t",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "aov",
-      "logic_id": "aov",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_aov_wow_comparison",
-    "text": "What was the aov for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT AVG(net_rev) FROM (SELECT o.orderid, SUM(oi.priceusd - COALESCE(r.refund, 0)) as net_rev FROM orders o JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid GROUP BY 1 HAVING net_rev > 0) t",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "aov",
-      "logic_id": "aov",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_aov_top_5_ytd",
-    "text": "Show top 5 aov contributors for the current year.",
-    "pseudo_sql": "SELECT AVG(net_rev) FROM (SELECT o.orderid, SUM(oi.priceusd - COALESCE(r.refund, 0)) as net_rev FROM orders o JOIN orderitems oi ON o.orderid = oi.orderid LEFT JOIN (SELECT orderitemid, SUM(refundamountusd) as refund FROM refunds GROUP BY 1) r ON oi.orderitemid = r.orderitemid GROUP BY 1 HAVING net_rev > 0) t",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "aov",
-      "logic_id": "aov",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_refund_rate_last_30_days",
-    "text": "What is the total refund rate for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "quality",
-      "subtopic": "refundrate",
-      "logic_id": "refund_rate",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_refund_rate_monthly_2025",
-    "text": "Show me refund rate broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "quality",
-      "subtopic": "refundrate",
-      "logic_id": "refund_rate",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_refund_rate_by_category",
-    "text": "Which product category has the highest refund rate?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "quality",
-      "subtopic": "refundrate",
-      "logic_id": "refund_rate",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_refund_rate_wow_comparison",
-    "text": "What was the refund rate for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "quality",
-      "subtopic": "refundrate",
-      "logic_id": "refund_rate",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_refund_rate_top_5_ytd",
-    "text": "Show top 5 refund rate contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "quality",
-      "subtopic": "refundrate",
-      "logic_id": "refund_rate",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_time_utc_last_30_days",
-    "text": "What is the total time utc for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "timelogic",
-      "subtopic": "filtering",
-      "logic_id": "time_utc",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_time_utc_monthly_2025",
-    "text": "Show me time utc broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "timelogic",
-      "subtopic": "filtering",
-      "logic_id": "time_utc",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_time_utc_by_category",
-    "text": "Which product category has the highest time utc?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "timelogic",
-      "subtopic": "filtering",
-      "logic_id": "time_utc",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_time_utc_wow_comparison",
-    "text": "What was the time utc for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "timelogic",
-      "subtopic": "filtering",
-      "logic_id": "time_utc",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_time_utc_top_5_ytd",
-    "text": "Show top 5 time utc contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "timelogic",
-      "subtopic": "filtering",
-      "logic_id": "time_utc",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_partial_refunds_last_30_days",
-    "text": "What is the total partial refunds for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "refunds",
-      "logic_id": "partial_refunds",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_partial_refunds_monthly_2025",
-    "text": "Show me partial refunds broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "refunds",
-      "logic_id": "partial_refunds",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_partial_refunds_by_category",
-    "text": "Which product category has the highest partial refunds?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "refunds",
-      "logic_id": "partial_refunds",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_partial_refunds_wow_comparison",
-    "text": "What was the partial refunds for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "refunds",
-      "logic_id": "partial_refunds",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_partial_refunds_top_5_ytd",
-    "text": "Show top 5 partial refunds contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "refunds",
-      "logic_id": "partial_refunds",
-      "variant": 5
-    }
-  },
-  {
-    "id": "logic_product_identity_last_30_days",
-    "text": "What is the total product identity for the last 30 days?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "identity",
-      "logic_id": "product_identity",
-      "variant": 1
-    }
-  },
-  {
-    "id": "logic_product_identity_monthly_2025",
-    "text": "Show me product identity broken down by month for 2025.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "identity",
-      "logic_id": "product_identity",
-      "variant": 2
-    }
-  },
-  {
-    "id": "logic_product_identity_by_category",
-    "text": "Which product category has the highest product identity?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "identity",
-      "logic_id": "product_identity",
-      "variant": 3
-    }
-  },
-  {
-    "id": "logic_product_identity_wow_comparison",
-    "text": "What was the product identity for yesterday compared to the same day last week?",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "identity",
-      "logic_id": "product_identity",
-      "variant": 4
-    }
-  },
-  {
-    "id": "logic_product_identity_top_5_ytd",
-    "text": "Show top 5 product identity contributors for the current year.",
-    "pseudo_sql": "SELECT COUNT(*) FROM orderitems oi",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "identity",
-      "logic_id": "product_identity",
-      "variant": 5
+    "id": "qna:metric:gross_revenue_usd:overall",
+    "question": "What is the total Gross Revenue USD across all orders?",
+    "answer_template": "Sum item-level price_usd for all order_items without subtracting refunds.",
+    "pseudo_sql": "SELECT SUM(oi.price_usd) AS gross_revenue_usd FROM order_items oi;",
+    "metadata": {
+      "metrics": [
+        "metric:gross_revenue_usd"
+      ],
+      "tables": [
+        "order_items"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:gross_revenue_usd:last_30d",
+    "question": "What is the Gross Revenue USD for the last 30 days?",
+    "answer_template": "Filter order_items by created_at in the last 30 days and sum price_usd.",
+    "pseudo_sql": "SELECT SUM(oi.price_usd) AS gross_revenue_usd\nFROM order_items oi\nWHERE oi.created_at >= DATEADD(day, -30, GETDATE());",
+    "metadata": {
+      "metrics": [
+        "metric:gross_revenue_usd"
+      ],
+      "tables": [
+        "order_items"
+      ],
+      "complexity": "intermediate",
+      "time_window": "last_30_days",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:gross_revenue_inr:overall",
+    "question": "What is the total Gross Revenue INR across all orders?",
+    "answer_template": "Sum item-level price_inr for all order_items without subtracting refunds.",
+    "pseudo_sql": "SELECT SUM(oi.price_inr) AS gross_revenue_inr FROM order_items oi;",
+    "metadata": {
+      "metrics": [
+        "metric:gross_revenue_inr"
+      ],
+      "tables": [
+        "order_items"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:gross_revenue_inr:last_7d",
+    "question": "What is the Gross Revenue INR for the last 7 days?",
+    "answer_template": "Filter order_items by created_at in the last 7 days and sum price_inr.",
+    "pseudo_sql": "SELECT SUM(oi.price_inr) AS gross_revenue_inr\nFROM order_items oi\nWHERE oi.created_at >= DATEADD(day, -7, GETDATE());",
+    "metadata": {
+      "metrics": [
+        "metric:gross_revenue_inr"
+      ],
+      "tables": [
+        "order_items"
+      ],
+      "complexity": "intermediate",
+      "time_window": "last_7_days",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:refund_amount_usd:overall",
+    "question": "How much Refund Amount USD have we issued in total?",
+    "answer_template": "Sum refund_amount_usd from refunds for all time.",
+    "pseudo_sql": "SELECT SUM(r.refund_amount_usd) AS refund_amount_usd FROM refunds r;",
+    "metadata": {
+      "metrics": [
+        "metric:refund_amount_usd"
+      ],
+      "tables": [
+        "refunds"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:refund_amount_usd:by_day_30d",
+    "question": "What is the daily Refund Amount USD for the last 30 days?",
+    "answer_template": "Group refunds by refund created_at date and sum refund_amount_usd.",
+    "pseudo_sql": "SELECT CAST(r.created_at AS DATE) AS day,\n       SUM(r.refund_amount_usd) AS refund_amount_usd\nFROM refunds r\nWHERE r.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(r.created_at AS DATE)\nORDER BY day;",
+    "metadata": {
+      "metrics": [
+        "metric:refund_amount_usd"
+      ],
+      "tables": [
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "last_30_days",
+      "group_by": [
+        "day"
+      ]
+    }
+  },
+  {
+    "id": "qna:metric:net_revenue_usd:overall",
+    "question": "What is the total Net Revenue USD?",
+    "answer_template": "Sum price_usd from order_items and subtract refund_amount_usd from refunds.",
+    "pseudo_sql": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "metadata": {
+      "metrics": [
+        "metric:net_revenue_usd"
+      ],
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:net_revenue_usd:last_30d",
+    "question": "What is the Net Revenue USD in the last 30 days?",
+    "answer_template": "Apply the net revenue formula but only for order_items created in the last 30 days.",
+    "pseudo_sql": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nWHERE oi.created_at >= DATEADD(day, -30, GETDATE());",
+    "metadata": {
+      "metrics": [
+        "metric:net_revenue_usd"
+      ],
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "last_30_days",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:total_cogs_usd:overall",
+    "question": "What is the total COGS USD for all items sold?",
+    "answer_template": "Sum cogs_usd from order_items and do not adjust for refunds.",
+    "pseudo_sql": "SELECT SUM(oi.cogs_usd) AS total_cogs_usd FROM order_items oi;",
+    "metadata": {
+      "metrics": [
+        "metric:total_cogs_usd"
+      ],
+      "tables": [
+        "order_items"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:total_cogs_usd:last_quarter",
+    "question": "What is the total COGS USD in the last quarter?",
+    "answer_template": "Filter order_items by created_at in the current quarter and sum cogs_usd.",
+    "pseudo_sql": "SELECT SUM(oi.cogs_usd) AS total_cogs_usd\nFROM order_items oi\nWHERE oi.created_at >= DATEFROMPARTS(YEAR(GETDATE()), DATEPART(quarter, GETDATE())*3-2, 1);",
+    "metadata": {
+      "metrics": [
+        "metric:total_cogs_usd"
+      ],
+      "tables": [
+        "order_items"
+      ],
+      "complexity": "intermediate",
+      "time_window": "current_quarter",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:gross_profit_usd:overall",
+    "question": "What is the overall Gross Profit USD?",
+    "answer_template": "Compute net revenue USD minus total COGS USD at the order_item level.",
+    "pseudo_sql": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) - SUM(oi.cogs_usd) AS gross_profit_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "metadata": {
+      "metrics": [
+        "metric:gross_profit_usd"
+      ],
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:gross_profit_usd:by_day_30d",
+    "question": "What is the daily Gross Profit USD for the last 30 days?",
+    "answer_template": "Group by order_items.created_at date and apply the gross profit formula per day.",
+    "pseudo_sql": "SELECT CAST(oi.created_at AS DATE) AS day,\n       SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) - SUM(oi.cogs_usd) AS gross_profit_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nWHERE oi.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(oi.created_at AS DATE)\nORDER BY day;",
+    "metadata": {
+      "metrics": [
+        "metric:gross_profit_usd"
+      ],
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "complex",
+      "time_window": "last_30_days",
+      "group_by": [
+        "day"
+      ]
+    }
+  },
+  {
+    "id": "qna:metric:order_count:overall",
+    "question": "How many orders have been placed in total?",
+    "answer_template": "Count distinct order_id in orders.",
+    "pseudo_sql": "SELECT COUNT(DISTINCT o.order_id) AS order_count FROM orders o;",
+    "metadata": {
+      "metrics": [
+        "metric:order_count"
+      ],
+      "tables": [
+        "orders"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:order_count:by_day_30d",
+    "question": "How many orders were placed each day in the last 30 days?",
+    "answer_template": "Group orders by created_at date and count distinct order_id.",
+    "pseudo_sql": "SELECT CAST(o.created_at AS DATE) AS day,\n       COUNT(DISTINCT o.order_id) AS orders_count\nFROM orders o\nWHERE o.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(o.created_at AS DATE)\nORDER BY day;",
+    "metadata": {
+      "metrics": [
+        "metric:order_count"
+      ],
+      "tables": [
+        "orders"
+      ],
+      "complexity": "intermediate",
+      "time_window": "last_30_days",
+      "group_by": [
+        "day"
+      ]
+    }
+  },
+  {
+    "id": "qna:metric:net_orders:overall",
+    "question": "How many Net Orders (excluding fully refunded) have we had?",
+    "answer_template": "Count orders where item-level net revenue is greater than zero.",
+    "pseudo_sql": "WITH order_net AS (\n  SELECT o.order_id,\n         SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT COUNT(*) AS net_orders\nFROM order_net\nWHERE net_revenue_usd > 0;",
+    "metadata": {
+      "metrics": [
+        "metric:net_orders"
+      ],
+      "tables": [
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:aov_usd:overall",
+    "question": "What is our overall Average Order Value in USD?",
+    "answer_template": "Compute average net revenue per order (excluding fully refunded orders).",
+    "pseudo_sql": "WITH order_net AS (\n  SELECT o.order_id,\n         SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT AVG(net_revenue_usd) AS aov_usd\nFROM order_net\nWHERE net_revenue_usd > 0;",
+    "metadata": {
+      "metrics": [
+        "metric:aov_usd"
+      ],
+      "tables": [
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:aov_usd:by_source_30d",
+    "question": "What is the Average Order Value in USD by utm_source for the last 30 days?",
+    "answer_template": "Calculate net revenue per order and average it per utm_source, filtered to last 30 days.",
+    "pseudo_sql": "-- Pseudo logic:\n-- 1) Join sessions -> orders -> order_items -> refunds\n-- 2) Compute net revenue per order\n-- 3) Restrict to last 30 days on orders.created_at\n-- 4) Group by utm_source and calculate AVG(order net revenue)",
+    "metadata": {
+      "metrics": [
+        "metric:aov_usd",
+        "metric:revenue_by_utm_source_usd"
+      ],
+      "tables": [
+        "sessions",
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "complex",
+      "time_window": "last_30_days",
+      "group_by": [
+        "utm_source"
+      ]
+    }
+  },
+  {
+    "id": "qna:metric:avg_items_per_order:overall",
+    "question": "On average, how many items are in each order?",
+    "answer_template": "Divide total order_items rows by distinct orders.",
+    "pseudo_sql": "SELECT CAST(COUNT(oi.order_item_id) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id), 0) AS avg_items_per_order\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id;",
+    "metadata": {
+      "metrics": [
+        "metric:avg_items_per_order"
+      ],
+      "tables": [
+        "orders",
+        "order_items"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:primary_product_revenue_usd:overall",
+    "question": "How much revenue in USD comes from primary products?",
+    "answer_template": "Sum price_usd where is_primary_item = 1 in order_items.",
+    "pseudo_sql": "SELECT SUM(oi.price_usd) AS primary_product_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "metrics": [
+        "metric:primary_product_revenue_usd"
+      ],
+      "tables": [
+        "order_items"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:addon_revenue_usd:overall",
+    "question": "How much revenue in USD comes from add-on or upsell items?",
+    "answer_template": "Sum price_usd where is_primary_item = 0 in order_items.",
+    "pseudo_sql": "SELECT SUM(oi.price_usd) AS addon_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 0;",
+    "metadata": {
+      "metrics": [
+        "metric:addon_revenue_usd"
+      ],
+      "tables": [
+        "order_items"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:upsell_ratio:overall",
+    "question": "What is our upsell ratio (add-on revenue divided by primary product revenue)?",
+    "answer_template": "Compute add-on revenue and divide it by primary product revenue.",
+    "pseudo_sql": "WITH primary_rev AS (\n  SELECT SUM(price_usd) AS primary_revenue\n  FROM order_items\n  WHERE is_primary_item = 1\n), addon_rev AS (\n  SELECT SUM(price_usd) AS addon_revenue\n  FROM order_items\n  WHERE is_primary_item = 0\n)\nSELECT CAST(a.addon_revenue AS FLOAT) / NULLIF(p.primary_revenue, 0) AS upsell_ratio\nFROM primary_rev p CROSS JOIN addon_rev a;",
+    "metadata": {
+      "metrics": [
+        "metric:upsell_ratio",
+        "metric:primary_product_revenue_usd",
+        "metric:addon_revenue_usd"
+      ],
+      "tables": [
+        "order_items"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:conversion_rate_sessions_to_orders:overall",
+    "question": "What is the overall session-to-order conversion rate?",
+    "answer_template": "Divide distinct orders by distinct sessions.",
+    "pseudo_sql": "SELECT CAST(COUNT(DISTINCT o.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id), 0) AS conversion_rate\nFROM sessions s\nLEFT JOIN orders o ON s.session_id = o.session_id;",
+    "metadata": {
+      "metrics": [
+        "metric:conversion_rate_sessions_to_orders"
+      ],
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:revenue_per_session_usd:overall",
+    "question": "What is the Revenue per Session in USD?",
+    "answer_template": "Compute total net revenue USD and divide by distinct sessions.",
+    "pseudo_sql": "WITH net_rev AS (\n  SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM order_items oi\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n)\nSELECT net_revenue_usd / NULLIF((SELECT COUNT(DISTINCT session_id) FROM sessions), 0) AS revenue_per_session_usd\nFROM net_rev;",
+    "metadata": {
+      "metrics": [
+        "metric:revenue_per_session_usd",
+        "metric:net_revenue_usd"
+      ],
+      "tables": [
+        "order_items",
+        "refunds",
+        "sessions"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:refund_rate_value:overall",
+    "question": "What percentage of our gross revenue (USD) has been refunded?",
+    "answer_template": "Divide total refunded USD by gross revenue USD.",
+    "pseudo_sql": "SELECT CAST(SUM(r.refund_amount_usd) AS FLOAT) / NULLIF(SUM(oi.price_usd), 0) AS refund_rate_value\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "metadata": {
+      "metrics": [
+        "metric:refund_rate_value",
+        "metric:gross_revenue_usd",
+        "metric:refund_amount_usd"
+      ],
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:refund_rate_count:overall",
+    "question": "What share of items have had at least one refund?",
+    "answer_template": "Divide number of distinct refunded order_items by total distinct order_items.",
+    "pseudo_sql": "SELECT CAST(COUNT(DISTINCT r.order_item_id) AS FLOAT) / NULLIF(COUNT(DISTINCT oi.order_item_id), 0) AS refund_rate_count\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "metadata": {
+      "metrics": [
+        "metric:refund_rate_count"
+      ],
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:active_users_30d:overall",
+    "question": "How many active users placed at least one order in the last 30 days?",
+    "answer_template": "Count distinct user_id in orders where created_at is in the last 30 days.",
+    "pseudo_sql": "SELECT COUNT(DISTINCT o.user_id) AS active_users_30d\nFROM orders o\nWHERE o.created_at >= DATEADD(day, -30, GETDATE());",
+    "metadata": {
+      "metrics": [
+        "metric:active_users_30d"
+      ],
+      "tables": [
+        "orders"
+      ],
+      "complexity": "simple",
+      "time_window": "last_30_days",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:repeat_customers:overall",
+    "question": "How many repeat customers do we have?",
+    "answer_template": "Count users with at least two distinct orders.",
+    "pseudo_sql": "SELECT COUNT(*) AS repeat_customers\nFROM (\n  SELECT user_id\n  FROM orders\n  GROUP BY user_id\n  HAVING COUNT(DISTINCT order_id) >= 2\n) sub;",
+    "metadata": {
+      "metrics": [
+        "metric:repeat_customers"
+      ],
+      "tables": [
+        "orders"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": []
+    }
+  },
+  {
+    "id": "qna:metric:net_revenue_per_user_usd:overall",
+    "question": "What is the Net Revenue in USD per user?",
+    "answer_template": "Aggregate net revenue USD by user_id using orders, order_items, and refunds.",
+    "pseudo_sql": "SELECT o.user_id,\n       SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY o.user_id;",
+    "metadata": {
+      "metrics": [
+        "metric:net_revenue_per_user_usd"
+      ],
+      "tables": [
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": [
+        "user_id"
+      ]
+    }
+  },
+  {
+    "id": "qna:metric:revenue_by_utm_source_usd:overall",
+    "question": "Which marketing source (utm_source) generates the highest Net Revenue USD?",
+    "answer_template": "Group net revenue USD by utm_source and sort descending.",
+    "pseudo_sql": "SELECT s.utm_source,\n       SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY s.utm_source\nORDER BY net_revenue_usd DESC;",
+    "metadata": {
+      "metrics": [
+        "metric:revenue_by_utm_source_usd"
+      ],
+      "tables": [
+        "sessions",
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": [
+        "utm_source"
+      ]
+    }
+  },
+  {
+    "id": "qna:metric:orders_by_campaign:overall",
+    "question": "Which utm_campaign is generating the most orders?",
+    "answer_template": "Group by utm_campaign and count distinct orders.",
+    "pseudo_sql": "SELECT s.utm_campaign,\n       COUNT(DISTINCT o.order_id) AS orders_count\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nGROUP BY s.utm_campaign\nORDER BY orders_count DESC;",
+    "metadata": {
+      "metrics": [
+        "metric:orders_by_campaign"
+      ],
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "complexity": "simple",
+      "time_window": "all_time",
+      "group_by": [
+        "utm_campaign"
+      ]
+    }
+  },
+  {
+    "id": "qna:metric:refund_rate_by_product:overall",
+    "question": "What is the refund rate by product in USD?",
+    "answer_template": "Per product, divide refunded USD by gross revenue USD.",
+    "pseudo_sql": "SELECT oi.product_id, p.product_name,\n       CAST(COALESCE(SUM(r.refund_amount_usd), 0) AS FLOAT) / NULLIF(SUM(oi.price_usd), 0) AS refund_rate_value\nFROM order_items oi\nJOIN products p ON oi.product_id = p.product_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY oi.product_id, p.product_name\nORDER BY refund_rate_value DESC;",
+    "metadata": {
+      "metrics": [
+        "metric:refund_rate_by_product"
+      ],
+      "tables": [
+        "order_items",
+        "products",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": [
+        "product_id"
+      ]
+    }
+  },
+  {
+    "id": "qna:metric:daily_net_revenue_usd:last_30d",
+    "question": "What is the daily Net Revenue USD over the last 30 days?",
+    "answer_template": "For each day in the last 30 days, compute net revenue USD.",
+    "pseudo_sql": "SELECT CAST(oi.created_at AS DATE) AS day,\n       SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nWHERE oi.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(oi.created_at AS DATE)\nORDER BY day;",
+    "metadata": {
+      "metrics": [
+        "metric:daily_net_revenue_usd"
+      ],
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "last_30_days",
+      "group_by": [
+        "day"
+      ]
+    }
+  },
+  {
+    "id": "qna:metric:daily_orders:last_30d",
+    "question": "How many orders are we getting per day in the last 30 days?",
+    "answer_template": "Group orders by date and count distinct order_id.",
+    "pseudo_sql": "SELECT CAST(o.created_at AS DATE) AS day,\n       COUNT(DISTINCT o.order_id) AS orders_count\nFROM orders o\nWHERE o.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(o.created_at AS DATE)\nORDER BY day;",
+    "metadata": {
+      "metrics": [
+        "metric:daily_orders"
+      ],
+      "tables": [
+        "orders"
+      ],
+      "complexity": "simple",
+      "time_window": "last_30_days",
+      "group_by": [
+        "day"
+      ]
+    }
+  },
+  {
+    "id": "qna:metric:device_revenue_usd:overall",
+    "question": "Which device_type drives the most Net Revenue USD?",
+    "answer_template": "Group net revenue USD by device_type.",
+    "pseudo_sql": "SELECT s.device_type,\n       SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY s.device_type\nORDER BY net_revenue_usd DESC;",
+    "metadata": {
+      "metrics": [
+        "metric:device_revenue_usd"
+      ],
+      "tables": [
+        "sessions",
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "intermediate",
+      "time_window": "all_time",
+      "group_by": [
+        "device_type"
+      ]
+    }
+  },
+  {
+    "id": "qna:complex:clv_proxy_repeat_users",
+    "question": "Among repeat customers, what is the average Net Revenue USD per user?",
+    "answer_template": "Identify repeat users (2+ orders), compute net_revenue_per_user_usd for them, then average.",
+    "pseudo_sql": "-- 1) Find repeat users with COUNT(DISTINCT order_id) >= 2\n-- 2) Use the net_revenue_per_user_usd aggregation filtered to those users\n-- 3) Take AVG(net_revenue_usd) across the repeat-user set",
+    "metadata": {
+      "metrics": [
+        "metric:repeat_customers",
+        "metric:net_revenue_per_user_usd"
+      ],
+      "tables": [
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "complex",
+      "time_window": "all_time",
+      "group_by": [
+        "user_id"
+      ]
+    }
+  },
+  {
+    "id": "qna:complex:source_aov_vs_conversion_30d",
+    "question": "In the last 30 days, how do AOV USD and conversion rate compare across utm_source?",
+    "answer_template": "Per utm_source, compute AOV USD and session-to-order conversion rate over the last 30 days.",
+    "pseudo_sql": "-- 1) For each utm_source, compute AOV using orders+order_items+refunds restricted to last 30 days\n-- 2) For each utm_source, compute conversion rate = orders / sessions in last 30 days\n-- 3) Join both aggregates on utm_source",
+    "metadata": {
+      "metrics": [
+        "metric:aov_usd",
+        "metric:conversion_rate_sessions_to_orders",
+        "metric:revenue_by_utm_source_usd"
+      ],
+      "tables": [
+        "sessions",
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "complexity": "complex",
+      "time_window": "last_30_days",
+      "group_by": [
+        "utm_source"
+      ]
+    }
+  },
+  {
+    "id": "qna:complex:profit_vs_refunds_by_product",
+    "question": "Which products are profitable but have high refund rates in USD?",
+    "answer_template": "For each product, compare gross profit USD with refund_rate_by_product and highlight items with high profit and high refund rate.",
+    "pseudo_sql": "-- 1) Compute gross_profit_usd by product (using order_items, refunds, products)\n-- 2) Compute refund_rate_by_product metric\n-- 3) Join results on product_id and filter where refund_rate_value is high and gross_profit_usd is high",
+    "metadata": {
+      "metrics": [
+        "metric:gross_profit_usd",
+        "metric:refund_rate_by_product"
+      ],
+      "tables": [
+        "order_items",
+        "products",
+        "refunds"
+      ],
+      "complexity": "complex",
+      "time_window": "all_time",
+      "group_by": [
+        "product_id"
+      ]
     }
   }
 ]

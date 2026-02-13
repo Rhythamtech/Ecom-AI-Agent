@@ -1,226 +1,143 @@
 [
   {
     "id": "schema:overview",
-    "text": "E-commerce analytics schema. Core entities: sessions (traffic + attribution), pageviews (events), orders (order header), order_items (line items), refunds (returns), products (catalog), metadata (data dictionary). Prefer item-level facts for revenue/cogs; join paths: sessions->orders->order_items; refunds attach to order_items and orders.",
+    "text": "E-commerce analytics database schema with 7 tables: metadata (data dictionary), sessions (browsing sessions with UTM tracking), pageviews (page load events), orders (purchase transactions), order_items (line items), products (catalog), refunds (returns). Key relationships: sessions->orders->order_items->refunds. Revenue and COGS calculated at order_items level.",
     "metadata": {
       "doc_type": "schema_overview",
-      "domain": "ecom",
-      "grain": "mixed"
+      "domain": "ecommerce"
     }
   },
   {
     "id": "table:metadata",
-    "text": "Table metadata: data dictionary storing human-readable descriptions for tables and fields. Each row represents one field in one table. Columns: Table (nvarchar), Field (varchar), Description (varchar). Use for documentation and field lookup.",
+    "text": "Table: metadata. Data dictionary table with columns [Table] (nvarchar 25), [Field] (varchar 60), [Description] (varchar 128). Stores human-readable field descriptions.",
     "metadata": {
       "doc_type": "table",
-      "table": "metadata",
-      "grain": "field",
-      "category": "data_dictionary"
+      "table": "metadata"
     }
   },
   {
     "id": "table:sessions",
-    "text": "Table sessions: one row per browsing session. Use for funnel and marketing attribution via utm_source/utm_campaign/utm_content, device_type, http_referer. Field is_repeat_session indicates returning users. Join: sessions.session_id -> orders.session_id; sessions.session_id -> pageviews.session_id.",
+    "text": "Table: sessions. Tracks user browsing sessions. Primary key: session_id. Contains user_id, created_at, is_repeat_session, marketing attribution (utm_source, utm_campaign, utm_content), device_type, http_referer. Join to orders via session_id and to pageviews via session_id.",
     "metadata": {
       "doc_type": "table",
-      "table": "sessions",
-      "grain": "session",
-      "category": "fact",
-      "use_cases": [
-        "attribution",
-        "funnel",
-        "device_analysis"
-      ]
+      "table": "sessions"
     }
   },
   {
     "id": "table:pageviews",
-    "text": "Table pageviews: one row per page load within a session. Use for engagement and funnel analysis; pageview_url holds the visited path/URL. Join: pageviews.session_id -> sessions.session_id.",
+    "text": "Table: pageviews. Records individual page loads. Primary key: pageview_id. Contains created_at, session_id (FK to sessions), pageview_url. Used for engagement and funnel analysis.",
     "metadata": {
       "doc_type": "table",
-      "table": "pageviews",
-      "grain": "pageview",
-      "category": "event",
-      "use_cases": [
-        "engagement",
-        "funnel",
-        "content_analysis"
-      ]
+      "table": "pageviews"
     }
   },
   {
     "id": "table:orders",
-    "text": "Table orders: one row per order (purchase transaction). Contains user_id and session_id, plus summary fields like primary_product_id, items_purchased, order-level price/cogs in USD and derived INR. Order-level fields are denormalized; order_items is the source of truth. Join: orders.order_id -> order_items.order_id; orders.session_id -> sessions.session_id.",
+    "text": "Table: orders. Purchase transactions. Primary key: order_id. Contains created_at, session_id (FK to sessions), user_id, primary_product_id, items_purchased, price_usd, price_inr, cogs_usd, cogs_inr. Join to order_items via order_id. Order-level fields are aggregates; order_items is source of truth for revenue/COGS.",
     "metadata": {
       "doc_type": "table",
-      "table": "orders",
-      "grain": "order",
-      "category": "fact",
-      "use_cases": [
-        "revenue",
-        "conversion",
-        "order_analysis"
-      ]
+      "table": "orders"
     }
   },
   {
     "id": "table:order_items",
-    "text": "Table order_items: one row per product line within an order. Canonical source for item-level price and cogs; is_primary_item identifies the main product (1) vs add-on (0). Always use this table for revenue and COGS calculations. Join: order_items.order_id -> orders.order_id; order_items.product_id -> products.product_id; refunds.order_item_id -> order_items.order_item_id.",
+    "text": "Table: order_items. Line items within orders. Primary key: order_item_id. Contains order_id (FK to orders), created_at, product_id (FK to products), is_primary_item (1=primary, 0=addon), price_usd, price_inr, cogs_usd, cogs_inr. This is the canonical source for all revenue and COGS calculations.",
     "metadata": {
       "doc_type": "table",
-      "table": "order_items",
-      "grain": "order_item",
-      "category": "fact",
-      "canonical": "revenue_cogs",
-      "use_cases": [
-        "revenue",
-        "cogs",
-        "product_analysis"
-      ]
-    }
-  },
-  {
-    "id": "table:refunds",
-    "text": "Table refunds: one row per refund event, recorded at order-item level with refund_amount_usd and derived refund_amount_inr. Refunds reduce net revenue but do not reduce COGS. Join: refunds.order_item_id -> order_items.order_item_id; refunds.order_id -> orders.order_id.",
-    "metadata": {
-      "doc_type": "table",
-      "table": "refunds",
-      "grain": "refund",
-      "category": "fact",
-      "use_cases": [
-        "refund_analysis",
-        "quality",
-        "revenue_adjustment"
-      ]
+      "table": "order_items"
     }
   },
   {
     "id": "table:products",
-    "text": "Table products: one row per product_id with product_name and created_at. Product catalog dimension. Join: order_items.product_id -> products.product_id; orders.primary_product_id -> products.product_id.",
+    "text": "Table: products. Product catalog. Primary key: product_id. Contains created_at, product_name (varchar 128). Referenced by order_items.product_id and orders.primary_product_id.",
     "metadata": {
       "doc_type": "table",
-      "table": "products",
-      "grain": "product",
-      "category": "dimension",
-      "use_cases": [
-        "product_analysis",
-        "catalog"
-      ]
+      "table": "products"
     }
   },
   {
-    "id": "col:metadata.table",
-    "text": "Column metadata.Table (nvarchar 25): name of the table being described in this data dictionary row.",
+    "id": "table:refunds",
+    "text": "Table: refunds. Money returned to customers. Primary key: refund_id. Contains created_at, order_item_id (FK to order_items), order_id (FK to orders), refund_amount_usd, refund_amount_inr. Refunds reduce net revenue but do NOT reduce COGS.",
     "metadata": {
-      "doc_type": "column",
-      "table": "metadata",
-      "column": "Table",
-      "data_type": "nvarchar(25)",
-      "nullable": true,
-      "semantic_type": "table_name"
+      "doc_type": "table",
+      "table": "refunds"
     }
   },
   {
-    "id": "col:metadata.field",
-    "text": "Column metadata.Field (varchar 60): name of the field/column being described in this data dictionary row.",
+    "id": "col:metadata.Table",
+    "text": "Column metadata.[Table] (nvarchar 25 NULL). Name of table being documented. Note: Column name has square brackets and capital T.",
     "metadata": {
       "doc_type": "column",
       "table": "metadata",
-      "column": "Field",
-      "data_type": "varchar(60)",
-      "nullable": true,
-      "semantic_type": "field_name"
+      "column": "[Table]"
     }
   },
   {
-    "id": "col:metadata.description",
-    "text": "Column metadata.Description (varchar 128): human-readable description of the field for documentation and LLM grounding.",
+    "id": "col:metadata.Field",
+    "text": "Column metadata.[Field] (varchar 60 NULL). Name of field/column being documented. Note: Column name has square brackets and capital F.",
     "metadata": {
       "doc_type": "column",
       "table": "metadata",
-      "column": "Description",
-      "data_type": "varchar(128)",
-      "nullable": true,
-      "semantic_type": "description"
+      "column": "[Field]"
+    }
+  },
+  {
+    "id": "col:metadata.Description",
+    "text": "Column metadata.[Description] (varchar 128 NULL). Human-readable description of the field. Note: Column name has square brackets and capital D.",
+    "metadata": {
+      "doc_type": "column",
+      "table": "metadata",
+      "column": "[Description]"
     }
   },
   {
     "id": "col:sessions.session_id",
-    "text": "Column sessions.session_id (int): unique identifier for each browsing session. Primary key. Used to join to orders and pageviews.",
+    "text": "Column sessions.session_id (int). Primary key. Unique identifier for each browsing session. Join to orders.session_id and pageviews.session_id.",
     "metadata": {
       "doc_type": "column",
       "table": "sessions",
       "column": "session_id",
-      "data_type": "int",
-      "nullable": false,
-      "semantic_type": "primary_key",
-      "synonyms": [
-        "session",
-        "session identifier"
-      ]
+      "semantic_type": "primary_key"
     }
   },
   {
     "id": "col:sessions.created_at",
-    "text": "Column sessions.created_at (DATETIME): timestamp when the session was created, in UTC. Use for time-based filtering and trend analysis.",
+    "text": "Column sessions.created_at (DATETIME). Timestamp when session was created, UTC format. Use for time-based filtering and trend analysis.",
     "metadata": {
       "doc_type": "column",
       "table": "sessions",
       "column": "created_at",
-      "data_type": "DATETIME",
-      "nullable": false,
-      "semantic_type": "timestamp",
-      "synonyms": [
-        "session date",
-        "session time",
-        "timestamp"
-      ]
+      "semantic_type": "timestamp"
     }
   },
   {
     "id": "col:sessions.user_id",
-    "text": "Column sessions.user_id (int): identifier linking the session to a user. Multiple sessions can belong to the same user. Foreign key to identify user behavior across sessions.",
+    "text": "Column sessions.user_id (int). Links session to user. Same user can have multiple sessions. Use for cross-session user behavior tracking.",
     "metadata": {
       "doc_type": "column",
       "table": "sessions",
       "column": "user_id",
-      "data_type": "int",
-      "nullable": false,
-      "semantic_type": "foreign_key",
-      "synonyms": [
-        "user",
-        "customer id",
-        "user identifier"
-      ]
+      "semantic_type": "foreign_key"
     }
   },
   {
     "id": "col:sessions.is_repeat_session",
-    "text": "Column sessions.is_repeat_session (int): boolean flag where 1 indicates the user has had at least one prior session; 0 indicates first-time visitor session. Use to segment new vs returning traffic.",
+    "text": "Column sessions.is_repeat_session (int). Boolean flag: 1=user has prior sessions, 0=first-time visitor. Use to segment new vs returning traffic.",
     "metadata": {
       "doc_type": "column",
       "table": "sessions",
       "column": "is_repeat_session",
-      "data_type": "int",
-      "nullable": false,
-      "semantic_type": "boolean_flag",
-      "synonyms": [
-        "repeat visitor",
-        "returning session",
-        "new vs returning"
-      ]
+      "semantic_type": "boolean_flag"
     }
   },
   {
     "id": "col:sessions.utm_source",
-    "text": "Column sessions.utm_source (varchar 60): marketing source parameter (e.g., google, facebook, email). NULL indicates direct or unknown traffic. Use for marketing attribution and channel analysis.",
+    "text": "Column sessions.utm_source (varchar 60 NULL). Marketing source (google, facebook, email, etc). NULL=direct or unknown traffic. Use for channel attribution analysis.",
     "metadata": {
       "doc_type": "column",
       "table": "sessions",
       "column": "utm_source",
-      "data_type": "varchar(60)",
-      "nullable": true,
-      "semantic_type": "marketing_source",
+      "semantic_type": "marketing_dimension",
       "synonyms": [
         "source",
         "channel",
@@ -231,32 +148,27 @@
   },
   {
     "id": "col:sessions.utm_campaign",
-    "text": "Column sessions.utm_campaign (VARCHAR 128): marketing campaign identifier (e.g., summer_sale_2024). Use to track campaign performance and ROI.",
+    "text": "Column sessions.utm_campaign (VARCHAR 128 NULL). Campaign identifier (summer_sale_2024, etc). Use for campaign performance tracking.",
     "metadata": {
       "doc_type": "column",
       "table": "sessions",
       "column": "utm_campaign",
-      "data_type": "VARCHAR(128)",
-      "nullable": true,
-      "semantic_type": "marketing_campaign",
+      "semantic_type": "marketing_dimension",
       "synonyms": [
         "campaign",
         "campaign name",
-        "promo",
         "promotion"
       ]
     }
   },
   {
     "id": "col:sessions.utm_content",
-    "text": "Column sessions.utm_content (VARCHAR 128): marketing content variant or A/B test identifier. Use for creative performance analysis.",
+    "text": "Column sessions.utm_content (VARCHAR 128 NULL). Content variant or A/B test identifier. Use for creative performance analysis.",
     "metadata": {
       "doc_type": "column",
       "table": "sessions",
       "column": "utm_content",
-      "data_type": "VARCHAR(128)",
-      "nullable": true,
-      "semantic_type": "marketing_content",
+      "semantic_type": "marketing_dimension",
       "synonyms": [
         "content",
         "ad variant",
@@ -266,31 +178,26 @@
   },
   {
     "id": "col:sessions.device_type",
-    "text": "Column sessions.device_type (VARCHAR 60): device category used for the session (e.g., desktop, mobile, tablet). Use for device performance and responsive design analysis.",
+    "text": "Column sessions.device_type (VARCHAR 60 NULL). Device category: desktop, mobile, tablet. Use for device performance analysis.",
     "metadata": {
       "doc_type": "column",
       "table": "sessions",
       "column": "device_type",
-      "data_type": "VARCHAR(60)",
-      "nullable": true,
-      "semantic_type": "device_category",
+      "semantic_type": "device_dimension",
       "synonyms": [
         "device",
-        "platform",
-        "mobile vs desktop"
+        "platform"
       ]
     }
   },
   {
     "id": "col:sessions.http_referer",
-    "text": "Column sessions.http_referer (NVARCHAR 128): the URL the user came from before reaching the site. NULL when no referrer. Use to distinguish organic referral traffic.",
+    "text": "Column sessions.http_referer (NVARCHAR 128 NULL). URL user came from before reaching site. NULL=no referrer. Use to identify organic referral traffic.",
     "metadata": {
       "doc_type": "column",
       "table": "sessions",
       "column": "http_referer",
-      "data_type": "NVARCHAR(128)",
-      "nullable": true,
-      "semantic_type": "referrer_url",
+      "semantic_type": "referrer",
       "synonyms": [
         "referrer",
         "referer",
@@ -300,137 +207,108 @@
   },
   {
     "id": "col:pageviews.pageview_id",
-    "text": "Column pageviews.pageview_id (int): unique identifier for each page load event. Primary key.",
+    "text": "Column pageviews.pageview_id (int). Primary key. Unique identifier for each page load event.",
     "metadata": {
       "doc_type": "column",
       "table": "pageviews",
       "column": "pageview_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "primary_key"
     }
   },
   {
     "id": "col:pageviews.created_at",
-    "text": "Column pageviews.created_at (DATETIME): timestamp when the page was viewed, in UTC. Use for engagement timing and funnel step analysis.",
+    "text": "Column pageviews.created_at (DATETIME). Timestamp when page was viewed, UTC format. Use for engagement timing and funnel analysis.",
     "metadata": {
       "doc_type": "column",
       "table": "pageviews",
       "column": "created_at",
-      "data_type": "DATETIME",
-      "nullable": false,
-      "semantic_type": "timestamp",
-      "synonyms": [
-        "pageview time",
-        "view timestamp"
-      ]
+      "semantic_type": "timestamp"
     }
   },
   {
     "id": "col:pageviews.session_id",
-    "text": "Column pageviews.session_id (int): links pageview to the parent session. Foreign key to sessions.session_id.",
+    "text": "Column pageviews.session_id (int). Links pageview to parent session. Foreign key to sessions.session_id.",
     "metadata": {
       "doc_type": "column",
       "table": "pageviews",
       "column": "session_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "foreign_key"
     }
   },
   {
     "id": "col:pageviews.pageview_url",
-    "text": "Column pageviews.pageview_url (nvarchar 256): full path or URL of the page viewed (e.g., /products/t-shirt, /cart). Use LIKE patterns for filtering by page type or section.",
+    "text": "Column pageviews.pageview_url (nvarchar 256 NULL). Full path or URL of page viewed (/products/tshirt, /cart). Use LIKE patterns for page type filtering.",
     "metadata": {
       "doc_type": "column",
       "table": "pageviews",
       "column": "pageview_url",
-      "data_type": "nvarchar(256)",
-      "nullable": true,
-      "semantic_type": "url_path",
+      "semantic_type": "url",
       "synonyms": [
         "url",
         "page",
-        "page path",
-        "visited page"
+        "page path"
       ]
     }
   },
   {
     "id": "col:orders.order_id",
-    "text": "Column orders.order_id (int): unique identifier for each order. Primary key. Join to order_items and refunds.",
+    "text": "Column orders.order_id (int). Primary key. Unique identifier for each order. Join to order_items.order_id and refunds.order_id.",
     "metadata": {
       "doc_type": "column",
       "table": "orders",
       "column": "order_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "primary_key",
       "synonyms": [
         "order",
-        "order number",
         "transaction id"
       ]
     }
   },
   {
     "id": "col:orders.created_at",
-    "text": "Column orders.created_at (DATETIME): timestamp when the order was placed, in UTC. Use for time-based analysis and cohort calculations.",
+    "text": "Column orders.created_at (DATETIME). Timestamp when order was placed, UTC format. Use for time-based analysis and cohort calculations.",
     "metadata": {
       "doc_type": "column",
       "table": "orders",
       "column": "created_at",
-      "data_type": "DATETIME",
-      "nullable": false,
       "semantic_type": "timestamp",
       "synonyms": [
         "order date",
-        "purchase date",
-        "order time"
+        "purchase date"
       ]
     }
   },
   {
     "id": "col:orders.session_id",
-    "text": "Column orders.session_id (int): links order to the session in which it was placed. Foreign key to sessions.session_id. Critical for marketing attribution (last-touch model).",
+    "text": "Column orders.session_id (int). Links order to session where purchase occurred. Foreign key to sessions.session_id. Critical for last-touch attribution.",
     "metadata": {
       "doc_type": "column",
       "table": "orders",
       "column": "session_id",
-      "data_type": "int",
-      "nullable": false,
-      "semantic_type": "foreign_key",
-      "synonyms": [
-        "session"
-      ]
+      "semantic_type": "foreign_key"
     }
   },
   {
     "id": "col:orders.user_id",
-    "text": "Column orders.user_id (int): identifier for the user who placed the order. Use to track customer lifetime value and repeat purchase behavior.",
+    "text": "Column orders.user_id (int). Identifies user who placed order. Use for customer lifetime value and repeat purchase analysis.",
     "metadata": {
       "doc_type": "column",
       "table": "orders",
       "column": "user_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "foreign_key",
       "synonyms": [
         "customer",
-        "user",
         "buyer"
       ]
     }
   },
   {
     "id": "col:orders.primary_product_id",
-    "text": "Column orders.primary_product_id (int): the main product driving this order. Denormalized from order_items where is_primary_item=1. Foreign key to products.product_id.",
+    "text": "Column orders.primary_product_id (int). Main product driving this order. Foreign key to products.product_id. Denormalized from order_items where is_primary_item=1.",
     "metadata": {
       "doc_type": "column",
       "table": "orders",
       "column": "primary_product_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "foreign_key",
       "synonyms": [
         "main product",
@@ -440,136 +318,111 @@
   },
   {
     "id": "col:orders.items_purchased",
-    "text": "Column orders.items_purchased (int): count of line items (rows in order_items) for this order. Denormalized field for convenience.",
+    "text": "Column orders.items_purchased (int). Count of line items in this order. Denormalized count of order_items rows for this order_id.",
     "metadata": {
       "doc_type": "column",
       "table": "orders",
       "column": "items_purchased",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "count",
       "synonyms": [
         "item count",
-        "basket size",
-        "number of items"
+        "basket size"
       ]
     }
   },
   {
     "id": "col:orders.price_usd",
-    "text": "Column orders.price_usd (float): total order price in USD. Denormalized summary; order_items.price_usd is the source of truth for calculations.",
+    "text": "Column orders.price_usd (float). Total order price in USD. Denormalized sum of order_items.price_usd. For calculations, use order_items table as source of truth.",
     "metadata": {
       "doc_type": "column",
       "table": "orders",
       "column": "price_usd",
-      "data_type": "float",
-      "nullable": false,
       "semantic_type": "currency_usd",
       "synonyms": [
-        "order value usd",
-        "revenue usd",
-        "price"
+        "order value",
+        "revenue",
+        "order total"
       ]
     }
   },
   {
     "id": "col:orders.price_inr",
-    "text": "Column orders.price_inr (float): total order price in INR. Derived from price_usd via USD-to-INR conversion (approx 1 USD = 83 INR). Use for India-specific reporting.",
+    "text": "Column orders.price_inr (float). Total order price in INR. Calculated from price_usd via USD to INR conversion. Use for India-specific reporting.",
     "metadata": {
       "doc_type": "column",
       "table": "orders",
       "column": "price_inr",
-      "data_type": "float",
-      "nullable": false,
       "semantic_type": "currency_inr",
       "synonyms": [
         "order value inr",
-        "revenue inr",
-        "price rupees"
+        "revenue rupees"
       ]
     }
   },
   {
     "id": "col:orders.cogs_usd",
-    "text": "Column orders.cogs_usd (float): total cost of goods sold for this order in USD. Denormalized; order_items.cogs_usd is the authoritative source.",
+    "text": "Column orders.cogs_usd (float). Total cost of goods sold for order in USD. Denormalized sum of order_items.cogs_usd. For calculations, use order_items table.",
     "metadata": {
       "doc_type": "column",
       "table": "orders",
       "column": "cogs_usd",
-      "data_type": "float",
-      "nullable": false,
       "semantic_type": "currency_usd",
       "synonyms": [
-        "cost usd",
+        "cost",
         "product cost"
       ]
     }
   },
   {
     "id": "col:orders.cogs_inr",
-    "text": "Column orders.cogs_inr (float): total COGS in INR. Derived from cogs_usd via USD-to-INR conversion.",
+    "text": "Column orders.cogs_inr (float). Total COGS in INR. Calculated from cogs_usd via USD to INR conversion.",
     "metadata": {
       "doc_type": "column",
       "table": "orders",
       "column": "cogs_inr",
-      "data_type": "float",
-      "nullable": false,
-      "semantic_type": "currency_inr",
-      "synonyms": [
-        "cost inr",
-        "cogs rupees"
-      ]
+      "semantic_type": "currency_inr"
     }
   },
   {
     "id": "col:order_items.order_item_id",
-    "text": "Column order_items.order_item_id (int): unique identifier for each line item. Primary key. Used to join to refunds table.",
+    "text": "Column order_items.order_item_id (int). Primary key. Unique identifier for each line item. Join to refunds.order_item_id.",
     "metadata": {
       "doc_type": "column",
       "table": "order_items",
       "column": "order_item_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "primary_key",
       "synonyms": [
-        "line item id",
-        "item id"
+        "line item id"
       ]
     }
   },
   {
     "id": "col:order_items.order_id",
-    "text": "Column order_items.order_id (int): links line item to its parent order. Foreign key to orders.order_id.",
+    "text": "Column order_items.order_id (int). Links line item to parent order. Foreign key to orders.order_id.",
     "metadata": {
       "doc_type": "column",
       "table": "order_items",
       "column": "order_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "foreign_key"
     }
   },
   {
     "id": "col:order_items.created_at",
-    "text": "Column order_items.created_at (DATETIME): timestamp when the line item was created, in UTC. Typically matches order.created_at.",
+    "text": "Column order_items.created_at (DATETIME). Timestamp when line item was created, UTC format. Typically matches orders.created_at.",
     "metadata": {
       "doc_type": "column",
       "table": "order_items",
       "column": "created_at",
-      "data_type": "DATETIME",
-      "nullable": false,
       "semantic_type": "timestamp"
     }
   },
   {
     "id": "col:order_items.product_id",
-    "text": "Column order_items.product_id (int): the product sold in this line item. Foreign key to products.product_id.",
+    "text": "Column order_items.product_id (int). Product sold in this line item. Foreign key to products.product_id.",
     "metadata": {
       "doc_type": "column",
       "table": "order_items",
       "column": "product_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "foreign_key",
       "synonyms": [
         "product",
@@ -579,33 +432,28 @@
   },
   {
     "id": "col:order_items.is_primary_item",
-    "text": "Column order_items.is_primary_item (int): boolean flag. 1 = primary product driving the order; 0 = add-on or upsell. Use to split primary vs cross-sell revenue.",
+    "text": "Column order_items.is_primary_item (int). Boolean flag: 1=primary product driving order, 0=add-on/upsell. Use to segment primary vs cross-sell revenue.",
     "metadata": {
       "doc_type": "column",
       "table": "order_items",
       "column": "is_primary_item",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "boolean_flag",
       "synonyms": [
-        "primary",
-        "main item",
-        "addon flag",
-        "upsell"
+        "primary item",
+        "addon",
+        "upsell flag"
       ]
     }
   },
   {
     "id": "col:order_items.price_usd",
-    "text": "Column order_items.price_usd (float): item-level selling price in USD. Canonical source for revenue calculations. SUM across items to get total revenue.",
+    "text": "Column order_items.price_usd (float). Item-level selling price in USD. CANONICAL SOURCE for all revenue calculations. Always use this table, not orders.price_usd, for accurate revenue analysis.",
     "metadata": {
       "doc_type": "column",
       "table": "order_items",
       "column": "price_usd",
-      "data_type": "float",
-      "nullable": false,
       "semantic_type": "currency_usd",
-      "canonical": true,
+      "canonical": "revenue_source",
       "synonyms": [
         "item price",
         "revenue",
@@ -615,57 +463,48 @@
   },
   {
     "id": "col:order_items.price_inr",
-    "text": "Column order_items.price_inr (float): item-level selling price in INR. Derived from price_usd via FX conversion.",
+    "text": "Column order_items.price_inr (float). Item-level price in INR. Calculated from price_usd via USD to INR conversion. CANONICAL SOURCE for INR revenue.",
     "metadata": {
       "doc_type": "column",
       "table": "order_items",
       "column": "price_inr",
-      "data_type": "float",
-      "nullable": false,
       "semantic_type": "currency_inr",
-      "canonical": true
+      "canonical": "revenue_source"
     }
   },
   {
     "id": "col:order_items.cogs_usd",
-    "text": "Column order_items.cogs_usd (float): item-level cost of goods sold in USD. Canonical source for COGS calculations. Not reduced by refunds.",
+    "text": "Column order_items.cogs_usd (float). Item-level cost of goods sold in USD. CANONICAL SOURCE for all COGS calculations. Always use this table, not orders.cogs_usd.",
     "metadata": {
       "doc_type": "column",
       "table": "order_items",
       "column": "cogs_usd",
-      "data_type": "float",
-      "nullable": false,
       "semantic_type": "currency_usd",
-      "canonical": true,
+      "canonical": "cogs_source",
       "synonyms": [
         "item cost",
-        "cogs",
         "product cost"
       ]
     }
   },
   {
     "id": "col:order_items.cogs_inr",
-    "text": "Column order_items.cogs_inr (float): item-level COGS in INR. Derived from cogs_usd via FX conversion.",
+    "text": "Column order_items.cogs_inr (float). Item-level COGS in INR. Calculated from cogs_usd via USD to INR conversion. CANONICAL SOURCE for INR COGS.",
     "metadata": {
       "doc_type": "column",
       "table": "order_items",
       "column": "cogs_inr",
-      "data_type": "float",
-      "nullable": false,
       "semantic_type": "currency_inr",
-      "canonical": true
+      "canonical": "cogs_source"
     }
   },
   {
     "id": "col:products.product_id",
-    "text": "Column products.product_id (int): unique identifier for each product. Primary key. Stable over time even if product_name changes.",
+    "text": "Column products.product_id (int). Primary key. Unique identifier for each product. Stable over time even if product_name changes.",
     "metadata": {
       "doc_type": "column",
       "table": "products",
       "column": "product_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "primary_key",
       "synonyms": [
         "product",
@@ -675,219 +514,177 @@
   },
   {
     "id": "col:products.created_at",
-    "text": "Column products.created_at (DATETIME): timestamp when the product was first added to the catalog, in UTC.",
+    "text": "Column products.created_at (DATETIME). Timestamp when product was added to catalog, UTC format.",
     "metadata": {
       "doc_type": "column",
       "table": "products",
       "column": "created_at",
-      "data_type": "DATETIME",
-      "nullable": false,
       "semantic_type": "timestamp"
     }
   },
   {
     "id": "col:products.product_name",
-    "text": "Column products.product_name (varchar 128): descriptive name of the product. May change over time; product_id is the stable identifier.",
+    "text": "Column products.product_name (varchar 128 NULL). Descriptive name of product. May change over time; product_id is stable identifier.",
     "metadata": {
       "doc_type": "column",
       "table": "products",
       "column": "product_name",
-      "data_type": "varchar(128)",
-      "nullable": true,
       "semantic_type": "name",
       "synonyms": [
         "name",
-        "product title",
-        "sku name"
+        "product title"
       ]
     }
   },
   {
     "id": "col:refunds.refund_id",
-    "text": "Column refunds.refund_id (int): unique identifier for each refund event. Primary key.",
+    "text": "Column refunds.refund_id (int). Primary key. Unique identifier for each refund event.",
     "metadata": {
       "doc_type": "column",
       "table": "refunds",
       "column": "refund_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "primary_key"
     }
   },
   {
     "id": "col:refunds.created_at",
-    "text": "Column refunds.created_at (DATETIME): timestamp when the refund was issued, in UTC.",
+    "text": "Column refunds.created_at (DATETIME). Timestamp when refund was issued, UTC format.",
     "metadata": {
       "doc_type": "column",
       "table": "refunds",
       "column": "created_at",
-      "data_type": "DATETIME",
-      "nullable": false,
       "semantic_type": "timestamp",
       "synonyms": [
-        "refund date",
-        "refund time"
+        "refund date"
       ]
     }
   },
   {
     "id": "col:refunds.order_item_id",
-    "text": "Column refunds.order_item_id (int): links refund to the specific line item being refunded. Foreign key to order_items.order_item_id.",
+    "text": "Column refunds.order_item_id (int). Links refund to specific line item being refunded. Foreign key to order_items.order_item_id.",
     "metadata": {
       "doc_type": "column",
       "table": "refunds",
       "column": "order_item_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "foreign_key"
     }
   },
   {
     "id": "col:refunds.order_id",
-    "text": "Column refunds.order_id (int): links refund to the parent order. Foreign key to orders.order_id. Useful for order-level refund aggregation.",
+    "text": "Column refunds.order_id (int). Links refund to parent order. Foreign key to orders.order_id. Useful for order-level refund aggregation.",
     "metadata": {
       "doc_type": "column",
       "table": "refunds",
       "column": "order_id",
-      "data_type": "int",
-      "nullable": false,
       "semantic_type": "foreign_key"
     }
   },
   {
     "id": "col:refunds.refund_amount_usd",
-    "text": "Column refunds.refund_amount_usd (float): amount refunded to customer in USD. May be partial or full refund of the item price. Reduces net revenue.",
+    "text": "Column refunds.refund_amount_usd (float). Amount refunded to customer in USD. Can be partial or full refund of item price. Reduces net revenue.",
     "metadata": {
       "doc_type": "column",
       "table": "refunds",
       "column": "refund_amount_usd",
-      "data_type": "float",
-      "nullable": false,
       "semantic_type": "currency_usd",
       "synonyms": [
-        "refund usd",
+        "refund",
         "return amount"
       ]
     }
   },
   {
     "id": "col:refunds.refund_amount_inr",
-    "text": "Column refunds.refund_amount_inr (float): refund amount in INR. Derived from refund_amount_usd via FX conversion.",
+    "text": "Column refunds.refund_amount_inr (float). Refund amount in INR. Calculated from refund_amount_usd via USD to INR conversion.",
     "metadata": {
       "doc_type": "column",
       "table": "refunds",
       "column": "refund_amount_inr",
-      "data_type": "float",
-      "nullable": false,
-      "semantic_type": "currency_inr",
-      "synonyms": [
-        "refund inr",
-        "refund rupees"
-      ]
+      "semantic_type": "currency_inr"
     }
   },
   {
     "id": "rel:foreign_keys",
-    "text": "Foreign key relationships: orders.session_id = sessions.session_id; orders.user_id = sessions.user_id (denormalized); orders.order_id = order_items.order_id; order_items.product_id = products.product_id; refunds.order_item_id = order_items.order_item_id; refunds.order_id = orders.order_id; pageviews.session_id = sessions.session_id.",
+    "text": "Foreign key relationships: orders.session_id->sessions.session_id, orders.order_id->order_items.order_id, order_items.product_id->products.product_id, order_items.order_item_id->refunds.order_item_id, refunds.order_id->orders.order_id, pageviews.session_id->sessions.session_id.",
     "metadata": {
       "doc_type": "relationships",
       "type": "foreign_keys"
     }
   },
   {
-    "id": "rel:canonical_join_path_revenue",
-    "text": "Canonical join path for revenue calculations: sessions -> orders (via session_id) -> order_items (via order_id) -> LEFT JOIN refunds (via order_item_id). Use order_items.price_usd minus refunds.refund_amount_usd for net revenue.",
+    "id": "rel:revenue_join_path",
+    "text": "Revenue calculation join path: Start from order_items (canonical source), LEFT JOIN refunds ON order_items.order_item_id=refunds.order_item_id, JOIN orders ON order_items.order_id=orders.order_id, JOIN sessions ON orders.session_id=sessions.session_id for attribution.",
     "metadata": {
       "doc_type": "relationships",
       "type": "join_path",
-      "use_case": "revenue_calculation"
+      "use_case": "revenue"
     }
   },
   {
-    "id": "rel:canonical_join_path_funnel",
-    "text": "Canonical join path for funnel analysis: sessions -> pageviews (via session_id) -> LEFT JOIN orders (via session_id). Count distinct pageviews, sessions, and orders to measure conversion.",
+    "id": "rel:funnel_join_path",
+    "text": "Funnel analysis join path: sessions LEFT JOIN pageviews ON sessions.session_id=pageviews.session_id LEFT JOIN orders ON sessions.session_id=orders.session_id. Count distinct session_id, pageview_id, order_id for conversion rates.",
     "metadata": {
       "doc_type": "relationships",
       "type": "join_path",
-      "use_case": "funnel_analysis"
+      "use_case": "funnel"
     }
   },
   {
-    "id": "rel:user_tracking",
-    "text": "User tracking across sessions: sessions.user_id is consistent across all sessions for the same user. Join orders to users via orders.user_id to calculate lifetime value, repeat purchase rate, and cohort behavior.",
-    "metadata": {
-      "doc_type": "relationships",
-      "type": "user_tracking",
-      "use_case": "customer_lifetime_value"
-    }
-  },
-  {
-    "id": "rule:currency_inr",
-    "text": "Currency conversion rule: All *_inr fields (price_inr, cogs_inr, refund_amount_inr) are derived from corresponding *_usd fields using a USD-to-INR exchange rate of approximately 1 USD = 83 INR. This conversion is applied during data ingestion or ETL. Always use USD for canonical calculations and INR for India-specific reporting.",
+    "id": "rule:currency_conversion",
+    "text": "Currency conversion rule: price_inr, cogs_inr, refund_amount_inr are calculated from corresponding _usd fields via USD to INR exchange rate conversion. Always use _usd fields as source of truth for calculations.",
     "metadata": {
       "doc_type": "business_rule",
-      "category": "currency",
-      "applies_to": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "fx_rate": "~83 INR per USD"
+      "category": "currency"
     }
   },
   {
     "id": "rule:net_revenue",
-    "text": "Net revenue calculation: Net Revenue = SUM(order_items.price_usd) - COALESCE(SUM(refunds.refund_amount_usd), 0). Revenue is recognized at the item level. Partial refunds reduce revenue proportionally; fully refunded items contribute zero net revenue. Use LEFT JOIN from order_items to refunds.",
+    "text": "Net Revenue calculation: SUM(order_items.price_usd) - COALESCE(SUM(refunds.refund_amount_usd), 0). Calculate at order_items level, LEFT JOIN to refunds. Refunds reduce revenue. Use order_items as canonical source, not orders table.",
     "metadata": {
       "doc_type": "business_rule",
-      "category": "metrics",
-      "metric": "net_revenue",
-      "currency": "USD",
-      "canonical": true
+      "category": "metric",
+      "metric": "net_revenue"
     }
   },
   {
     "id": "rule:gross_revenue",
-    "text": "Gross revenue calculation: Gross Revenue = SUM(order_items.price_usd). Includes all items sold, including those later refunded. Does not deduct refunds. Use for top-line revenue reporting.",
+    "text": "Gross Revenue calculation: SUM(order_items.price_usd). Includes all items sold, even if later refunded. Does not subtract refunds.",
     "metadata": {
       "doc_type": "business_rule",
-      "category": "metrics",
-      "metric": "gross_revenue",
-      "currency": "USD"
+      "category": "metric",
+      "metric": "gross_revenue"
     }
   },
   {
     "id": "rule:cogs",
-    "text": "COGS calculation: Total COGS = SUM(order_items.cogs_usd). COGS is recorded at sale time and is not reduced by refunds. Refunds affect revenue, not cost.",
+    "text": "COGS calculation: SUM(order_items.cogs_usd). COGS is NOT reduced by refunds. Refunds affect revenue only, not cost. Use order_items as canonical source.",
     "metadata": {
       "doc_type": "business_rule",
-      "category": "metrics",
-      "metric": "cogs",
-      "currency": "USD"
+      "category": "metric",
+      "metric": "cogs"
     }
   },
   {
     "id": "rule:gross_profit",
-    "text": "Gross profit calculation: Gross Profit = Net Revenue - Total COGS. Use net revenue (after refunds) and total COGS (not adjusted for refunds).",
+    "text": "Gross Profit calculation: Net Revenue - Total COGS = (SUM(order_items.price_usd) - COALESCE(SUM(refunds.refund_amount_usd), 0)) - SUM(order_items.cogs_usd).",
     "metadata": {
       "doc_type": "business_rule",
-      "category": "metrics",
-      "metric": "gross_profit",
-      "currency": "USD"
+      "category": "metric",
+      "metric": "gross_profit"
     }
   },
   {
     "id": "rule:aov",
-    "text": "Average Order Value (AOV) calculation: AOV = Net Revenue / Net Orders. Net Orders = COUNT(DISTINCT orders.order_id) where net revenue > 0 (excludes fully refunded orders). Calculate net revenue per order first, filter out zeros, then average.",
+    "text": "Average Order Value (AOV) calculation: Total Net Revenue / Count of Net Orders. Net Orders = orders where net revenue > 0 (exclude fully refunded orders). Calculate net revenue per order, filter zeros, then average.",
     "metadata": {
       "doc_type": "business_rule",
-      "category": "metrics",
+      "category": "metric",
       "metric": "aov"
     }
   },
   {
     "id": "rule:attribution",
-    "text": "Marketing attribution model: Last-touch attribution. UTM parameters (utm_source, utm_campaign, utm_content) and device_type are captured from the session in which the order was placed (orders.session_id -> sessions). Credit full order value to that session's marketing parameters.",
+    "text": "Marketing attribution: Last-touch model. Credit order to UTM parameters (utm_source, utm_campaign, utm_content) and device_type from the session where order was placed. Join orders.session_id to sessions.session_id to get attribution dimensions.",
     "metadata": {
       "doc_type": "business_rule",
       "category": "attribution",
@@ -896,250 +693,141 @@
   },
   {
     "id": "rule:direct_traffic",
-    "text": "Direct traffic definition: A session is considered 'direct' when utm_source IS NULL AND http_referer IS NULL. Organic traffic is utm_source IS NULL AND http_referer IS NOT NULL.",
+    "text": "Traffic classification: Direct traffic = utm_source IS NULL AND http_referer IS NULL. Organic referral = utm_source IS NULL AND http_referer IS NOT NULL. Paid/campaign = utm_source IS NOT NULL.",
     "metadata": {
       "doc_type": "business_rule",
-      "category": "traffic_classification",
-      "applies_to": [
-        "sessions"
-      ]
-    }
-  },
-  {
-    "id": "rule:time_filter",
-    "text": "Time-based filtering: All tables have created_at timestamps in UTC. 'Last N days' means created_at >= CURRENT_DATE - INTERVAL N days (inclusive). Use DATE_TRUNC or DATE() functions for daily/monthly aggregation.",
-    "metadata": {
-      "doc_type": "business_rule",
-      "category": "time_logic",
-      "applies_to": [
-        "all_tables"
-      ]
-    }
-  },
-  {
-    "id": "rule:active_user",
-    "text": "Active user definition: An Active User is one who placed at least one order in the last 30 days (orders.created_at >= CURRENT_DATE - 30). Refunds do not negate activity.",
-    "metadata": {
-      "doc_type": "business_rule",
-      "category": "metrics",
-      "metric": "active_user",
-      "grain": "user"
-    }
-  },
-  {
-    "id": "rule:repeat_customer",
-    "text": "Repeat customer definition: A Repeat Customer is a user with two or more distinct orders (COUNT(DISTINCT orders.order_id) >= 2) across all time.",
-    "metadata": {
-      "doc_type": "business_rule",
-      "category": "metrics",
-      "metric": "repeat_customer",
-      "grain": "user"
+      "category": "traffic_classification"
     }
   },
   {
     "id": "rule:primary_vs_addon",
-    "text": "Primary vs add-on revenue split: Use order_items.is_primary_item to segment. Primary revenue = SUM(price_usd) WHERE is_primary_item=1. Add-on/cross-sell revenue = SUM(price_usd) WHERE is_primary_item=0.",
+    "text": "Primary vs Add-on revenue: Use order_items.is_primary_item flag. Primary revenue: WHERE is_primary_item=1. Add-on/cross-sell revenue: WHERE is_primary_item=0. Always calculate at order_items level.",
     "metadata": {
       "doc_type": "business_rule",
-      "category": "revenue_segmentation",
-      "applies_to": [
-        "order_items"
-      ]
+      "category": "revenue_segmentation"
     }
   },
   {
-    "id": "rule:refund_partial_full",
-    "text": "Refund types: Refunds may be partial (refund_amount_usd < order_items.price_usd) or full (refund_amount_usd = order_items.price_usd). An item can have multiple refund records. SUM refunds per item to get total refunded amount.",
+    "id": "rule:time_filter",
+    "text": "Time-based filtering: All tables have created_at (DATETIME, UTC). For 'last N days' use: WHERE created_at >= DATEADD(day, -N, GETDATE()). For 'this month' use: WHERE created_at >= DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1).",
     "metadata": {
       "doc_type": "business_rule",
-      "category": "refunds",
-      "applies_to": [
-        "refunds"
-      ]
+      "category": "time_logic"
     }
   },
   {
-    "id": "rule:session_order_cardinality",
-    "text": "Session-to-order cardinality: A session can have 0 or 1 orders (in rare cases, multiple orders per session are possible). A user can have multiple sessions. Conversion rate = COUNT(DISTINCT orders.order_id) / COUNT(DISTINCT sessions.session_id).",
+    "id": "rule:conversion_rate",
+    "text": "Conversion rate calculation: COUNT(DISTINCT orders.order_id) / COUNT(DISTINCT sessions.session_id). Join sessions LEFT JOIN orders ON sessions.session_id=orders.session_id. Measures percentage of sessions that resulted in a purchase.",
     "metadata": {
       "doc_type": "business_rule",
-      "category": "cardinality",
-      "applies_to": [
-        "sessions",
-        "orders"
-      ]
+      "category": "metric",
+      "metric": "conversion_rate"
     }
   },
   {
-    "id": "metric:conversion_rate",
-    "text": "Session-to-order conversion rate: (COUNT DISTINCT orders.order_id) / (COUNT DISTINCT sessions.session_id). Measures percentage of sessions that resulted in an order. JOIN sessions LEFT JOIN orders on session_id.",
+    "id": "rule:refund_rate",
+    "text": "Refund rate calculation: SUM(refunds.refund_amount_usd) / SUM(order_items.price_usd). Measures percentage of gross revenue that was refunded. Higher = more quality issues or returns.",
     "metadata": {
-      "doc_type": "metric",
-      "metric": "conversion_rate",
-      "category": "funnel",
-      "synonyms": [
-        "conversion",
-        "order rate"
-      ]
-    }
-  },
-  {
-    "id": "metric:refund_rate",
-    "text": "Refund rate (value): SUM(refunds.refund_amount_usd) / SUM(order_items.price_usd). Measures percentage of gross revenue that was refunded. Higher = more returns/quality issues.",
-    "metadata": {
-      "doc_type": "metric",
-      "metric": "refund_rate",
-      "category": "quality",
-      "synonyms": [
-        "return rate"
-      ]
-    }
-  },
-  {
-    "id": "metric:basket_size",
-    "text": "Average basket size (items per order): COUNT(order_items.order_item_id) / COUNT(DISTINCT orders.order_id). Measures average number of line items per order.",
-    "metadata": {
-      "doc_type": "metric",
-      "metric": "basket_size",
-      "category": "order_depth",
-      "synonyms": [
-        "items per order",
-        "cart size"
-      ]
-    }
-  },
-  {
-    "id": "metric:revenue_per_session",
-    "text": "Revenue per session (RPS): Net Revenue / COUNT(DISTINCT sessions.session_id). Measures efficiency of traffic monetization.",
-    "metadata": {
-      "doc_type": "metric",
-      "metric": "revenue_per_session",
-      "category": "efficiency",
-      "synonyms": [
-        "rps",
-        "session value"
-      ]
-    }
-  },
-  {
-    "id": "intent:top_source",
-    "text": "User intent: 'best source', 'top marketing channel', 'highest traffic source' -> Query sessions joined to orders and order_items, GROUP BY utm_source, calculate net revenue, ORDER BY net revenue DESC.",
-    "metadata": {
-      "doc_type": "intent_mapping",
-      "intent": "top_marketing_source",
-      "field": "utm_source",
-      "metric": "net_revenue"
-    }
-  },
-  {
-    "id": "intent:worst_products",
-    "text": "User intent: 'worst products', 'loser products', 'bad products' -> Query order_items joined to refunds, GROUP BY product_id, calculate refund_rate (refund_amount/price), ORDER BY refund_rate DESC.",
-    "metadata": {
-      "doc_type": "intent_mapping",
-      "intent": "worst_products",
-      "field": "product_id",
+      "doc_type": "business_rule",
+      "category": "metric",
       "metric": "refund_rate"
     }
   },
   {
-    "id": "intent:recent_time_filter",
-    "text": "User intent: 'recent', 'lately', 'last few days' -> Filter created_at >= CURRENT_DATE - INTERVAL 7 days.",
+    "id": "rule:repeat_customer",
+    "text": "Repeat customer definition: User with 2 or more distinct orders. Query: SELECT user_id FROM orders GROUP BY user_id HAVING COUNT(DISTINCT order_id) >= 2.",
     "metadata": {
-      "doc_type": "intent_mapping",
-      "intent": "recent_time",
-      "time_window": "7_days"
-    }
-  },
-  {
-    "id": "intent:loyal_customers",
-    "text": "User intent: 'loyal customers', 'VIPs', 'best customers' -> Query orders, GROUP BY user_id, HAVING COUNT(order_id) >= 3 or SUM(net_revenue) > threshold.",
-    "metadata": {
-      "doc_type": "intent_mapping",
-      "intent": "loyal_customers",
-      "field": "user_id",
-      "logic": "high_frequency_or_value"
-    }
-  },
-  {
-    "id": "intent:mobile_performance",
-    "text": "User intent: 'mobile performance', 'mobile vs desktop' -> Filter or GROUP BY sessions.device_type WHERE device_type IN ('mobile', 'smartphone').",
-    "metadata": {
-      "doc_type": "intent_mapping",
-      "intent": "device_analysis",
-      "field": "device_type"
-    }
-  },
-  {
-    "id": "intent:bestsellers",
-    "text": "User intent: 'bestsellers', 'popular products', 'top selling' -> Query order_items, GROUP BY product_id, ORDER BY COUNT(order_item_id) DESC or SUM(price_usd) DESC.",
-    "metadata": {
-      "doc_type": "intent_mapping",
-      "intent": "bestsellers",
-      "field": "product_id",
-      "metric": "sales_volume"
-    }
-  },
-  {
-    "id": "intent:growth",
-    "text": "User intent: 'growth', 'trending up or down' -> Calculate net revenue for current period and previous period, compute percentage change: ((current - previous) / previous) * 100.",
-    "metadata": {
-      "doc_type": "intent_mapping",
-      "intent": "growth_trend",
-      "metric": "net_revenue",
-      "logic": "percentage_change"
-    }
-  },
-  {
-    "id": "intent:losing_money",
-    "text": "User intent: 'are we losing money?', 'profitability' -> Calculate gross profit (net revenue - COGS) and refund metrics. Negative profit or high refund rate indicates losses.",
-    "metadata": {
-      "doc_type": "intent_mapping",
-      "intent": "financial_risk",
-      "metrics": [
-        "gross_profit",
-        "refund_rate"
-      ]
+      "doc_type": "business_rule",
+      "category": "customer_segmentation",
+      "metric": "repeat_customer"
     }
   },
   {
     "id": "sql:net_revenue_last_30d",
-    "text": "SQL example - Net revenue last 30 days: SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd FROM order_items oi LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id WHERE oi.created_at >= CURRENT_DATE - INTERVAL 30 days",
+    "text": "SQL - Net revenue last 30 days: SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue FROM order_items oi LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id WHERE oi.created_at >= DATEADD(day, -30, GETDATE())",
     "metadata": {
       "doc_type": "sql_example",
-      "use_case": "net_revenue",
-      "time_window": "30_days"
+      "use_case": "net_revenue"
     }
   },
   {
-    "id": "sql:top_product_by_revenue",
-    "text": "SQL example - Top product by revenue: SELECT oi.product_id, p.product_name, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue FROM order_items oi JOIN products p ON oi.product_id = p.product_id LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id GROUP BY oi.product_id, p.product_name ORDER BY net_revenue DESC LIMIT 1",
+    "id": "sql:top_products_by_revenue",
+    "text": "SQL - Top products by net revenue: SELECT oi.product_id, p.product_name, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue FROM order_items oi JOIN products p ON oi.product_id = p.product_id LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id GROUP BY oi.product_id, p.product_name ORDER BY net_revenue DESC",
     "metadata": {
       "doc_type": "sql_example",
-      "use_case": "top_product"
+      "use_case": "product_analysis"
     }
   },
   {
     "id": "sql:conversion_rate",
-    "text": "SQL example - Session to order conversion rate: SELECT CAST(COUNT(DISTINCT o.order_id) AS FLOAT) / COUNT(DISTINCT s.session_id) AS conversion_rate FROM sessions s LEFT JOIN orders o ON s.session_id = o.session_id",
+    "text": "SQL - Session to order conversion rate: SELECT CAST(COUNT(DISTINCT o.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id), 0) AS conversion_rate FROM sessions s LEFT JOIN orders o ON s.session_id = o.session_id",
     "metadata": {
       "doc_type": "sql_example",
       "use_case": "conversion_rate"
     }
   },
   {
+    "id": "sql:revenue_by_source",
+    "text": "SQL - Revenue by marketing source (last-touch): SELECT s.utm_source, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue FROM sessions s JOIN orders o ON s.session_id = o.session_id JOIN order_items oi ON o.order_id = oi.order_id LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id GROUP BY s.utm_source ORDER BY net_revenue DESC",
+    "metadata": {
+      "doc_type": "sql_example",
+      "use_case": "attribution"
+    }
+  },
+  {
     "id": "sql:aov_calculation",
-    "text": "SQL example - Average Order Value: WITH order_net AS (SELECT o.order_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue FROM orders o JOIN order_items oi ON o.order_id = oi.order_id LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id GROUP BY o.order_id) SELECT AVG(net_revenue) AS aov FROM order_net WHERE net_revenue > 0",
+    "text": "SQL - Average Order Value: WITH order_revenue AS (SELECT o.order_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_rev FROM orders o JOIN order_items oi ON o.order_id = oi.order_id LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id GROUP BY o.order_id) SELECT AVG(net_rev) AS aov FROM order_revenue WHERE net_rev > 0",
     "metadata": {
       "doc_type": "sql_example",
       "use_case": "aov"
     }
   },
   {
-    "id": "sql:revenue_by_source",
-    "text": "SQL example - Revenue by marketing source: SELECT s.utm_source, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue FROM sessions s JOIN orders o ON s.session_id = o.session_id JOIN order_items oi ON o.order_id = oi.order_id LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id GROUP BY s.utm_source ORDER BY net_revenue DESC",
+    "id": "sql:primary_vs_addon_revenue",
+    "text": "SQL - Primary vs Add-on revenue split: SELECT CASE WHEN is_primary_item = 1 THEN 'Primary' ELSE 'Add-on' END AS item_type, SUM(price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue FROM order_items oi LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id GROUP BY CASE WHEN is_primary_item = 1 THEN 'Primary' ELSE 'Add-on' END",
     "metadata": {
       "doc_type": "sql_example",
-      "use_case": "attribution"
+      "use_case": "revenue_segmentation"
+    }
+  },
+  {
+    "id": "intent:best_channel",
+    "text": "User asks: 'best channel', 'top marketing source', 'which source drives most revenue' -> Query sessions joined to orders/order_items, GROUP BY utm_source, calculate net revenue, ORDER BY DESC.",
+    "metadata": {
+      "doc_type": "intent",
+      "user_intent": "top_channel"
+    }
+  },
+  {
+    "id": "intent:worst_products",
+    "text": "User asks: 'worst products', 'highest refund rate products', 'problematic products' -> Query order_items joined to refunds, GROUP BY product_id, calculate refund_rate, ORDER BY refund_rate DESC.",
+    "metadata": {
+      "doc_type": "intent",
+      "user_intent": "problematic_products"
+    }
+  },
+  {
+    "id": "intent:mobile_vs_desktop",
+    "text": "User asks: 'mobile vs desktop', 'device performance', 'mobile revenue' -> Query sessions joined to orders/order_items, GROUP BY device_type, calculate metrics (revenue, conversion, etc).",
+    "metadata": {
+      "doc_type": "intent",
+      "user_intent": "device_analysis"
+    }
+  },
+  {
+    "id": "intent:repeat_customers",
+    "text": "User asks: 'repeat customers', 'loyal customers', 'customers who bought multiple times' -> Query orders, GROUP BY user_id, HAVING COUNT(DISTINCT order_id) >= 2.",
+    "metadata": {
+      "doc_type": "intent",
+      "user_intent": "customer_loyalty"
+    }
+  },
+  {
+    "id": "intent:recent_timeframe",
+    "text": "User asks: 'recent', 'last week', 'last month', 'past 30 days' -> Apply time filter: WHERE created_at >= DATEADD(day, -N, GETDATE()) where N is the number of days.",
+    "metadata": {
+      "doc_type": "intent",
+      "user_intent": "time_filter"
     }
   }
 ]

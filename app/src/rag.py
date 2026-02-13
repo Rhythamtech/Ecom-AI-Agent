@@ -62,5 +62,6 @@ class RAGPipeline:
 #     for file_path in files_path:
 #         with open(file_path, "r") as f:
 #             collection_name = file_path.split("/")[-1].split(".")[0]
-#             print( "Collection Name: ", collection_name)
-#             rag.create_chunks_index(json.load(f), collection_name)
+#             if collection_name == "qna":
+#                 print( "Collection Name: ", collection_name)
+#                 rag.create_chunks_index(json.load(f), collection_name)

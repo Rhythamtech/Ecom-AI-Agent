@@ -1,184 +1,565 @@
 [
   {
-    "id": "logic:financial:revenue_model",
-    "text": "The business calculates Net Revenue as the sum of item-level selling prices (price_usd) minus the sum of processed refunds (refund_amount_usd). Gross Revenue is the sum of price_usd before any refunds. Calculations must always be performed at the 'order_items' level, not the 'orders' header level, to ensure granularity and accuracy with partial refunds.",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "revenue"
-    }
+    "id": "metric:gross_revenue_usd",
+    "name": "Gross Revenue USD",
+    "description": "Total revenue before refunds, in USD, summed at the order item level.",
+    "category": "revenue",
+    "grain": "order_item",
+    "formula_natural": "SUM(order_items.price_usd)",
+    "formula_sql": "SELECT SUM(oi.price_usd) AS gross_revenue_usd FROM order_items oi;",
+    "tables": [
+      "order_items"
+    ],
+    "columns": [
+      "order_items.price_usd"
+    ]
   },
   {
-    "id": "logic:financial:profitability",
-    "text": "Profitability (Gross Profit) is defined as Net Revenue minus Cost of Goods Sold (COGS). COGS is calculated by summing 'cogs_usd' from the order_items table. Crucially, refunds do NOT reduce COGS, as the physical good is assumed lost or cost incurred upon shipment. Therefore, Profit = (Gross Sales - Refunds) - COGS.",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "profit"
-    }
+    "id": "metric:gross_revenue_inr",
+    "name": "Gross Revenue INR",
+    "description": "Total revenue before refunds, in INR, summed at the order item level.",
+    "category": "revenue",
+    "grain": "order_item",
+    "formula_natural": "SUM(order_items.price_inr)",
+    "formula_sql": "SELECT SUM(oi.price_inr) AS gross_revenue_inr FROM order_items oi;",
+    "tables": [
+      "order_items"
+    ],
+    "columns": [
+      "order_items.price_inr"
+    ]
   },
   {
-    "id": "logic:financial:currency",
-    "text": "The base currency for all transactions is USD. All INR values (price_inr, cogs_inr) are derived fields calculated using a fixed or ingested exchange rate. Analytical queries should default to USD fields unless the stakeholder explicitly requests localized INR reporting.",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "currency"
-    }
+    "id": "metric:refund_amount_usd",
+    "name": "Refund Amount USD",
+    "description": "Total refunded amount in USD across all refunds.",
+    "category": "refunds",
+    "grain": "refund",
+    "formula_natural": "SUM(refunds.refund_amount_usd)",
+    "formula_sql": "SELECT SUM(r.refund_amount_usd) AS refund_amount_usd FROM refunds r;",
+    "tables": [
+      "refunds"
+    ],
+    "columns": [
+      "refunds.refund_amount_usd"
+    ]
   },
   {
-    "id": "logic:traffic:attribution",
-    "text": "Marketing attribution uses a Last-Touch model based on the session tracking parameters. Attribution fields (utm_source, utm_campaign) are stored in the 'sessions' table. To attribute revenue to a source, one must join 'sessions' to 'orders' to 'order_items'. Direct traffic is identified by null UTM parameters and null referrers.",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "attribution"
-    }
+    "id": "metric:refund_amount_inr",
+    "name": "Refund Amount INR",
+    "description": "Total refunded amount in INR across all refunds.",
+    "category": "refunds",
+    "grain": "refund",
+    "formula_natural": "SUM(refunds.refund_amount_inr)",
+    "formula_sql": "SELECT SUM(r.refund_amount_inr) AS refund_amount_inr FROM refunds r;",
+    "tables": [
+      "refunds"
+    ],
+    "columns": [
+      "refunds.refund_amount_inr"
+    ]
   },
   {
-    "id": "logic:traffic:conversion",
-    "text": "Session Conversion Rate is the primary efficiency metric, defined as the count of distinct orders divided by the count of distinct sessions. It tracks the percentage of site visits that result in a transaction. This can be segmented by device_type or marketing source.",
-    "metadata": {
-      "topic": "traffic",
-      "subtopic": "metrics"
-    }
+    "id": "metric:net_revenue_usd",
+    "name": "Net Revenue USD",
+    "description": "Revenue after subtracting refunds, in USD, calculated from item-level prices and refunds.",
+    "category": "revenue",
+    "grain": "order_item",
+    "formula_natural": "SUM(order_items.price_usd) - COALESCE(SUM(refunds.refund_amount_usd), 0)",
+    "formula_sql": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "tables": [
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "order_items.price_usd",
+      "refunds.refund_amount_usd",
+      "order_items.order_item_id",
+      "refunds.order_item_id"
+    ]
   },
   {
-    "id": "logic:customer:definitions",
-    "text": "Customer tracking logic defines an 'Active User' as one who has placed an order within the last 30 days. A 'Repeat Customer' is defined as a user_id associated with 2 or more distinct order_ids over their lifetime. User identity is consistent across sessions via the user_id field.",
-    "metadata": {
-      "topic": "customer",
-      "subtopic": "segmentation"
-    }
+    "id": "metric:net_revenue_inr",
+    "name": "Net Revenue INR",
+    "description": "Revenue after subtracting refunds, in INR, calculated from item-level prices and refunds.",
+    "category": "revenue",
+    "grain": "order_item",
+    "formula_natural": "SUM(order_items.price_inr) - COALESCE(SUM(refunds.refund_amount_inr), 0)",
+    "formula_sql": "SELECT SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) AS net_revenue_inr\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "tables": [
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "order_items.price_inr",
+      "refunds.refund_amount_inr",
+      "order_items.order_item_id",
+      "refunds.order_item_id"
+    ]
   },
   {
-    "id": "logic:product:performance",
-    "text": "Product performance is measured at the order_item level. Products are categorized as 'Primary' (is_primary_item=1) or 'Add-on' (is_primary_item=0). Revenue analysis should often split by this flag to distinguish core drivers from upsells. 'Best Sellers' are determined by quantity sold or total revenue generated.",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "merchandising"
-    }
+    "id": "metric:total_cogs_usd",
+    "name": "Total COGS USD",
+    "description": "Total cost of goods sold, in USD, from item-level COGS and not reduced by refunds.",
+    "category": "cost",
+    "grain": "order_item",
+    "formula_natural": "SUM(order_items.cogs_usd)",
+    "formula_sql": "SELECT SUM(oi.cogs_usd) AS total_cogs_usd FROM order_items oi;",
+    "tables": [
+      "order_items"
+    ],
+    "columns": [
+      "order_items.cogs_usd"
+    ]
   },
   {
-    "id": "logic:data:canonical_join",
-    "text": "The canonical join path for all sales analytics is: Sessions (session_id) -> Orders (order_id) -> Order_Items (order_item_id) -> Refunds. This path ensures that every dollar of revenue is linked back to the session (marketing source) and the user. Never join distinct paths (e.g., Session->Pageview) for revenue data to avoid fan-out duplication.",
-    "metadata": {
-      "topic": "data_engineering",
-      "subtopic": "joins"
-    }
+    "id": "metric:total_cogs_inr",
+    "name": "Total COGS INR",
+    "description": "Total cost of goods sold, in INR, from item-level COGS and not reduced by refunds.",
+    "category": "cost",
+    "grain": "order_item",
+    "formula_natural": "SUM(order_items.cogs_inr)",
+    "formula_sql": "SELECT SUM(oi.cogs_inr) AS total_cogs_inr FROM order_items oi;",
+    "tables": [
+      "order_items"
+    ],
+    "columns": [
+      "order_items.cogs_inr"
+    ]
   },
   {
-    "id": "logic:metrics:aov",
-    "text": "Average Order Value (AOV) is the average Net Revenue generated per valid order. It is calculated as Total Net Revenue divided by the Count of Unique Orders. This metric helps assess pricing strategy and bundle performance.",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "metrics"
-    }
+    "id": "metric:gross_profit_usd",
+    "name": "Gross Profit USD",
+    "description": "Net revenue minus total COGS, in USD.",
+    "category": "profitability",
+    "grain": "order_item",
+    "formula_natural": "(SUM(order_items.price_usd) - COALESCE(SUM(refunds.refund_amount_usd), 0)) - SUM(order_items.cogs_usd)",
+    "formula_sql": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) - SUM(oi.cogs_usd) AS gross_profit_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "tables": [
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "order_items.price_usd",
+      "order_items.cogs_usd",
+      "refunds.refund_amount_usd"
+    ]
   },
   {
-    "id": "logic:metrics:refund_rate",
-    "text": "Refund Rate is a quality control metric calculated as Total Refund Amount (USD) divided by Gross Revenue (USD). It indicates customer dissatisfaction or product issues. High refund rates should trigger analysis of the 'worst products' via the refund/order_items join.",
-    "metadata": {
-      "topic": "quality",
-      "subtopic": "metrics"
-    }
+    "id": "metric:gross_profit_inr",
+    "name": "Gross Profit INR",
+    "description": "Net revenue minus total COGS, in INR.",
+    "category": "profitability",
+    "grain": "order_item",
+    "formula_natural": "(SUM(order_items.price_inr) - COALESCE(SUM(refunds.refund_amount_inr), 0)) - SUM(order_items.cogs_inr)",
+    "formula_sql": "SELECT SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) - SUM(oi.cogs_inr) AS gross_profit_inr\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "tables": [
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "order_items.price_inr",
+      "order_items.cogs_inr",
+      "refunds.refund_amount_inr"
+    ]
   },
   {
-    "id": "logic:constraints:session_order_cardinality",
-    "text": "A session can have zero or one orders in the standard business logic, with multiple orders per session treated as rare edge cases. Conversion rate must be computed as COUNT(DISTINCT orders.order_id) divided by COUNT(DISTINCT sessions.session_id) to avoid inflation from multiple orders in a single session.",
-    "metadata": {
-      "topic": "cardinality",
-      "entities": [
-        "sessions",
-        "orders"
-      ],
-      "source": "businesslogicchunks"
-    }
+    "id": "metric:order_count",
+    "name": "Order Count",
+    "description": "Number of distinct orders placed.",
+    "category": "orders",
+    "grain": "order",
+    "formula_natural": "COUNT(DISTINCT orders.order_id)",
+    "formula_sql": "SELECT COUNT(DISTINCT o.order_id) AS order_count FROM orders o;",
+    "tables": [
+      "orders"
+    ],
+    "columns": [
+      "orders.order_id"
+    ]
   },
   {
-    "id": "logic:constraints:order_primary_item",
-    "text": "Each order must have exactly one primary order item where is_primary_item = 1, and zero or more add-on items where is_primary_item = 0. The orders.primary_product_id field is a denormalized reference to this primary item and must not be used as the source of truth for revenue calculations.",
-    "metadata": {
-      "topic": "cardinality",
-      "entities": [
-        "orders",
-        "order_items"
-      ],
-      "source": "businesslogicchunks"
-    }
+    "id": "metric:net_orders",
+    "name": "Net Orders",
+    "description": "Count of orders with positive net revenue (fully refunded orders excluded).",
+    "category": "orders",
+    "grain": "order",
+    "formula_natural": "COUNT of orders where SUM(item price_usd) - SUM(refund_amount_usd) > 0",
+    "formula_sql": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT COUNT(*) AS net_orders FROM order_net WHERE net_revenue_usd > 0;",
+    "tables": [
+      "orders",
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "orders.order_id",
+      "order_items.order_id",
+      "order_items.price_usd",
+      "refunds.order_item_id",
+      "refunds.refund_amount_usd"
+    ]
   },
   {
-    "id": "logic:constraints:canonical_revenue_source",
-    "text": "All revenue and COGS metrics must be calculated from the order_items table using price_usd and cogs_usd as canonical fields. Orders-level price and cogs fields are summarized and may not reflect partial refunds or item-level adjustments.",
-    "metadata": {
-      "topic": "finance",
-      "subtopic": "canonical_source",
-      "source": "vector_db_chunks"
-    }
+    "id": "metric:aov_usd",
+    "name": "Average Order Value USD",
+    "description": "Average net revenue per non-fully-refunded order, in USD.",
+    "category": "orders",
+    "grain": "order",
+    "formula_natural": "Net Revenue USD / Net Orders",
+    "formula_sql": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT AVG(net_revenue_usd) AS aov_usd FROM order_net WHERE net_revenue_usd > 0;",
+    "tables": [
+      "orders",
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "orders.order_id",
+      "order_items.order_id",
+      "order_items.price_usd",
+      "refunds.order_item_id",
+      "refunds.refund_amount_usd"
+    ]
   },
   {
-    "id": "logic:constraints:net_orders_definition",
-    "text": "Net Orders are defined as distinct orders whose per-order net revenue is strictly greater than zero. Fully refunded orders, where the sum of item-level price_usd minus refund_amount_usd equals zero, must be excluded from Net Orders to keep AOV and order-based metrics meaningful.",
-    "metadata": {
-      "topic": "metrics",
-      "metric": "net_orders",
-      "source": "businesslogicchunks"
-    }
+    "id": "metric:aov_inr",
+    "name": "Average Order Value INR",
+    "description": "Average net revenue per non-fully-refunded order, in INR.",
+    "category": "orders",
+    "grain": "order",
+    "formula_natural": "Net Revenue INR / Net Orders",
+    "formula_sql": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) AS net_revenue_inr\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT AVG(net_revenue_inr) AS aov_inr FROM order_net WHERE net_revenue_inr > 0;",
+    "tables": [
+      "orders",
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "orders.order_id",
+      "order_items.order_id",
+      "order_items.price_inr",
+      "refunds.order_item_id",
+      "refunds.refund_amount_inr"
+    ]
   },
   {
-    "id": "logic:constraints:time_filtering",
-    "text": "All created_at timestamps are stored in UTC and must be interpreted as such in time-based analyses. The phrase 'last N days' is implemented as created_at >= CURRENT_DATE - INTERVAL N days, inclusive of the boundary date, and daily aggregations should use DATE(created_at) to avoid time-of-day issues.",
-    "metadata": {
-      "topic": "time_logic",
-      "fields": [
-        "created_at"
-      ],
-      "source": "businesslogicchunks"
-    }
+    "id": "metric:avg_items_per_order",
+    "name": "Average Items per Order",
+    "description": "Average number of line items per order.",
+    "category": "orders",
+    "grain": "order",
+    "formula_natural": "Total line items / Total distinct orders",
+    "formula_sql": "SELECT CAST(COUNT(oi.order_item_id) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id), 0) AS avg_items_per_order\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id;",
+    "tables": [
+      "orders",
+      "order_items"
+    ],
+    "columns": [
+      "orders.order_id",
+      "order_items.order_item_id",
+      "order_items.order_id"
+    ]
   },
   {
-    "id": "logic:constraints:traffic_classification",
-    "text": "Direct traffic is defined as sessions where utm_source IS NULL AND http_referer IS NULL, while organic referral traffic is defined as utm_source IS NULL AND http_referer IS NOT NULL. Any attribution or traffic-type breakdown must respect these conditions to prevent misclassifying direct versus organic sessions.",
-    "metadata": {
-      "topic": "attribution",
-      "subtopic": "traffic_type",
-      "source": "businesslogicchunks"
-    }
+    "id": "metric:primary_product_revenue_usd",
+    "name": "Primary Product Revenue USD",
+    "description": "Revenue in USD from primary items (is_primary_item = 1).",
+    "category": "revenue",
+    "grain": "order_item",
+    "formula_natural": "SUM(order_items.price_usd WHERE is_primary_item = 1)",
+    "formula_sql": "SELECT SUM(oi.price_usd) AS primary_product_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 1;",
+    "tables": [
+      "order_items"
+    ],
+    "columns": [
+      "order_items.price_usd",
+      "order_items.is_primary_item"
+    ]
   },
   {
-    "id": "logic:constraints:utm_nullability",
-    "text": "UTM fields such as utm_source, utm_campaign, and utm_content are nullable and may be absent for certain sessions. Attribution queries and group-bys must explicitly handle NULL values, typically using COALESCE to bucket unknown or direct traffic segments.",
-    "metadata": {
-      "topic": "data_quality",
-      "fields": [
-        "utm_source",
-        "utm_campaign",
-        "utm_content"
-      ],
-      "source": "vector_db_chunks"
-    }
+    "id": "metric:addon_revenue_usd",
+    "name": "Add-on Revenue USD",
+    "description": "Revenue in USD from add-on or upsell items (is_primary_item = 0).",
+    "category": "revenue",
+    "grain": "order_item",
+    "formula_natural": "SUM(order_items.price_usd WHERE is_primary_item = 0)",
+    "formula_sql": "SELECT SUM(oi.price_usd) AS addon_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 0;",
+    "tables": [
+      "order_items"
+    ],
+    "columns": [
+      "order_items.price_usd",
+      "order_items.is_primary_item"
+    ]
   },
   {
-    "id": "logic:constraints:product_identity",
-    "text": "Product identity and joins must be based on product_id, which is stable over time, rather than product_name, which may change. Any historical or longitudinal product analysis must use product_id as the key to preserve consistency across name changes.",
-    "metadata": {
-      "topic": "product",
-      "subtopic": "identity",
-      "source": "vector_db_chunks"
-    }
+    "id": "metric:upsell_ratio",
+    "name": "Upsell Ratio",
+    "description": "Ratio of add-on revenue to primary product revenue.",
+    "category": "revenue",
+    "grain": "global",
+    "formula_natural": "Add-on Revenue USD / Primary Product Revenue USD",
+    "formula_sql": "WITH primary_rev AS (\n  SELECT SUM(price_usd) AS primary_revenue FROM order_items WHERE is_primary_item = 1\n), addon_rev AS (\n  SELECT SUM(price_usd) AS addon_revenue FROM order_items WHERE is_primary_item = 0\n)\nSELECT CAST(a.addon_revenue AS FLOAT) / NULLIF(p.primary_revenue, 0) AS upsell_ratio\nFROM primary_rev p CROSS JOIN addon_rev a;",
+    "tables": [
+      "order_items"
+    ],
+    "columns": [
+      "order_items.price_usd",
+      "order_items.is_primary_item"
+    ]
   },
   {
-    "id": "logic:constraints:refund_aggregation",
-    "text": "An order item can have multiple refund records, so refund_amount_usd must always be aggregated at the order_item level before comparison to price_usd. Fully refunded items are those where the total refund_amount_usd equals price_usd; partially refunded items are those where total refund_amount_usd is greater than zero but less than price_usd.",
-    "metadata": {
-      "topic": "refunds",
-      "subtopic": "aggregation",
-      "source": "businesslogicchunks"
-    }
+    "id": "metric:conversion_rate_sessions_to_orders",
+    "name": "Session to Order Conversion Rate",
+    "description": "Fraction of sessions that resulted in at least one order.",
+    "category": "funnel",
+    "grain": "global",
+    "formula_natural": "COUNT(DISTINCT orders.order_id) / COUNT(DISTINCT sessions.session_id)",
+    "formula_sql": "SELECT CAST(COUNT(DISTINCT o.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id), 0) AS conversion_rate\nFROM sessions s\nLEFT JOIN orders o ON s.session_id = o.session_id;",
+    "tables": [
+      "sessions",
+      "orders"
+    ],
+    "columns": [
+      "sessions.session_id",
+      "orders.session_id",
+      "orders.order_id"
+    ]
   },
   {
-    "id": "logic:constraints:joins_for_revenue",
-    "text": "The canonical join path for any revenue, COGS, or refund-based metric is sessions -> orders via session_id -> order_items via order_id -> LEFT JOIN refunds via order_item_id. Alternative join patterns, such as joining via pageviews for revenue, must be avoided to prevent fan-out duplication and overstated metrics.",
-    "metadata": {
-      "topic": "data_engineering",
-      "subtopic": "joins",
-      "source": "vector_db_chunks"
-    }
+    "id": "metric:revenue_per_session_usd",
+    "name": "Revenue per Session USD",
+    "description": "Net revenue in USD divided by distinct sessions.",
+    "category": "efficiency",
+    "grain": "global",
+    "formula_natural": "Net Revenue USD / COUNT(DISTINCT sessions.session_id)",
+    "formula_sql": "WITH net_rev AS (\n  SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM order_items oi\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n)\nSELECT net_revenue_usd / NULLIF((SELECT COUNT(DISTINCT session_id) FROM sessions), 0) AS revenue_per_session_usd\nFROM net_rev;",
+    "tables": [
+      "order_items",
+      "refunds",
+      "sessions"
+    ],
+    "columns": [
+      "order_items.price_usd",
+      "refunds.refund_amount_usd",
+      "order_items.order_item_id",
+      "refunds.order_item_id",
+      "sessions.session_id"
+    ]
+  },
+  {
+    "id": "metric:refund_rate_value",
+    "name": "Refund Rate by Value",
+    "description": "Share of gross revenue that was refunded (USD).",
+    "category": "refunds",
+    "grain": "global",
+    "formula_natural": "SUM(refunds.refund_amount_usd) / SUM(order_items.price_usd)",
+    "formula_sql": "SELECT CAST(SUM(r.refund_amount_usd) AS FLOAT) / NULLIF(SUM(oi.price_usd), 0) AS refund_rate_value\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "tables": [
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "order_items.price_usd",
+      "refunds.refund_amount_usd",
+      "order_items.order_item_id",
+      "refunds.order_item_id"
+    ]
+  },
+  {
+    "id": "metric:refund_rate_count",
+    "name": "Refund Rate by Count",
+    "description": "Share of items that were refunded at least once.",
+    "category": "refunds",
+    "grain": "global",
+    "formula_natural": "COUNT(DISTINCT refunded order_items.order_item_id) / COUNT(DISTINCT order_items.order_item_id)",
+    "formula_sql": "SELECT CAST(COUNT(DISTINCT r.order_item_id) AS FLOAT) / NULLIF(COUNT(DISTINCT oi.order_item_id), 0) AS refund_rate_count\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "tables": [
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "order_items.order_item_id",
+      "refunds.order_item_id"
+    ]
+  },
+  {
+    "id": "metric:active_users_30d",
+    "name": "Active Users (Last 30 Days)",
+    "description": "Users who placed at least one order in the last 30 days.",
+    "category": "users",
+    "grain": "user",
+    "formula_natural": "COUNT(DISTINCT orders.user_id) where orders.created_at >= NOW - 30 days",
+    "formula_sql": "SELECT COUNT(DISTINCT o.user_id) AS active_users_30d\nFROM orders o\nWHERE o.created_at >= DATEADD(day, -30, GETDATE());",
+    "tables": [
+      "orders"
+    ],
+    "columns": [
+      "orders.user_id",
+      "orders.created_at"
+    ]
+  },
+  {
+    "id": "metric:repeat_customers",
+    "name": "Repeat Customers",
+    "description": "Users with two or more distinct orders across all time.",
+    "category": "users",
+    "grain": "user",
+    "formula_natural": "COUNT of user_id where COUNT(DISTINCT order_id) >= 2",
+    "formula_sql": "SELECT COUNT(*) AS repeat_customers\nFROM (\n  SELECT user_id\n  FROM orders\n  GROUP BY user_id\n  HAVING COUNT(DISTINCT order_id) >= 2\n) sub;",
+    "tables": [
+      "orders"
+    ],
+    "columns": [
+      "orders.user_id",
+      "orders.order_id"
+    ]
+  },
+  {
+    "id": "metric:net_revenue_per_user_usd",
+    "name": "Net Revenue per User USD",
+    "description": "Net revenue in USD aggregated per user.",
+    "category": "users",
+    "grain": "user",
+    "formula_natural": "SUM(item price_usd - refunds) grouped by user_id",
+    "formula_sql": "SELECT o.user_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY o.user_id;",
+    "tables": [
+      "orders",
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "orders.user_id",
+      "orders.order_id",
+      "order_items.order_id",
+      "order_items.price_usd",
+      "refunds.order_item_id",
+      "refunds.refund_amount_usd"
+    ]
+  },
+  {
+    "id": "metric:revenue_by_utm_source_usd",
+    "name": "Net Revenue by Source USD",
+    "description": "Net revenue in USD grouped by marketing source (utm_source).",
+    "category": "marketing",
+    "grain": "utm_source",
+    "formula_natural": "SUM(item price_usd - refunds) grouped by sessions.utm_source",
+    "formula_sql": "SELECT s.utm_source, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY s.utm_source;",
+    "tables": [
+      "sessions",
+      "orders",
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "sessions.utm_source",
+      "sessions.session_id",
+      "orders.session_id",
+      "orders.order_id",
+      "order_items.order_id",
+      "order_items.price_usd",
+      "refunds.order_item_id",
+      "refunds.refund_amount_usd"
+    ]
+  },
+  {
+    "id": "metric:orders_by_campaign",
+    "name": "Orders by Campaign",
+    "description": "Number of orders attributed to each utm_campaign.",
+    "category": "marketing",
+    "grain": "utm_campaign",
+    "formula_natural": "COUNT(DISTINCT orders.order_id) grouped by sessions.utm_campaign",
+    "formula_sql": "SELECT s.utm_campaign, COUNT(DISTINCT o.order_id) AS orders_count\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nGROUP BY s.utm_campaign;",
+    "tables": [
+      "sessions",
+      "orders"
+    ],
+    "columns": [
+      "sessions.utm_campaign",
+      "sessions.session_id",
+      "orders.session_id",
+      "orders.order_id"
+    ]
+  },
+  {
+    "id": "metric:refund_rate_by_product",
+    "name": "Refund Rate by Product",
+    "description": "Refund rate in value terms per product (USD).",
+    "category": "refunds",
+    "grain": "product",
+    "formula_natural": "SUM(refund_amount_usd) / SUM(price_usd) grouped by product_id",
+    "formula_sql": "SELECT oi.product_id, p.product_name,\n       CAST(COALESCE(SUM(r.refund_amount_usd), 0) AS FLOAT) / NULLIF(SUM(oi.price_usd), 0) AS refund_rate_value\nFROM order_items oi\nJOIN products p ON oi.product_id = p.product_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY oi.product_id, p.product_name;",
+    "tables": [
+      "order_items",
+      "products",
+      "refunds"
+    ],
+    "columns": [
+      "order_items.product_id",
+      "products.product_id",
+      "products.product_name",
+      "order_items.price_usd",
+      "refunds.order_item_id",
+      "refunds.refund_amount_usd"
+    ]
+  },
+  {
+    "id": "metric:daily_net_revenue_usd",
+    "name": "Daily Net Revenue USD (Last 30 Days)",
+    "description": "Net revenue in USD per day over the last 30 days.",
+    "category": "time_series",
+    "grain": "day",
+    "formula_natural": "For each day, SUM(price_usd - refunds) for items created that day in last 30 days.",
+    "formula_sql": "SELECT CAST(oi.created_at AS DATE) AS day,\n       SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nWHERE oi.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(oi.created_at AS DATE)\nORDER BY day;",
+    "tables": [
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "order_items.created_at",
+      "order_items.price_usd",
+      "refunds.order_item_id",
+      "refunds.refund_amount_usd"
+    ]
+  },
+  {
+    "id": "metric:daily_orders",
+    "name": "Daily Orders (Last 30 Days)",
+    "description": "Number of orders per day over the last 30 days.",
+    "category": "time_series",
+    "grain": "day",
+    "formula_natural": "COUNT(DISTINCT orders.order_id) per day where created_at >= NOW - 30 days.",
+    "formula_sql": "SELECT CAST(o.created_at AS DATE) AS day, COUNT(DISTINCT o.order_id) AS orders_count\nFROM orders o\nWHERE o.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(o.created_at AS DATE)\nORDER BY day;",
+    "tables": [
+      "orders"
+    ],
+    "columns": [
+      "orders.created_at",
+      "orders.order_id"
+    ]
+  },
+  {
+    "id": "metric:device_revenue_usd",
+    "name": "Net Revenue by Device USD",
+    "description": "Net revenue in USD grouped by device_type.",
+    "category": "device",
+    "grain": "device_type",
+    "formula_natural": "SUM(price_usd - refunds) grouped by sessions.device_type.",
+    "formula_sql": "SELECT s.device_type, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY s.device_type;",
+    "tables": [
+      "sessions",
+      "orders",
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "sessions.device_type",
+      "sessions.session_id",
+      "orders.session_id",
+      "orders.order_id",
+      "order_items.order_id",
+      "order_items.price_usd",
+      "refunds.order_item_id",
+      "refunds.refund_amount_usd"
+    ]
   }
 ]
