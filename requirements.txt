@@ -4,3 +4,5 @@ langchain-openai
 pydantic-settings
 pyodbc
 langchain-qdrant
+typer
+rich

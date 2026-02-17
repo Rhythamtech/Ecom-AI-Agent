@@ -1,4 +1,14 @@
 import time
+import json
+import typer
+from rich.console import Console
+from rich.panel import Panel
+from rich.syntax import Syntax
+from rich.markdown import Markdown
+from rich.json import JSON
+from rich.live import Live
+from rich.spinner import Spinner
+from rich.layout import Layout
 from workflow.pipeline import (
     rewrite_user_query,
     retrieve_context_parallel,
@@ -12,6 +22,9 @@ from workflow.pipeline import (
 from src.rag import RAGPipeline
 from src.db import SQLDB
 from workflow.helper import format_json_results
+
+app = typer.Typer(rich_markup_mode="rich")
+console = Console()
 
 def run_pipeline_orchestrator(question: str):
     """
@@ -58,7 +71,8 @@ def run_pipeline_orchestrator(question: str):
         yield {"status": "Pipeline failed", "error": error}
         return
 
-    yield {"status": "Data retrieved successfully", "data": format_json_results(data)}
+    formatted_data = format_json_results(data)
+    yield {"status": "Data retrieved successfully", "data": formatted_data}
     
     # Step 8: Data Analysis
     yield {"status": "Analyzing results...", "step": 8}
@@ -66,24 +80,70 @@ def run_pipeline_orchestrator(question: str):
     
     yield {"status": "Pipeline completed", "analysis": analysis.content}
 
+@app.command()
+def main(question: str = typer.Argument(None, help="The question to ask the AI Agent.")):
+    """
+    [bold green]Sqlwise AI Agent CLI[/bold green]
+    
+    Ask questions about your e-commerce data and get SQL-backed insights.
+    """
+    if question:
+        process_question(question)
+    else:
+        console.print(Panel("[bold green]Welcome to Sqlwise AI Agent CLI![/bold green]\nType [bold red]'exit'[/bold red] or [bold red]'quit'[/bold red] to stop.", title="👋 Hello", border_style="green"))
+        while True:
+            try:
+                question = console.input("\n[bold blue]💬 Enter your question[/bold blue]: ").strip()
+                
+                if question.lower() in ["exit", "quit"]:
+                    console.print("[bold green]Goodbye! 👋[/bold green]")
+                    break
+                
+                if not question:
+                    continue
+                    
+                process_question(question)
+            except KeyboardInterrupt:
+                console.print("\n[bold green]Goodbye! 👋[/bold green]")
+                break
+
+def process_question(question: str):
+    console.print(Panel(f"[bold blue]Question:[/bold blue] {question}", title="🚀 Sqlwise AI Agent", border_style="blue"))
+
+    with Live(Spinner("dots", text="Initializing..."), refresh_per_second=10) as live:
+        for update in run_pipeline_orchestrator(question):
+            status = update.get("status")
+            live.update(Spinner("dots", text=f"[bold yellow]{status}[/bold yellow]\n"))
+            
+            # if "sql" in update:
+            #     live.update(Spinner("dots", text="[bold green]SQL Generated![/bold green]"))
+            #     console.print(Panel(Syntax(update['sql'], "sql", theme="monokai", line_numbers=True), title="🔍 Generated SQL", border_style="green"))
+            
+            if "data" in update:
+                live.update(Spinner("dots", text="[bold cyan]Data Retrieved![/bold cyan]"))
+                try:
+                    # Try to parse data as JSON for pretty printing if it's a string
+                    data_content = update['data']
+                    if isinstance(data_content, str):
+                        try:
+                            json_data = json.loads(data_content)
+                            console.print(Panel(JSON(json.dumps(json_data)), title="📊 Data Results", border_style="cyan"))
+                        except json.JSONDecodeError:
+                            console.print(Panel(data_content, title="📊 Data Results", border_style="cyan"))
+                    else:
+                        console.print(Panel(JSON(json.dumps(data_content)), title="📊 Data Results", border_style="cyan"))
+                except Exception as e:
+                     console.print(Panel(str(update['data']), title="📊 Data Results (Raw)", border_style="cyan"))
+
+            elif "analysis" in update:
+                live.update(Spinner("dots", text="[bold magenta]Analysis Complete![/bold magenta]"))
+                console.print(Panel(Markdown(update['analysis']), title="🤖 AI Analysis", border_style="magenta"))
+            
+            elif "error" in update:
+                live.update(Spinner("dots", text="[bold red]Error![/bold red]"))
+                console.print(Panel(f"[bold red]{update['error']}[/bold red]", title="❌ Error", border_style="red"))
+            
+    console.print("[bold green]✨ Pipeline Completed Successfully![/bold green]")
+
 if __name__ == "__main__":
-    import json
-    
-    user_question = input("\n 💬 Enter your question: ").strip()
-    if not user_question:
-        user_question = "What is the total generated revenue (USD) from all order items weekwise? And Give me statergy to improve the revenue."
-    
-    print("\n🚀 Executing Agent Workflow...\n")
-    
-    for update in run_pipeline_orchestrator(user_question):
-        status = update.get("status")
-        if "sql" in update:
-            print(f"🔍 SQL: {update['sql']}\n")
-        elif "data" in update:
-            print(f"📊 DATA: {json.dumps(str(update['data']), indent=2)}\n")
-        elif "analysis" in update:
-            print(f"🤖 ANALYSIS: {update['analysis']}\n")
-        elif "error" in update:
-            print(f"❌ ERROR: {update['error']}\n")
-        else:
-            print(f"⚙️ {status}")
+    app()
