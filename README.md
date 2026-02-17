@@ -1,10 +1,10 @@
-# Ecom AI Agent 🤖🛒
+# Sqlwise AI Agent 🤖🛒
 
 **An Advanced "Reflect-and-Heal" (RAH) SQL Agent for E-Commerce Analytics**
 
 ## 📖 Project Brief
 
-**Ecom AI Agent** is an intelligent, autonomous data analyst designed to bridge the gap between complex e-commerce databases and non-technical business users. Built on a sophisticated **Reflect-and-Heal (RAH)** architecture, it allows users to ask natural language questions about their e-commerce data (orders, products, revenue, customer behavior) and receive accurate, data-backed insights.
+**Sqlwise AI Agent** is an intelligent, autonomous data analyst designed to bridge the gap between complex e-commerce databases and non-technical business users. Built on a sophisticated **Reflect-and-Heal (RAH)** architecture, it allows users to ask natural language questions about their e-commerce data (orders, products, revenue, customer behavior) and receive accurate, data-backed insights.
 
 Unlike simple text-to-SQL tools, this agent doesn't just write queries; it **plans, validates, executes, debugs, and analyzes** them. It mimics the cognitive process of a senior data analyst, ensuring high reliability even when facing ambiguous questions or schema complexities.
 
@@ -15,7 +15,7 @@ In traditional e-commerce analytics, business stakeholders face significant fric
 2.  **SQL Complexity:** E-commerce schemas (Orders, OrderItems, Refund, Sessions) are complex, making ad-hoc analysis difficult.
 3.  **Fragility of GenAI:** Standard LLMs often hallucinate table names or write syntactically incorrect SQL that fails.
 
-**Ecom AI Agent solves this by:**
+**Sqlwise AI Agent solves this by:**
 *   Empowering business users to get **instant answers**.
 *   Handling complex joins and metrics (e.g., "Net Revenue week-wise excluding refunds") automatically.
 *   **Self-healing:** If a generated query fails, the agent understands the error and fixes itself without user intervention.
@@ -99,7 +99,7 @@ The system is built with a modular, agentic architecture:
 
 ## 🆚 Comparison with Traditional Systems
 
-| Feature | 📊 Traditional BI / Dashboards | 🤖 Standard Text-to-SQL | 🚀 Ecom AI Agent (RAH) |
+| Feature | 📊 Traditional BI / Dashboards | 🤖 Standard Text-to-SQL | 🚀 Sqlwise AI Agent (RAH) |
 | :--- | :--- | :--- | :--- |
 | **Flexibility** | Low (Pre-defined views) | Medium (Limited by training) | **High (Ad-hoc queries)** |
 | **Reliability** | High (Hardcoded) | Low (Prone to hallucinations) | **High (Self-Validating)** |
