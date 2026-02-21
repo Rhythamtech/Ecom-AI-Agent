@@ -1,1890 +1,279 @@
 [
   {
-    "question": "How do I calculate Gross Revenue USD?",
-    "answer": "Total revenue before refunds, in USD, summed at the order item level. Formula: SUM(order_items.price_usd).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS gross_revenue_usd FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:gross_revenue_usd"
-    }
-  },
-  {
-    "question": "What is Gross Revenue USD?",
-    "answer": "Total revenue before refunds, in USD, summed at the order item level.",
-    "sql_query": "SELECT SUM(oi.price_usd) AS gross_revenue_usd FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:gross_revenue_usd"
-    }
-  },
-  {
-    "question": "Show me the gross revenue usd",
-    "answer": "Total revenue before refunds, in USD, summed at the order item level. Formula: SUM(order_items.price_usd).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS gross_revenue_usd FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:gross_revenue_usd"
-    }
-  },
-  {
-    "question": "What is the total Gross Revenue in USD?",
-    "answer": "Total revenue before refunds, in USD, summed at the order item level. Formula: SUM(order_items.price_usd).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS gross_revenue_usd FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:gross_revenue_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Gross Revenue INR?",
-    "answer": "Total revenue before refunds, in INR, summed at the order item level. Formula: SUM(order_items.price_inr).",
-    "sql_query": "SELECT SUM(oi.price_inr) AS gross_revenue_inr FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_inr"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:gross_revenue_inr"
-    }
-  },
-  {
-    "question": "What is Gross Revenue INR?",
-    "answer": "Total revenue before refunds, in INR, summed at the order item level.",
-    "sql_query": "SELECT SUM(oi.price_inr) AS gross_revenue_inr FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_inr"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:gross_revenue_inr"
-    }
-  },
-  {
-    "question": "Show me the gross revenue inr",
-    "answer": "Total revenue before refunds, in INR, summed at the order item level. Formula: SUM(order_items.price_inr).",
-    "sql_query": "SELECT SUM(oi.price_inr) AS gross_revenue_inr FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_inr"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:gross_revenue_inr"
-    }
-  },
-  {
-    "question": "What is the total Gross Revenue in INR?",
-    "answer": "Total revenue before refunds, in INR, summed at the order item level. Formula: SUM(order_items.price_inr).",
-    "sql_query": "SELECT SUM(oi.price_inr) AS gross_revenue_inr FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_inr"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:gross_revenue_inr"
-    }
-  },
-  {
-    "question": "How do I calculate Refund Amount USD?",
-    "answer": "Total refunded amount in USD across all refunds. Formula: SUM(refunds.refund_amount_usd).",
-    "sql_query": "SELECT SUM(r.refund_amount_usd) AS refund_amount_usd FROM refunds r;",
-    "metadata": {
-      "tables": [
-        "refunds"
-      ],
-      "columns": [
-        "refunds.refund_amount_usd"
-      ],
-      "category": "refunds",
-      "grain": "refund",
-      "metric_id": "metric:refund_amount_usd"
-    }
-  },
-  {
-    "question": "What is Refund Amount USD?",
-    "answer": "Total refunded amount in USD across all refunds.",
-    "sql_query": "SELECT SUM(r.refund_amount_usd) AS refund_amount_usd FROM refunds r;",
-    "metadata": {
-      "tables": [
-        "refunds"
-      ],
-      "columns": [
-        "refunds.refund_amount_usd"
-      ],
-      "category": "refunds",
-      "grain": "refund",
-      "metric_id": "metric:refund_amount_usd"
-    }
-  },
-  {
-    "question": "What is the total Refund Amount in USD?",
-    "answer": "Total refunded amount in USD across all refunds. Formula: SUM(refunds.refund_amount_usd).",
-    "sql_query": "SELECT SUM(r.refund_amount_usd) AS refund_amount_usd FROM refunds r;",
-    "metadata": {
-      "tables": [
-        "refunds"
-      ],
-      "columns": [
-        "refunds.refund_amount_usd"
-      ],
-      "category": "refunds",
-      "grain": "refund",
-      "metric_id": "metric:refund_amount_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Refund Amount INR?",
-    "answer": "Total refunded amount in INR across all refunds. Formula: SUM(refunds.refund_amount_inr).",
-    "sql_query": "SELECT SUM(r.refund_amount_inr) AS refund_amount_inr FROM refunds r;",
-    "metadata": {
-      "tables": [
-        "refunds"
-      ],
-      "columns": [
-        "refunds.refund_amount_inr"
-      ],
-      "category": "refunds",
-      "grain": "refund",
-      "metric_id": "metric:refund_amount_inr"
-    }
-  },
-  {
-    "question": "What is Refund Amount INR?",
-    "answer": "Total refunded amount in INR across all refunds.",
-    "sql_query": "SELECT SUM(r.refund_amount_inr) AS refund_amount_inr FROM refunds r;",
-    "metadata": {
-      "tables": [
-        "refunds"
-      ],
-      "columns": [
-        "refunds.refund_amount_inr"
-      ],
-      "category": "refunds",
-      "grain": "refund",
-      "metric_id": "metric:refund_amount_inr"
-    }
-  },
-  {
-    "question": "What is the total Refund Amount in INR?",
-    "answer": "Total refunded amount in INR across all refunds. Formula: SUM(refunds.refund_amount_inr).",
-    "sql_query": "SELECT SUM(r.refund_amount_inr) AS refund_amount_inr FROM refunds r;",
-    "metadata": {
-      "tables": [
-        "refunds"
-      ],
-      "columns": [
-        "refunds.refund_amount_inr"
-      ],
-      "category": "refunds",
-      "grain": "refund",
-      "metric_id": "metric:refund_amount_inr"
-    }
-  },
-  {
-    "question": "How do I calculate Net Revenue USD?",
-    "answer": "Revenue after subtracting refunds, in USD, calculated from item-level prices and refunds. Formula: SUM(order_items.price_usd) - COALESCE(SUM(refunds.refund_amount_usd), 0).",
-    "sql_query": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "refunds.refund_amount_usd",
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:net_revenue_usd"
-    }
-  },
-  {
-    "question": "What is Net Revenue USD?",
-    "answer": "Revenue after subtracting refunds, in USD, calculated from item-level prices and refunds.",
-    "sql_query": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "refunds.refund_amount_usd",
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:net_revenue_usd"
-    }
-  },
-  {
-    "question": "Show me the net revenue usd",
-    "answer": "Revenue after subtracting refunds, in USD, calculated from item-level prices and refunds. Formula: SUM(order_items.price_usd) - COALESCE(SUM(refunds.refund_amount_usd), 0).",
-    "sql_query": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "refunds.refund_amount_usd",
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:net_revenue_usd"
-    }
-  },
-  {
-    "question": "What is the total Net Revenue in USD?",
-    "answer": "Revenue after subtracting refunds, in USD, calculated from item-level prices and refunds. Formula: SUM(order_items.price_usd) - COALESCE(SUM(refunds.refund_amount_usd), 0).",
-    "sql_query": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "refunds.refund_amount_usd",
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:net_revenue_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Net Revenue INR?",
-    "answer": "Revenue after subtracting refunds, in INR, calculated from item-level prices and refunds. Formula: SUM(order_items.price_inr) - COALESCE(SUM(refunds.refund_amount_inr), 0).",
-    "sql_query": "SELECT SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) AS net_revenue_inr\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_inr",
-        "refunds.refund_amount_inr",
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:net_revenue_inr"
-    }
-  },
-  {
-    "question": "What is Net Revenue INR?",
-    "answer": "Revenue after subtracting refunds, in INR, calculated from item-level prices and refunds.",
-    "sql_query": "SELECT SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) AS net_revenue_inr\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_inr",
-        "refunds.refund_amount_inr",
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:net_revenue_inr"
-    }
-  },
-  {
-    "question": "Show me the net revenue inr",
-    "answer": "Revenue after subtracting refunds, in INR, calculated from item-level prices and refunds. Formula: SUM(order_items.price_inr) - COALESCE(SUM(refunds.refund_amount_inr), 0).",
-    "sql_query": "SELECT SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) AS net_revenue_inr\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_inr",
-        "refunds.refund_amount_inr",
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:net_revenue_inr"
-    }
-  },
-  {
-    "question": "What is the total Net Revenue in INR?",
-    "answer": "Revenue after subtracting refunds, in INR, calculated from item-level prices and refunds. Formula: SUM(order_items.price_inr) - COALESCE(SUM(refunds.refund_amount_inr), 0).",
-    "sql_query": "SELECT SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) AS net_revenue_inr\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_inr",
-        "refunds.refund_amount_inr",
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:net_revenue_inr"
-    }
-  },
-  {
-    "question": "How do I calculate Total COGS USD?",
-    "answer": "Total cost of goods sold, in USD, from item-level COGS and not reduced by refunds. Formula: SUM(order_items.cogs_usd).",
-    "sql_query": "SELECT SUM(oi.cogs_usd) AS total_cogs_usd FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.cogs_usd"
-      ],
-      "category": "cost",
-      "grain": "order_item",
-      "metric_id": "metric:total_cogs_usd"
-    }
-  },
-  {
-    "question": "What is Total COGS USD?",
-    "answer": "Total cost of goods sold, in USD, from item-level COGS and not reduced by refunds.",
-    "sql_query": "SELECT SUM(oi.cogs_usd) AS total_cogs_usd FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.cogs_usd"
-      ],
-      "category": "cost",
-      "grain": "order_item",
-      "metric_id": "metric:total_cogs_usd"
-    }
-  },
-  {
-    "question": "What is the total Total COGS in USD?",
-    "answer": "Total cost of goods sold, in USD, from item-level COGS and not reduced by refunds. Formula: SUM(order_items.cogs_usd).",
-    "sql_query": "SELECT SUM(oi.cogs_usd) AS total_cogs_usd FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.cogs_usd"
-      ],
-      "category": "cost",
-      "grain": "order_item",
-      "metric_id": "metric:total_cogs_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Total COGS INR?",
-    "answer": "Total cost of goods sold, in INR, from item-level COGS and not reduced by refunds. Formula: SUM(order_items.cogs_inr).",
-    "sql_query": "SELECT SUM(oi.cogs_inr) AS total_cogs_inr FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.cogs_inr"
-      ],
-      "category": "cost",
-      "grain": "order_item",
-      "metric_id": "metric:total_cogs_inr"
-    }
-  },
-  {
-    "question": "What is Total COGS INR?",
-    "answer": "Total cost of goods sold, in INR, from item-level COGS and not reduced by refunds.",
-    "sql_query": "SELECT SUM(oi.cogs_inr) AS total_cogs_inr FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.cogs_inr"
-      ],
-      "category": "cost",
-      "grain": "order_item",
-      "metric_id": "metric:total_cogs_inr"
-    }
-  },
-  {
-    "question": "What is the total Total COGS in INR?",
-    "answer": "Total cost of goods sold, in INR, from item-level COGS and not reduced by refunds. Formula: SUM(order_items.cogs_inr).",
-    "sql_query": "SELECT SUM(oi.cogs_inr) AS total_cogs_inr FROM order_items oi;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.cogs_inr"
-      ],
-      "category": "cost",
-      "grain": "order_item",
-      "metric_id": "metric:total_cogs_inr"
-    }
-  },
-  {
-    "question": "How do I calculate Gross Profit USD?",
-    "answer": "Net revenue minus total COGS, in USD. Formula: (SUM(order_items.price_usd) - COALESCE(SUM(refunds.refund_amount_usd), 0)) - SUM(order_items.cogs_usd).",
-    "sql_query": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) - SUM(oi.cogs_usd) AS gross_profit_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.cogs_usd",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "profitability",
-      "grain": "order_item",
-      "metric_id": "metric:gross_profit_usd"
-    }
-  },
-  {
-    "question": "What is Gross Profit USD?",
-    "answer": "Net revenue minus total COGS, in USD.",
-    "sql_query": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) - SUM(oi.cogs_usd) AS gross_profit_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.cogs_usd",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "profitability",
-      "grain": "order_item",
-      "metric_id": "metric:gross_profit_usd"
-    }
-  },
-  {
-    "question": "What is the total Gross Profit in USD?",
-    "answer": "Net revenue minus total COGS, in USD. Formula: (SUM(order_items.price_usd) - COALESCE(SUM(refunds.refund_amount_usd), 0)) - SUM(order_items.cogs_usd).",
-    "sql_query": "SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) - SUM(oi.cogs_usd) AS gross_profit_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.cogs_usd",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "profitability",
-      "grain": "order_item",
-      "metric_id": "metric:gross_profit_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Gross Profit INR?",
-    "answer": "Net revenue minus total COGS, in INR. Formula: (SUM(order_items.price_inr) - COALESCE(SUM(refunds.refund_amount_inr), 0)) - SUM(order_items.cogs_inr).",
-    "sql_query": "SELECT SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) - SUM(oi.cogs_inr) AS gross_profit_inr\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_inr",
-        "order_items.cogs_inr",
-        "refunds.refund_amount_inr"
-      ],
-      "category": "profitability",
-      "grain": "order_item",
-      "metric_id": "metric:gross_profit_inr"
-    }
-  },
-  {
-    "question": "What is Gross Profit INR?",
-    "answer": "Net revenue minus total COGS, in INR.",
-    "sql_query": "SELECT SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) - SUM(oi.cogs_inr) AS gross_profit_inr\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_inr",
-        "order_items.cogs_inr",
-        "refunds.refund_amount_inr"
-      ],
-      "category": "profitability",
-      "grain": "order_item",
-      "metric_id": "metric:gross_profit_inr"
-    }
-  },
-  {
-    "question": "What is the total Gross Profit in INR?",
-    "answer": "Net revenue minus total COGS, in INR. Formula: (SUM(order_items.price_inr) - COALESCE(SUM(refunds.refund_amount_inr), 0)) - SUM(order_items.cogs_inr).",
-    "sql_query": "SELECT SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) - SUM(oi.cogs_inr) AS gross_profit_inr\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_inr",
-        "order_items.cogs_inr",
-        "refunds.refund_amount_inr"
-      ],
-      "category": "profitability",
-      "grain": "order_item",
-      "metric_id": "metric:gross_profit_inr"
-    }
-  },
-  {
-    "question": "How do I calculate Order Count?",
-    "answer": "Number of distinct orders placed. Formula: COUNT(DISTINCT orders.order_id).",
-    "sql_query": "SELECT COUNT(DISTINCT o.order_id) AS order_count FROM orders o;",
+    "question": "What is the total gross revenue in USD?",
+    "answer": "The total gross revenue in USD is calculated by summing the price_usd column from the orders table.",
+    "sql_query": "SELECT SUM(price_usd) AS gross_revenue_usd FROM orders;",
     "metadata": {
       "tables": [
         "orders"
       ],
       "columns": [
-        "orders.order_id"
+        "price_usd"
       ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:order_count"
+      "category": "Revenue",
+      "grain": "overall",
+      "metric_id": "gross_revenue_usd"
     }
   },
   {
-    "question": "What is Order Count?",
-    "answer": "Number of distinct orders placed.",
-    "sql_query": "SELECT COUNT(DISTINCT o.order_id) AS order_count FROM orders o;",
+    "question": "Show me the overall gross revenue (USD).",
+    "answer": "The overall gross revenue in USD is the sum of all order prices.",
+    "sql_query": "SELECT SUM(price_usd) AS gross_revenue_usd FROM orders;",
     "metadata": {
       "tables": [
         "orders"
       ],
       "columns": [
-        "orders.order_id"
+        "price_usd"
       ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:order_count"
+      "category": "Revenue",
+      "grain": "overall",
+      "metric_id": "gross_revenue_usd"
     }
   },
   {
-    "question": "How do I calculate Net Orders?",
-    "answer": "Count of orders with positive net revenue (fully refunded orders excluded). Formula: COUNT of orders where SUM(item price_usd) - SUM(refund_amount_usd) > 0.",
-    "sql_query": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT COUNT(*) AS net_orders FROM order_net WHERE net_revenue_usd > 0;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:net_orders"
-    }
-  },
-  {
-    "question": "What is Net Orders?",
-    "answer": "Count of orders with positive net revenue (fully refunded orders excluded).",
-    "sql_query": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT COUNT(*) AS net_orders FROM order_net WHERE net_revenue_usd > 0;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:net_orders"
-    }
-  },
-  {
-    "question": "How do I calculate Average Order Value USD?",
-    "answer": "Average net revenue per non-fully-refunded order, in USD. Formula: Net Revenue USD / Net Orders.",
-    "sql_query": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT AVG(net_revenue_usd) AS aov_usd FROM order_net WHERE net_revenue_usd > 0;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:aov_usd"
-    }
-  },
-  {
-    "question": "What is Average Order Value USD?",
-    "answer": "Average net revenue per non-fully-refunded order, in USD.",
-    "sql_query": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT AVG(net_revenue_usd) AS aov_usd FROM order_net WHERE net_revenue_usd > 0;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:aov_usd"
-    }
-  },
-  {
-    "question": "What is the total Average Order Value in USD?",
-    "answer": "Average net revenue per non-fully-refunded order, in USD. Formula: Net Revenue USD / Net Orders.",
-    "sql_query": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT AVG(net_revenue_usd) AS aov_usd FROM order_net WHERE net_revenue_usd > 0;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:aov_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Average Order Value INR?",
-    "answer": "Average net revenue per non-fully-refunded order, in INR. Formula: Net Revenue INR / Net Orders.",
-    "sql_query": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) AS net_revenue_inr\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT AVG(net_revenue_inr) AS aov_inr FROM order_net WHERE net_revenue_inr > 0;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_inr",
-        "refunds.order_item_id",
-        "refunds.refund_amount_inr"
-      ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:aov_inr"
-    }
-  },
-  {
-    "question": "What is Average Order Value INR?",
-    "answer": "Average net revenue per non-fully-refunded order, in INR.",
-    "sql_query": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) AS net_revenue_inr\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT AVG(net_revenue_inr) AS aov_inr FROM order_net WHERE net_revenue_inr > 0;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_inr",
-        "refunds.order_item_id",
-        "refunds.refund_amount_inr"
-      ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:aov_inr"
-    }
-  },
-  {
-    "question": "What is the total Average Order Value in INR?",
-    "answer": "Average net revenue per non-fully-refunded order, in INR. Formula: Net Revenue INR / Net Orders.",
-    "sql_query": "WITH order_net AS (\n  SELECT o.order_id, SUM(oi.price_inr) - COALESCE(SUM(r.refund_amount_inr), 0) AS net_revenue_inr\n  FROM orders o\n  JOIN order_items oi ON o.order_id = oi.order_id\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n  GROUP BY o.order_id\n)\nSELECT AVG(net_revenue_inr) AS aov_inr FROM order_net WHERE net_revenue_inr > 0;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_inr",
-        "refunds.order_item_id",
-        "refunds.refund_amount_inr"
-      ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:aov_inr"
-    }
-  },
-  {
-    "question": "How do I calculate Average Items per Order?",
-    "answer": "Average number of line items per order. Formula: Total line items / Total distinct orders.",
-    "sql_query": "SELECT CAST(COUNT(oi.order_item_id) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id), 0) AS avg_items_per_order\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_item_id",
-        "order_items.order_id"
-      ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:avg_items_per_order"
-    }
-  },
-  {
-    "question": "What is Average Items per Order?",
-    "answer": "Average number of line items per order.",
-    "sql_query": "SELECT CAST(COUNT(oi.order_item_id) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id), 0) AS avg_items_per_order\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_item_id",
-        "order_items.order_id"
-      ],
-      "category": "orders",
-      "grain": "order",
-      "metric_id": "metric:avg_items_per_order"
-    }
-  },
-  {
-    "question": "How do I calculate Primary Product Revenue USD?",
-    "answer": "Revenue in USD from primary items (is_primary_item = 1). Formula: SUM(order_items.price_usd WHERE is_primary_item = 1).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS primary_product_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 1;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:primary_product_revenue_usd"
-    }
-  },
-  {
-    "question": "What is Primary Product Revenue USD?",
-    "answer": "Revenue in USD from primary items (is_primary_item = 1).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS primary_product_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 1;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:primary_product_revenue_usd"
-    }
-  },
-  {
-    "question": "Show me the primary product revenue usd",
-    "answer": "Revenue in USD from primary items (is_primary_item = 1). Formula: SUM(order_items.price_usd WHERE is_primary_item = 1).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS primary_product_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 1;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:primary_product_revenue_usd"
-    }
-  },
-  {
-    "question": "What is the total Primary Product Revenue in USD?",
-    "answer": "Revenue in USD from primary items (is_primary_item = 1). Formula: SUM(order_items.price_usd WHERE is_primary_item = 1).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS primary_product_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 1;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:primary_product_revenue_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Add-on Revenue USD?",
-    "answer": "Revenue in USD from add-on or upsell items (is_primary_item = 0). Formula: SUM(order_items.price_usd WHERE is_primary_item = 0).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS addon_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 0;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:addon_revenue_usd"
-    }
-  },
-  {
-    "question": "What is Add-on Revenue USD?",
-    "answer": "Revenue in USD from add-on or upsell items (is_primary_item = 0).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS addon_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 0;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:addon_revenue_usd"
-    }
-  },
-  {
-    "question": "Show me the add-on revenue usd",
-    "answer": "Revenue in USD from add-on or upsell items (is_primary_item = 0). Formula: SUM(order_items.price_usd WHERE is_primary_item = 0).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS addon_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 0;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:addon_revenue_usd"
-    }
-  },
-  {
-    "question": "What is the total Add-on Revenue in USD?",
-    "answer": "Revenue in USD from add-on or upsell items (is_primary_item = 0). Formula: SUM(order_items.price_usd WHERE is_primary_item = 0).",
-    "sql_query": "SELECT SUM(oi.price_usd) AS addon_revenue_usd\nFROM order_items oi\nWHERE oi.is_primary_item = 0;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "order_item",
-      "metric_id": "metric:addon_revenue_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Upsell Ratio?",
-    "answer": "Ratio of add-on revenue to primary product revenue. Formula: Add-on Revenue USD / Primary Product Revenue USD.",
-    "sql_query": "WITH primary_rev AS (\n  SELECT SUM(price_usd) AS primary_revenue FROM order_items WHERE is_primary_item = 1\n), addon_rev AS (\n  SELECT SUM(price_usd) AS addon_revenue FROM order_items WHERE is_primary_item = 0\n)\nSELECT CAST(a.addon_revenue AS FLOAT) / NULLIF(p.primary_revenue, 0) AS upsell_ratio\nFROM primary_rev p CROSS JOIN addon_rev a;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "global",
-      "metric_id": "metric:upsell_ratio"
-    }
-  },
-  {
-    "question": "What is Upsell Ratio?",
-    "answer": "Ratio of add-on revenue to primary product revenue.",
-    "sql_query": "WITH primary_rev AS (\n  SELECT SUM(price_usd) AS primary_revenue FROM order_items WHERE is_primary_item = 1\n), addon_rev AS (\n  SELECT SUM(price_usd) AS addon_revenue FROM order_items WHERE is_primary_item = 0\n)\nSELECT CAST(a.addon_revenue AS FLOAT) / NULLIF(p.primary_revenue, 0) AS upsell_ratio\nFROM primary_rev p CROSS JOIN addon_rev a;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "global",
-      "metric_id": "metric:upsell_ratio"
-    }
-  },
-  {
-    "question": "Show me the upsell ratio",
-    "answer": "Ratio of add-on revenue to primary product revenue. Formula: Add-on Revenue USD / Primary Product Revenue USD.",
-    "sql_query": "WITH primary_rev AS (\n  SELECT SUM(price_usd) AS primary_revenue FROM order_items WHERE is_primary_item = 1\n), addon_rev AS (\n  SELECT SUM(price_usd) AS addon_revenue FROM order_items WHERE is_primary_item = 0\n)\nSELECT CAST(a.addon_revenue AS FLOAT) / NULLIF(p.primary_revenue, 0) AS upsell_ratio\nFROM primary_rev p CROSS JOIN addon_rev a;",
-    "metadata": {
-      "tables": [
-        "order_items"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "order_items.is_primary_item"
-      ],
-      "category": "revenue",
-      "grain": "global",
-      "metric_id": "metric:upsell_ratio"
-    }
-  },
-  {
-    "question": "How do I calculate Session to Order Conversion Rate?",
-    "answer": "Fraction of sessions that resulted in at least one order. Formula: COUNT(DISTINCT orders.order_id) / COUNT(DISTINCT sessions.session_id).",
-    "sql_query": "SELECT CAST(COUNT(DISTINCT o.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id), 0) AS conversion_rate\nFROM sessions s\nLEFT JOIN orders o ON s.session_id = o.session_id;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders"
-      ],
-      "columns": [
-        "sessions.session_id",
-        "orders.session_id",
-        "orders.order_id"
-      ],
-      "category": "funnel",
-      "grain": "global",
-      "metric_id": "metric:conversion_rate_sessions_to_orders"
-    }
-  },
-  {
-    "question": "What is Session to Order Conversion Rate?",
-    "answer": "Fraction of sessions that resulted in at least one order.",
-    "sql_query": "SELECT CAST(COUNT(DISTINCT o.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id), 0) AS conversion_rate\nFROM sessions s\nLEFT JOIN orders o ON s.session_id = o.session_id;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders"
-      ],
-      "columns": [
-        "sessions.session_id",
-        "orders.session_id",
-        "orders.order_id"
-      ],
-      "category": "funnel",
-      "grain": "global",
-      "metric_id": "metric:conversion_rate_sessions_to_orders"
-    }
-  },
-  {
-    "question": "How do I calculate Revenue per Session USD?",
-    "answer": "Net revenue in USD divided by distinct sessions. Formula: Net Revenue USD / COUNT(DISTINCT sessions.session_id).",
-    "sql_query": "WITH net_rev AS (\n  SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM order_items oi\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n)\nSELECT net_revenue_usd / NULLIF((SELECT COUNT(DISTINCT session_id) FROM sessions), 0) AS revenue_per_session_usd\nFROM net_rev;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds",
-        "sessions"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "refunds.refund_amount_usd",
-        "order_items.order_item_id",
-        "refunds.order_item_id",
-        "sessions.session_id"
-      ],
-      "category": "efficiency",
-      "grain": "global",
-      "metric_id": "metric:revenue_per_session_usd"
-    }
-  },
-  {
-    "question": "What is Revenue per Session USD?",
-    "answer": "Net revenue in USD divided by distinct sessions.",
-    "sql_query": "WITH net_rev AS (\n  SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM order_items oi\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n)\nSELECT net_revenue_usd / NULLIF((SELECT COUNT(DISTINCT session_id) FROM sessions), 0) AS revenue_per_session_usd\nFROM net_rev;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds",
-        "sessions"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "refunds.refund_amount_usd",
-        "order_items.order_item_id",
-        "refunds.order_item_id",
-        "sessions.session_id"
-      ],
-      "category": "efficiency",
-      "grain": "global",
-      "metric_id": "metric:revenue_per_session_usd"
-    }
-  },
-  {
-    "question": "What is the total Revenue per Session in USD?",
-    "answer": "Net revenue in USD divided by distinct sessions. Formula: Net Revenue USD / COUNT(DISTINCT sessions.session_id).",
-    "sql_query": "WITH net_rev AS (\n  SELECT SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\n  FROM order_items oi\n  LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\n)\nSELECT net_revenue_usd / NULLIF((SELECT COUNT(DISTINCT session_id) FROM sessions), 0) AS revenue_per_session_usd\nFROM net_rev;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds",
-        "sessions"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "refunds.refund_amount_usd",
-        "order_items.order_item_id",
-        "refunds.order_item_id",
-        "sessions.session_id"
-      ],
-      "category": "efficiency",
-      "grain": "global",
-      "metric_id": "metric:revenue_per_session_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Refund Rate by Value?",
-    "answer": "Share of gross revenue that was refunded (USD). Formula: SUM(refunds.refund_amount_usd) / SUM(order_items.price_usd).",
-    "sql_query": "SELECT CAST(SUM(r.refund_amount_usd) AS FLOAT) / NULLIF(SUM(oi.price_usd), 0) AS refund_rate_value\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "refunds.refund_amount_usd",
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "refunds",
-      "grain": "global",
-      "metric_id": "metric:refund_rate_value"
-    }
-  },
-  {
-    "question": "What is Refund Rate by Value?",
-    "answer": "Share of gross revenue that was refunded (USD).",
-    "sql_query": "SELECT CAST(SUM(r.refund_amount_usd) AS FLOAT) / NULLIF(SUM(oi.price_usd), 0) AS refund_rate_value\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.price_usd",
-        "refunds.refund_amount_usd",
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "refunds",
-      "grain": "global",
-      "metric_id": "metric:refund_rate_value"
-    }
-  },
-  {
-    "question": "How do I calculate Refund Rate by Count?",
-    "answer": "Share of items that were refunded at least once. Formula: COUNT(DISTINCT refunded order_items.order_item_id) / COUNT(DISTINCT order_items.order_item_id).",
-    "sql_query": "SELECT CAST(COUNT(DISTINCT r.order_item_id) AS FLOAT) / NULLIF(COUNT(DISTINCT oi.order_item_id), 0) AS refund_rate_count\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "refunds",
-      "grain": "global",
-      "metric_id": "metric:refund_rate_count"
-    }
-  },
-  {
-    "question": "What is Refund Rate by Count?",
-    "answer": "Share of items that were refunded at least once.",
-    "sql_query": "SELECT CAST(COUNT(DISTINCT r.order_item_id) AS FLOAT) / NULLIF(COUNT(DISTINCT oi.order_item_id), 0) AS refund_rate_count\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.order_item_id",
-        "refunds.order_item_id"
-      ],
-      "category": "refunds",
-      "grain": "global",
-      "metric_id": "metric:refund_rate_count"
-    }
-  },
-  {
-    "question": "How do I calculate Active Users (Last 30 Days)?",
-    "answer": "Users who placed at least one order in the last 30 days. Formula: COUNT(DISTINCT orders.user_id) where orders.created_at >= NOW - 30 days.",
-    "sql_query": "SELECT COUNT(DISTINCT o.user_id) AS active_users_30d\nFROM orders o\nWHERE o.created_at >= DATEADD(day, -30, GETDATE());",
+    "question": "How much revenue have we generated in USD?",
+    "answer": "Revenue generated in USD equals the total of the price_usd column from orders.",
+    "sql_query": "SELECT SUM(price_usd) AS gross_revenue_usd FROM orders;",
     "metadata": {
       "tables": [
         "orders"
       ],
       "columns": [
-        "orders.user_id",
-        "orders.created_at"
+        "price_usd"
       ],
-      "category": "users",
-      "grain": "user",
-      "metric_id": "metric:active_users_30d"
+      "category": "Revenue",
+      "grain": "overall",
+      "metric_id": "gross_revenue_usd"
     }
   },
   {
-    "question": "What is Active Users (Last 30 Days)?",
-    "answer": "Users who placed at least one order in the last 30 days.",
-    "sql_query": "SELECT COUNT(DISTINCT o.user_id) AS active_users_30d\nFROM orders o\nWHERE o.created_at >= DATEADD(day, -30, GETDATE());",
+    "question": "Give me the sum of order prices in USD.",
+    "answer": "Sum of order prices in USD is obtained by aggregating price_usd from orders.",
+    "sql_query": "SELECT SUM(price_usd) AS gross_revenue_usd FROM orders;",
     "metadata": {
       "tables": [
         "orders"
       ],
       "columns": [
-        "orders.user_id",
-        "orders.created_at"
+        "price_usd"
       ],
-      "category": "users",
-      "grain": "user",
-      "metric_id": "metric:active_users_30d"
+      "category": "Revenue",
+      "grain": "overall",
+      "metric_id": "gross_revenue_usd"
     }
   },
   {
-    "question": "How do I calculate Repeat Customers?",
-    "answer": "Users with two or more distinct orders across all time. Formula: COUNT of user_id where COUNT(DISTINCT order_id) >= 2.",
-    "sql_query": "SELECT COUNT(*) AS repeat_customers\nFROM (\n  SELECT user_id\n  FROM orders\n  GROUP BY user_id\n  HAVING COUNT(DISTINCT order_id) >= 2\n) sub;",
-    "metadata": {
-      "tables": [
-        "orders"
-      ],
-      "columns": [
-        "orders.user_id",
-        "orders.order_id"
-      ],
-      "category": "users",
-      "grain": "user",
-      "metric_id": "metric:repeat_customers"
-    }
-  },
-  {
-    "question": "What is Repeat Customers?",
-    "answer": "Users with two or more distinct orders across all time.",
-    "sql_query": "SELECT COUNT(*) AS repeat_customers\nFROM (\n  SELECT user_id\n  FROM orders\n  GROUP BY user_id\n  HAVING COUNT(DISTINCT order_id) >= 2\n) sub;",
-    "metadata": {
-      "tables": [
-        "orders"
-      ],
-      "columns": [
-        "orders.user_id",
-        "orders.order_id"
-      ],
-      "category": "users",
-      "grain": "user",
-      "metric_id": "metric:repeat_customers"
-    }
-  },
-  {
-    "question": "How do I calculate Net Revenue per User USD?",
-    "answer": "Net revenue in USD aggregated per user. Formula: SUM(item price_usd - refunds) grouped by user_id.",
-    "sql_query": "SELECT o.user_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY o.user_id;",
+    "question": "What is our net revenue in USD after refunds?",
+    "answer": "Net revenue in USD equals total order revenue minus total refunds.",
+    "sql_query": "SELECT (SELECT SUM(o.price_usd) FROM orders o) - (SELECT SUM(r.refund_amount_usd) FROM refunds r) AS net_revenue_usd;",
     "metadata": {
       "tables": [
         "orders",
-        "order_items",
         "refunds"
       ],
       "columns": [
-        "orders.user_id",
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "users",
-      "grain": "user",
-      "metric_id": "metric:net_revenue_per_user_usd"
-    }
-  },
-  {
-    "question": "What is Net Revenue per User USD?",
-    "answer": "Net revenue in USD aggregated per user.",
-    "sql_query": "SELECT o.user_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY o.user_id;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "orders.user_id",
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "users",
-      "grain": "user",
-      "metric_id": "metric:net_revenue_per_user_usd"
-    }
-  },
-  {
-    "question": "What is the total Net Revenue per User in USD?",
-    "answer": "Net revenue in USD aggregated per user. Formula: SUM(item price_usd - refunds) grouped by user_id.",
-    "sql_query": "SELECT o.user_id, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY o.user_id;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "orders.user_id",
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "users",
-      "grain": "user",
-      "metric_id": "metric:net_revenue_per_user_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Net Revenue by Source USD?",
-    "answer": "Net revenue in USD grouped by marketing source (utm_source). Formula: SUM(item price_usd - refunds) grouped by sessions.utm_source.",
-    "sql_query": "SELECT s.utm_source, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY s.utm_source;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "sessions.utm_source",
-        "sessions.session_id",
-        "orders.session_id",
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "marketing",
-      "grain": "utm_source",
-      "metric_id": "metric:revenue_by_utm_source_usd"
-    }
-  },
-  {
-    "question": "What is Net Revenue by Source USD?",
-    "answer": "Net revenue in USD grouped by marketing source (utm_source).",
-    "sql_query": "SELECT s.utm_source, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY s.utm_source;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "sessions.utm_source",
-        "sessions.session_id",
-        "orders.session_id",
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "marketing",
-      "grain": "utm_source",
-      "metric_id": "metric:revenue_by_utm_source_usd"
-    }
-  },
-  {
-    "question": "What is the total Net Revenue by Source in USD?",
-    "answer": "Net revenue in USD grouped by marketing source (utm_source). Formula: SUM(item price_usd - refunds) grouped by sessions.utm_source.",
-    "sql_query": "SELECT s.utm_source, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY s.utm_source;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "sessions.utm_source",
-        "sessions.session_id",
-        "orders.session_id",
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "marketing",
-      "grain": "utm_source",
-      "metric_id": "metric:revenue_by_utm_source_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Orders by Campaign?",
-    "answer": "Number of orders attributed to each utm_campaign. Formula: COUNT(DISTINCT orders.order_id) grouped by sessions.utm_campaign.",
-    "sql_query": "SELECT s.utm_campaign, COUNT(DISTINCT o.order_id) AS orders_count\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nGROUP BY s.utm_campaign;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders"
-      ],
-      "columns": [
-        "sessions.utm_campaign",
-        "sessions.session_id",
-        "orders.session_id",
-        "orders.order_id"
-      ],
-      "category": "marketing",
-      "grain": "utm_campaign",
-      "metric_id": "metric:orders_by_campaign"
-    }
-  },
-  {
-    "question": "What is Orders by Campaign?",
-    "answer": "Number of orders attributed to each utm_campaign.",
-    "sql_query": "SELECT s.utm_campaign, COUNT(DISTINCT o.order_id) AS orders_count\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nGROUP BY s.utm_campaign;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders"
-      ],
-      "columns": [
-        "sessions.utm_campaign",
-        "sessions.session_id",
-        "orders.session_id",
-        "orders.order_id"
-      ],
-      "category": "marketing",
-      "grain": "utm_campaign",
-      "metric_id": "metric:orders_by_campaign"
-    }
-  },
-  {
-    "question": "How do I calculate Refund Rate by Product?",
-    "answer": "Refund rate in value terms per product (USD). Formula: SUM(refund_amount_usd) / SUM(price_usd) grouped by product_id.",
-    "sql_query": "SELECT oi.product_id, p.product_name,\n       CAST(COALESCE(SUM(r.refund_amount_usd), 0) AS FLOAT) / NULLIF(SUM(oi.price_usd), 0) AS refund_rate_value\nFROM order_items oi\nJOIN products p ON oi.product_id = p.product_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY oi.product_id, p.product_name;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "products",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.product_id",
-        "products.product_id",
-        "products.product_name",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "refunds",
-      "grain": "product",
-      "metric_id": "metric:refund_rate_by_product"
-    }
-  },
-  {
-    "question": "What is Refund Rate by Product?",
-    "answer": "Refund rate in value terms per product (USD).",
-    "sql_query": "SELECT oi.product_id, p.product_name,\n       CAST(COALESCE(SUM(r.refund_amount_usd), 0) AS FLOAT) / NULLIF(SUM(oi.price_usd), 0) AS refund_rate_value\nFROM order_items oi\nJOIN products p ON oi.product_id = p.product_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY oi.product_id, p.product_name;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "products",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.product_id",
-        "products.product_id",
-        "products.product_name",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "refunds",
-      "grain": "product",
-      "metric_id": "metric:refund_rate_by_product"
-    }
-  },
-  {
-    "question": "How do I calculate Daily Net Revenue USD (Last 30 Days)?",
-    "answer": "Net revenue in USD per day over the last 30 days. Formula: For each day, SUM(price_usd - refunds) for items created that day in last 30 days..",
-    "sql_query": "SELECT CAST(oi.created_at AS DATE) AS day,\n       SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nWHERE oi.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(oi.created_at AS DATE)\nORDER BY day;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.created_at",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "time_series",
-      "grain": "day",
-      "metric_id": "metric:daily_net_revenue_usd"
-    }
-  },
-  {
-    "question": "What is Daily Net Revenue USD (Last 30 Days)?",
-    "answer": "Net revenue in USD per day over the last 30 days.",
-    "sql_query": "SELECT CAST(oi.created_at AS DATE) AS day,\n       SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nWHERE oi.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(oi.created_at AS DATE)\nORDER BY day;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.created_at",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "time_series",
-      "grain": "day",
-      "metric_id": "metric:daily_net_revenue_usd"
-    }
-  },
-  {
-    "question": "What is the total Daily Net Revenue  (Last 30 Days) in USD?",
-    "answer": "Net revenue in USD per day over the last 30 days. Formula: For each day, SUM(price_usd - refunds) for items created that day in last 30 days..",
-    "sql_query": "SELECT CAST(oi.created_at AS DATE) AS day,\n       SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nWHERE oi.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(oi.created_at AS DATE)\nORDER BY day;",
-    "metadata": {
-      "tables": [
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "order_items.created_at",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "time_series",
-      "grain": "day",
-      "metric_id": "metric:daily_net_revenue_usd"
-    }
-  },
-  {
-    "question": "How do I calculate Daily Orders (Last 30 Days)?",
-    "answer": "Number of orders per day over the last 30 days. Formula: COUNT(DISTINCT orders.order_id) per day where created_at >= NOW - 30 days..",
-    "sql_query": "SELECT CAST(o.created_at AS DATE) AS day, COUNT(DISTINCT o.order_id) AS orders_count\nFROM orders o\nWHERE o.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(o.created_at AS DATE)\nORDER BY day;",
-    "metadata": {
-      "tables": [
-        "orders"
-      ],
-      "columns": [
-        "orders.created_at",
-        "orders.order_id"
-      ],
-      "category": "time_series",
-      "grain": "day",
-      "metric_id": "metric:daily_orders"
-    }
-  },
-  {
-    "question": "What is Daily Orders (Last 30 Days)?",
-    "answer": "Number of orders per day over the last 30 days.",
-    "sql_query": "SELECT CAST(o.created_at AS DATE) AS day, COUNT(DISTINCT o.order_id) AS orders_count\nFROM orders o\nWHERE o.created_at >= DATEADD(day, -30, GETDATE())\nGROUP BY CAST(o.created_at AS DATE)\nORDER BY day;",
-    "metadata": {
-      "tables": [
-        "orders"
-      ],
-      "columns": [
-        "orders.created_at",
-        "orders.order_id"
-      ],
-      "category": "time_series",
-      "grain": "day",
-      "metric_id": "metric:daily_orders"
-    }
-  },
-  {
-    "question": "How do I calculate Net Revenue by Device USD?",
-    "answer": "Net revenue in USD grouped by device_type. Formula: SUM(price_usd - refunds) grouped by sessions.device_type..",
-    "sql_query": "SELECT s.device_type, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY s.device_type;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "sessions.device_type",
-        "sessions.session_id",
-        "orders.session_id",
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "device",
-      "grain": "device_type",
-      "metric_id": "metric:device_revenue_usd"
-    }
-  },
-  {
-    "question": "What is Net Revenue by Device USD?",
-    "answer": "Net revenue in USD grouped by device_type.",
-    "sql_query": "SELECT s.device_type, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY s.device_type;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "sessions.device_type",
-        "sessions.session_id",
-        "orders.session_id",
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "device",
-      "grain": "device_type",
-      "metric_id": "metric:device_revenue_usd"
-    }
-  },
-  {
-    "question": "What is the total Net Revenue by Device in USD?",
-    "answer": "Net revenue in USD grouped by device_type. Formula: SUM(price_usd - refunds) grouped by sessions.device_type..",
-    "sql_query": "SELECT s.device_type, SUM(oi.price_usd) - COALESCE(SUM(r.refund_amount_usd), 0) AS net_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nJOIN order_items oi ON o.order_id = oi.order_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP BY s.device_type;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders",
-        "order_items",
-        "refunds"
-      ],
-      "columns": [
-        "sessions.device_type",
-        "sessions.session_id",
-        "orders.session_id",
-        "orders.order_id",
-        "order_items.order_id",
-        "order_items.price_usd",
-        "refunds.order_item_id",
-        "refunds.refund_amount_usd"
-      ],
-      "category": "device",
-      "grain": "device_type",
-      "metric_id": "metric:device_revenue_usd"
-    }
-  },
-  {
-    "question": "What tables are available in the database?",
-    "answer": "The database contains the following tables: orders, order_items, products, pageviews, sessions, refunds, and metadata.",
-    "sql_query": "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE';",
-    "metadata": {
-      "tables": [
-        "INFORMATION_SCHEMA.TABLES"
-      ],
-      "columns": [
-        "TABLE_NAME"
-      ],
-      "category": "schema",
-      "grain": "table"
-    }
-  },
-  {
-    "question": "What columns are in the orders table?",
-    "answer": "The orders table contains: order_id (int), created_at (DATETIME), session_id (int), user_id (int), primary_product_id (int), items_purchased (int), price_usd (float), price_inr (float), cogs_usd (float), cogs_inr (float).",
-    "sql_query": "SELECT * FROM orders;",
-    "metadata": {
-      "tables": [
-        "orders"
-      ],
-      "columns": [
-        "orders.order_id",
-        "orders.created_at",
-        "orders.session_id",
-        "orders.user_id",
-        "orders.primary_product_id",
-        "orders.items_purchased",
         "orders.price_usd",
-        "orders.price_inr",
-        "orders.cogs_usd",
-        "orders.cogs_inr"
+        "refunds.refund_amount_usd"
       ],
-      "category": "schema",
-      "grain": "order"
+      "category": "Revenue",
+      "grain": "overall",
+      "metric_id": "net_revenue_usd"
     }
   },
   {
-    "question": "What columns are in the order_items table?",
-    "answer": "The order_items table contains: order_item_id (int), order_id (int), created_at (DATETIME), product_id (int), is_primary_item (int), price_usd (float), price_inr (float), cogs_usd (float), cogs_inr (float).",
-    "sql_query": "SELECT * FROM order_items;",
+    "question": "Calculate net revenue (USD) after accounting for refunds.",
+    "answer": "Net revenue (USD) is total order price_usd minus total refund_amount_usd.",
+    "sql_query": "SELECT (SELECT SUM(o.price_usd) FROM orders o) - (SELECT SUM(r.refund_amount_usd) FROM refunds r) AS net_revenue_usd;",
     "metadata": {
       "tables": [
-        "order_items"
+        "orders",
+        "refunds"
       ],
       "columns": [
-        "order_items.order_item_id",
-        "order_items.order_id",
-        "order_items.created_at",
-        "order_items.product_id",
-        "order_items.is_primary_item",
-        "order_items.price_usd",
-        "order_items.price_inr",
-        "order_items.cogs_usd",
-        "order_items.cogs_inr"
+        "orders.price_usd",
+        "refunds.refund_amount_usd"
       ],
-      "category": "schema",
-      "grain": "order_item"
+      "category": "Revenue",
+      "grain": "overall",
+      "metric_id": "net_revenue_usd"
     }
   },
   {
-    "question": "What columns are in the products table?",
-    "answer": "The products table contains: product_id (int), created_at (DATETIME), product_name (varchar(128)).",
-    "sql_query": "SELECT * FROM products;",
+    "question": "How much net revenue have we earned after refunds, in USD?",
+    "answer": "Net revenue after refunds is computed by subtracting total refunds from total order revenue.",
+    "sql_query": "SELECT (SELECT SUM(o.price_usd) FROM orders o) - (SELECT SUM(r.refund_amount_usd) FROM refunds r) AS net_revenue_usd;",
     "metadata": {
       "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "orders.price_usd",
+        "refunds.refund_amount_usd"
+      ],
+      "category": "Revenue",
+      "grain": "overall",
+      "metric_id": "net_revenue_usd"
+    }
+  },
+  {
+    "question": "Show revenue by device type.",
+    "answer": "Revenue broken down by device type is summed from orders linked to sessions.",
+    "sql_query": "SELECT s.device_type, SUM(o.price_usd) AS revenue_usd FROM orders o JOIN sessions s ON o.session_id = s.session_id GROUP BY s.device_type;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "sessions"
+      ],
+      "columns": [
+        "orders.price_usd",
+        "sessions.device_type"
+      ],
+      "category": "Revenue",
+      "grain": "device_type",
+      "metric_id": "revenue_by_device_usd"
+    }
+  },
+  {
+    "question": "What revenue do we get from each device type?",
+    "answer": "Revenue per device type is calculated by joining orders with sessions and aggregating price_usd.",
+    "sql_query": "SELECT s.device_type, SUM(o.price_usd) AS revenue_usd FROM orders o JOIN sessions s ON o.session_id = s.session_id GROUP BY s.device_type;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "sessions"
+      ],
+      "columns": [
+        "orders.price_usd",
+        "sessions.device_type"
+      ],
+      "category": "Revenue",
+      "grain": "device_type",
+      "metric_id": "revenue_by_device_usd"
+    }
+  },
+  {
+    "question": "Give me revenue split by device type (USD).",
+    "answer": "Revenue split by device type is derived from the sum of order prices per device.",
+    "sql_query": "SELECT s.device_type, SUM(o.price_usd) AS revenue_usd FROM orders o JOIN sessions s ON o.session_id = s.session_id GROUP BY s.device_type;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "sessions"
+      ],
+      "columns": [
+        "orders.price_usd",
+        "sessions.device_type"
+      ],
+      "category": "Revenue",
+      "grain": "device_type",
+      "metric_id": "revenue_by_device_usd"
+    }
+  },
+  {
+    "question": "Daily count of orders.",
+    "answer": "The number of orders per day is obtained by grouping orders by the date part of created_at.",
+    "sql_query": "SELECT CAST(o.created_at AS DATE) AS order_date, COUNT(*) AS orders_count FROM orders o GROUP BY CAST(o.created_at AS DATE) ORDER BY order_date;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "created_at"
+      ],
+      "category": "Orders",
+      "grain": "day",
+      "metric_id": "daily_order_count"
+    }
+  },
+  {
+    "question": "How many orders do we have each day?",
+    "answer": "Orders per day are counted by grouping on the date of the order's creation.",
+    "sql_query": "SELECT CAST(o.created_at AS DATE) AS order_date, COUNT(*) AS orders_count FROM orders o GROUP BY CAST(o.created_at AS DATE) ORDER BY order_date;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "created_at"
+      ],
+      "category": "Orders",
+      "grain": "day",
+      "metric_id": "daily_order_count"
+    }
+  },
+  {
+    "question": "Show the number of orders placed per day.",
+    "answer": "Number of orders per day is calculated using COUNT(*) grouped by order date.",
+    "sql_query": "SELECT CAST(o.created_at AS DATE) AS order_date, COUNT(*) AS orders_count FROM orders o GROUP BY CAST(o.created_at AS DATE) ORDER BY order_date;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "created_at"
+      ],
+      "category": "Orders",
+      "grain": "day",
+      "metric_id": "daily_order_count"
+    }
+  },
+  {
+    "question": "List the top 5 products by units sold.",
+    "answer": "Top 5 products are determined by counting order_items per product and ordering descending.",
+    "sql_query": "SELECT p.product_name, COUNT(oi.order_item_id) AS units_sold FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_name ORDER BY units_sold DESC OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;",
+    "metadata": {
+      "tables": [
+        "order_items",
         "products"
       ],
       "columns": [
-        "products.product_id",
-        "products.created_at",
+        "order_items.order_item_id",
+        "order_items.product_id",
         "products.product_name"
       ],
-      "category": "schema",
-      "grain": "product"
+      "category": "Product",
+      "grain": "product",
+      "metric_id": "top5_products_by_units"
     }
   },
   {
-    "question": "What columns are in the pageviews table?",
-    "answer": "The pageviews table contains: pageview_id (int), created_at (DATETIME), session_id (int), pageview_url (nvarchar(256)).",
-    "sql_query": "SELECT * FROM pageviews;",
-    "metadata": {
-      "tables": [
-        "pageviews"
-      ],
-      "columns": [
-        "pageviews.pageview_id",
-        "pageviews.created_at",
-        "pageviews.session_id",
-        "pageviews.pageview_url"
-      ],
-      "category": "schema",
-      "grain": "pageview"
-    }
-  },
-  {
-    "question": "What columns are in the sessions table?",
-    "answer": "The sessions table contains: session_id (int), created_at (DATETIME), user_id (int), is_repeat_session (int), utm_source (varchar(60)), utm_campaign (varchar(128)), utm_content (varchar(128)), device_type (varchar(60)), http_referer (nvarchar(128)).",
-    "sql_query": "SELECT * FROM sessions;",
-    "metadata": {
-      "tables": [
-        "sessions"
-      ],
-      "columns": [
-        "sessions.session_id",
-        "sessions.created_at",
-        "sessions.user_id",
-        "sessions.is_repeat_session",
-        "sessions.utm_source",
-        "sessions.utm_campaign",
-        "sessions.utm_content",
-        "sessions.device_type",
-        "sessions.http_referer"
-      ],
-      "category": "schema",
-      "grain": "session"
-    }
-  },
-  {
-    "question": "What columns are in the refunds table?",
-    "answer": "The refunds table contains: refund_id (int), created_at (DATETIME), order_item_id (int), order_id (int), refund_amount_usd (float), refund_amount_inr (float).",
-    "sql_query": "SELECT * FROM refunds;",
-    "metadata": {
-      "tables": [
-        "refunds"
-      ],
-      "columns": [
-        "refunds.refund_id",
-        "refunds.created_at",
-        "refunds.order_item_id",
-        "refunds.order_id",
-        "refunds.refund_amount_usd",
-        "refunds.refund_amount_inr"
-      ],
-      "category": "schema",
-      "grain": "refund"
-    }
-  },
-  {
-    "question": "How do I join orders and order_items?",
-    "answer": "Join orders and order_items using the order_id column: orders.order_id = order_items.order_id",
-    "sql_query": "SELECT * FROM orders o JOIN order_items oi ON o.order_id = oi.order_id;",
-    "metadata": {
-      "tables": [
-        "orders",
-        "order_items"
-      ],
-      "columns": [
-        "orders.order_id",
-        "order_items.order_id"
-      ],
-      "category": "joins",
-      "grain": "order_item"
-    }
-  },
-  {
-    "question": "How do I join sessions and orders?",
-    "answer": "Join sessions and orders using the session_id column: sessions.session_id = orders.session_id",
-    "sql_query": "SELECT * FROM sessions s JOIN orders o ON s.session_id = o.session_id;",
-    "metadata": {
-      "tables": [
-        "sessions",
-        "orders"
-      ],
-      "columns": [
-        "sessions.session_id",
-        "orders.session_id"
-      ],
-      "category": "joins",
-      "grain": "order"
-    }
-  },
-  {
-    "question": "How do I join order_items and products?",
-    "answer": "Join order_items and products using the product_id column: order_items.product_id = products.product_id",
-    "sql_query": "SELECT * FROM order_items oi JOIN products p ON oi.product_id = p.product_id;",
+    "question": "What are the five best\u2011selling products by quantity?",
+    "answer": "The five best\u2011selling products are identified by the highest count of order items.",
+    "sql_query": "SELECT p.product_name, COUNT(oi.order_item_id) AS units_sold FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_name ORDER BY units_sold DESC OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;",
     "metadata": {
       "tables": [
         "order_items",
         "products"
       ],
       "columns": [
+        "order_items.order_item_id",
         "order_items.product_id",
-        "products.product_id"
+        "products.product_name"
       ],
-      "category": "joins",
-      "grain": "order_item"
+      "category": "Product",
+      "grain": "product",
+      "metric_id": "top5_products_by_units"
     }
   },
   {
-    "question": "How do I join order_items and refunds?",
-    "answer": "Join order_items and refunds using the order_item_id column: order_items.order_item_id = refunds.order_item_id. Use LEFT JOIN to include items without refunds.",
-    "sql_query": "SELECT * FROM order_items oi LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id;",
+    "question": "Give me the five products with the highest units sold.",
+    "answer": "Five products with highest units sold are retrieved by aggregating order_items per product.",
+    "sql_query": "SELECT p.product_name, COUNT(oi.order_item_id) AS units_sold FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_name ORDER BY units_sold DESC OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;",
     "metadata": {
       "tables": [
         "order_items",
-        "refunds"
+        "products"
       ],
       "columns": [
         "order_items.order_item_id",
-        "refunds.order_item_id"
+        "order_items.product_id",
+        "products.product_name"
       ],
-      "category": "joins",
-      "grain": "order_item"
+      "category": "Product",
+      "grain": "product",
+      "metric_id": "top5_products_by_units"
     }
   }
 ]

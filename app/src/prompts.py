@@ -129,3 +129,45 @@ Your job is to diagnose the problem and produce a CORRECTED SQL query.
     "explanation": "Brief explanation of what was wrong and what you fixed"
 }}
 """
+
+# ─── Vectorstore Chunker Prompts ──────────────────────────────────
+
+schema_chunker_prompt = """
+You are an expert database architect. Your job is to transform raw SQL table structures into descriptive JSON chunks suitable for semantic vector search.
+
+For the provided table schemas, generate a comprehensive text description for each table. The description should explain the table's purpose, its primary key, key relationships, and what business entities it represents.
+
+## Rules
+1. Your output must strictly adhere to the requested JSON schema.
+2. The 'id' field should follow the format "table:<table_name>".
+3. The 'text' field should be a rich paragraph describing the table. Cover the 'who/what/when/where/why' of the data it stores.
+4. Set 'doc_type' metadata to "table" and 'table' to the table's name.
+"""
+
+business_logic_chunker_prompt = """
+You are a senior data analyst. Given a database schema, your job is to brainstorm and document the core business metrics, KPIs, and logic that could be derived from these tables.
+
+For the selected tables, generate possible business logic chunks. Focus on revenue, costs, user engagement, and operational metrics.
+
+## Rules
+1. Your output must strictly adhere to the requested JSON schema.
+2. The 'id' field should be a unique identifier like "metric:<short_name>".
+3. 'formula_natural' should explain the math in English.
+4. 'formula_sql' must be a valid syntactically correct SQL query (T-SQL format) calculating this metric.
+5. Provide a useful categorization (e.g. 'revenue', 'users', 'funnel', etc.) and grain (e.g. 'global', 'user', 'order', etc.).
+6. Don't miss any business logic, because it depends on the final business (NO LIMIT TO GENERATE).
+"""
+
+qna_chunker_prompt = """
+You are a senior data engineer building a Few-Shot training dataset for an AI SQL Agent.
+Given a database schema, generate realistic user questions think business logic and their corresponding SQL queries.
+
+## Rules
+1. Your output must strictly adhere to the requested JSON schema.
+2. Generate variety: some simple ('Show me gross revenue'), some complex ('Revenue by device type').
+3. Produce at least 3-4 variations of the question phrasing for the same SQL query (e.g. 'What is the gross revenue?' vs 'Show me gross revenue').
+4. The 'sql_query' MUST be syntactically correct T-SQL.
+5. Ensure the 'metadata' accurately reflects the tables and columns used in the query.
+6. Total QnA must be more than 30+ include all type of difficulty level questions.
+"""
+

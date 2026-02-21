@@ -2,7 +2,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from workflow.helper import extract_few_shot_examples, check_sql_syntax
 from src.rag import RAGPipeline
-from src.db import SQLDB
+from db_setup.db import SQLDB
 from src.llm import (
     SQLAgent,
     DataAnalystAgent,

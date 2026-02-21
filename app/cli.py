@@ -20,7 +20,7 @@ from workflow.pipeline import (
     analyze_sql_results
 )
 from src.rag import RAGPipeline
-from src.db import SQLDB
+from db_setup.db import SQLDB
 from workflow.helper import format_json_results
 
 app = typer.Typer(rich_markup_mode="rich")

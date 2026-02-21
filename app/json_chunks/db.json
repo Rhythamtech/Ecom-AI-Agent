@@ -1,55 +1,39 @@
 [
   {
-    "id": "schema:overview",
-    "text": "E-commerce analytics database schema with 7 tables: metadata (data dictionary), sessions (browsing sessions with UTM tracking), pageviews (page load events), orders (purchase transactions), order_items (line items), products (catalog), refunds (returns). Key relationships: sessions->orders->order_items->refunds. Revenue and COGS calculated at order_items level.",
-    "metadata": {
-      "doc_type": "schema_overview",
-      "domain": "ecommerce"
-    }
-  },
-  {
     "id": "table:metadata",
-    "text": "Table: metadata. Data dictionary table with columns [Table] (nvarchar 25), [Field] (varchar 60), [Description] (varchar 128). Stores human-readable field descriptions.",
+    "text": "The metadata table acts as a data dictionary for the database, capturing human\u2011readable definitions of each column across all tables. Each row records the name of the table (Table), the specific field within that table (Field), and a free\u2011form description (Description) explaining the field's purpose, format, or business meaning. Though it does not have an explicit primary key, the combination of Table and Field uniquely identifies each metadata entry, enabling developers and analysts to discover the \"who, what, when, where, and why\" of the stored data.",
     "metadata": {
       "doc_type": "table",
       "table": "metadata"
     }
   },
   {
-    "id": "table:sessions",
-    "text": "Table: sessions. Tracks user browsing sessions. Primary key: session_id. Contains user_id, created_at, is_repeat_session, marketing attribution (utm_source, utm_campaign, utm_content), device_type, http_referer. Join to orders via session_id and to pageviews via session_id.",
-    "metadata": {
-      "doc_type": "table",
-      "table": "sessions"
-    }
-  },
-  {
-    "id": "table:pageviews",
-    "text": "Table: pageviews. Records individual page loads. Primary key: pageview_id. Contains created_at, session_id (FK to sessions), pageview_url. Used for engagement and funnel analysis.",
-    "metadata": {
-      "doc_type": "table",
-      "table": "pageviews"
-    }
-  },
-  {
-    "id": "table:orders",
-    "text": "Table: orders. Purchase transactions. Primary key: order_id. Contains created_at, session_id (FK to sessions), user_id, primary_product_id, items_purchased, price_usd, price_inr, cogs_usd, cogs_inr. Join to order_items via order_id. Order-level fields are aggregates; order_items is source of truth for revenue/COGS.",
-    "metadata": {
-      "doc_type": "table",
-      "table": "orders"
-    }
-  },
-  {
     "id": "table:order_items",
-    "text": "Table: order_items. Line items within orders. Primary key: order_item_id. Contains order_id (FK to orders), created_at, product_id (FK to products), is_primary_item (1=primary, 0=addon), price_usd, price_inr, cogs_usd, cogs_inr. This is the canonical source for all revenue and COGS calculations.",
+    "text": "The order_items table records each individual product line that belongs to a customer order, serving as the transactional detail layer for the e\u2011commerce platform. The primary key is order_item_id; foreign keys order_id and product_id link each line to its parent order and the cataloged product. It stores timestamps (created_at), pricing in USD and INR, cost\u2011of\u2011goods\u2011sold in both currencies, and a flag (is_primary_item) indicating whether the line is the main product of the order, thereby supporting revenue, margin, and product\u2011mix analysis.",
     "metadata": {
       "doc_type": "table",
       "table": "order_items"
     }
   },
   {
+    "id": "table:orders",
+    "text": "The orders table represents the high\u2011level purchase event made by a user, summarising all associated order_items. Its primary key is order_id and it references the session in which the purchase occurred (session_id), the buying user (user_id), and the primary product of the order (primary_product_id). The table captures the order creation time (created_at), total number of items purchased (items_purchased), and aggregated monetary values\u2014price and COGS\u2014in both USD and INR\u2014supporting order\u2011level reporting, cohort analysis, and financial reconciliation.",
+    "metadata": {
+      "doc_type": "table",
+      "table": "orders"
+    }
+  },
+  {
+    "id": "table:pageviews",
+    "text": "The pageviews table logs every page load event that occurs during a user session, providing the behavioral backbone for web analytics. Each row is uniquely identified by pageview_id and includes the timestamp (created_at), the session that generated the view (session_id), and the URL that was accessed (pageview_url). This data enables marketers and product teams to understand navigation paths, content popularity, and conversion funnels.",
+    "metadata": {
+      "doc_type": "table",
+      "table": "pageviews"
+    }
+  },
+  {
     "id": "table:products",
-    "text": "Table: products. Product catalog. Primary key: product_id. Contains created_at, product_name (varchar 128). Referenced by order_items.product_id and orders.primary_product_id.",
+    "text": "The products table maintains the master catalog of items available for purchase on the platform. The primary key product_id uniquely identifies each SKU, while product_name stores the human\u2011readable name and created_at records when the product was first introduced. This reference data is joined to order_items and orders to attribute sales, inventory, and profitability to specific offerings.",
     "metadata": {
       "doc_type": "table",
       "table": "products"
@@ -57,10 +41,18 @@
   },
   {
     "id": "table:refunds",
-    "text": "Table: refunds. Money returned to customers. Primary key: refund_id. Contains created_at, order_item_id (FK to order_items), order_id (FK to orders), refund_amount_usd, refund_amount_inr. Refunds reduce net revenue but do NOT reduce COGS.",
+    "text": "The refunds table tracks monetary reimbursements issued back to customers after a purchase, linking financial adjustments to the original transaction. refund_id is the primary key; the record also stores the timestamp (created_at) and references both the affected order (order_id) and the specific line item (order_item_id). Refund amounts are recorded in USD and INR, allowing accurate accounting of net revenue and loss analysis.",
     "metadata": {
       "doc_type": "table",
       "table": "refunds"
+    }
+  },
+  {
+    "id": "table:sessions",
+    "text": "The sessions table aggregates information about each user visit to the website, serving as the contextual anchor for pageviews, orders, and other interaction events. session_id is the primary key, with created_at indicating when the session began and user_id linking the session to a registered user (if any). Additional attributes such as is_repeat_session, utm_source, utm_campaign, utm_content, device_type, and http_referer provide marketing attribution, device segmentation, and referral source insight for acquisition and retention analysis.",
+    "metadata": {
+      "doc_type": "table",
+      "table": "sessions"
     }
   }
 ]
