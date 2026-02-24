@@ -13,6 +13,7 @@ from src.llm import (
 )
 from utils import convert_json_to_toon
 
+
 # Singletons
 query_rewriter = QueryRewriterAgent()
 query_planner = QueryPlannerAgent()

@@ -9,7 +9,7 @@ from rich.json import JSON
 from rich.live import Live
 from rich.spinner import Spinner
 from rich.layout import Layout
-from workflow.pipeline import (
+from app.workflow.rag_pipeline import (
     rewrite_user_query,
     retrieve_context_parallel,
     prepare_context_and_examples,

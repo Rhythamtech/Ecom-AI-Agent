@@ -1,42 +1,227 @@
 [
   {
-    "id": "metric:total_revenue_usd",
-    "name": "Total Revenue (USD)",
-    "description": "Total revenue in USD from all orders.",
-    "category": "revenue",
-    "grain": "global",
-    "formula_natural": "Sum of the price_usd column from the orders table.",
-    "formula_sql": "SELECT SUM(price_usd) AS total_revenue_usd FROM orders;",
+    "id": "refund_rate_by_order",
+    "name": "Order-level Refund Rate",
+    "description": "Percentage of orders that have at least one refunded item.",
+    "category": "refund",
+    "grain": "order",
+    "formula_natural": "count of distinct orders with refunds divided by count of distinct orders",
+    "formula_sql": "SELECT CAST(COUNT(DISTINCT r.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id),0) AS refund_rate FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id",
     "tables": [
-      "orders"
+      "orders",
+      "refunds"
     ],
     "columns": [
-      "price_usd"
+      "orders.order_id",
+      "refunds.order_id"
     ]
   },
   {
-    "id": "metric:total_cogs_usd",
-    "name": "Total COGS (USD)",
-    "description": "Total cost of goods sold in USD from all orders.",
-    "category": "cost",
+    "id": "refund_rate_by_revenue",
+    "name": "Revenue Refund Rate",
+    "description": "Share of gross sales that is later refunded.",
+    "category": "refund",
     "grain": "global",
-    "formula_natural": "Sum of the cogs_usd column from the orders table.",
-    "formula_sql": "SELECT SUM(cogs_usd) AS total_cogs_usd FROM orders;",
+    "formula_natural": "sum of refund amounts divided by sum of order revenues",
+    "formula_sql": "SELECT SUM(r.refund_amount_usd) / NULLIF(SUM(o.price_usd),0) AS revenue_refund_rate FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id",
     "tables": [
-      "orders"
+      "orders",
+      "refunds"
     ],
     "columns": [
-      "cogs_usd"
+      "orders.price_usd",
+      "refunds.refund_amount_usd"
     ]
   },
   {
-    "id": "metric:gross_profit_usd",
-    "name": "Gross Profit (USD)",
-    "description": "Revenue minus cost of goods sold, expressed in USD.",
-    "category": "revenue",
+    "id": "avg_refund_lag_days",
+    "name": "Average Refund Lag",
+    "description": "Average days between purchase and refund per refunded order item.",
+    "category": "refund",
+    "grain": "order_item",
+    "formula_natural": "average of datediff in days between order_item created_at and refund created_at",
+    "formula_sql": "SELECT AVG(DATEDIFF(DAY, oi.created_at, r.created_at)) AS avg_refund_lag_days FROM order_items oi JOIN refunds r ON oi.order_item_id = r.order_item_id",
+    "tables": [
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "order_items.created_at",
+      "refunds.created_at",
+      "order_items.order_item_id",
+      "refunds.order_item_id"
+    ]
+  },
+  {
+    "id": "primary_item_refund_rate",
+    "name": "Primary Item Refund Rate",
+    "description": "Refund rate specifically for items flagged as primary in an order.",
+    "category": "refund",
+    "grain": "order_item",
+    "formula_natural": "count of refunded primary items divided by count of all primary items",
+    "formula_sql": "SELECT CAST(COUNT(CASE WHEN r.refund_id IS NOT NULL THEN 1 END) AS FLOAT) / NULLIF(COUNT(*),0) AS primary_refund_rate FROM order_items oi LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id WHERE oi.is_primary_item = 1",
+    "tables": [
+      "order_items",
+      "refunds"
+    ],
+    "columns": [
+      "order_items.is_primary_item",
+      "order_items.order_item_id",
+      "refunds.refund_id"
+    ]
+  },
+  {
+    "id": "refund_rate_by_utm_source",
+    "name": "Refund Rate by Traffic Source",
+    "description": "Refund rate segmented by the UTM source that brought the user to the site.",
+    "category": "refund",
+    "grain": "utm_source",
+    "formula_natural": "count of refunded orders per utm_source divided by total orders per utm_source",
+    "formula_sql": "SELECT s.utm_source, CAST(COUNT(DISTINCT r.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id),0) AS refund_rate FROM sessions s JOIN orders o ON s.session_id = o.session_id LEFT JOIN refunds r ON o.order_id = r.order_id GROUP BY s.utm_source",
+    "tables": [
+      "sessions",
+      "orders",
+      "refunds"
+    ],
+    "columns": [
+      "sessions.utm_source",
+      "orders.order_id",
+      "refunds.order_id"
+    ]
+  },
+  {
+    "id": "gross_to_net_revenue",
+    "name": "Gross-to-Net Revenue Ratio",
+    "description": "Net revenue after refunds expressed as a ratio of gross revenue.",
+    "category": "refund",
     "grain": "global",
-    "formula_natural": "Sum of price_usd minus sum of cogs_usd from the orders table.",
-    "formula_sql": "SELECT SUM(o.price_usd) - SUM(o.cogs_usd) AS gross_profit_usd FROM orders o;",
+    "formula_natural": "gross revenue minus refunds divided by gross revenue",
+    "formula_sql": "SELECT (SUM(o.price_usd) - ISNULL(SUM(r.refund_amount_usd),0)) / NULLIF(SUM(o.price_usd),0) AS net_revenue_ratio FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id",
+    "tables": [
+      "orders",
+      "refunds"
+    ],
+    "columns": [
+      "orders.price_usd",
+      "refunds.refund_amount_usd"
+    ]
+  },
+  {
+    "id": "metric:primary_product_share",
+    "name": "Primary Product Share",
+    "description": "Percentage of orders where each product is chosen as the primary item",
+    "category": "Product Mix & Cross-Sell Intelligence",
+    "grain": "product",
+    "formula_natural": "For each product, divide the number of times it appears as the primary product in orders by the total number of orders",
+    "formula_sql": "SELECT p.product_id,\n       p.product_name,\n       SUM(CASE WHEN o.primary_product_id = p.product_id THEN 1 ELSE 0 END)*1.0/COUNT(*) AS primary_product_share\nFROM products p\nCROSS JOIN orders o\nGROUP BY p.product_id, p.product_name;",
+    "tables": [
+      "products",
+      "orders"
+    ],
+    "columns": [
+      "orders.primary_product_id",
+      "products.product_id",
+      "products.product_name"
+    ]
+  },
+  {
+    "id": "metric:cross_sell_attach_rate",
+    "name": "Cross-Sell Attach Rate",
+    "description": "Average number of secondary (non-primary) items sold per order",
+    "category": "Product Mix & Cross-Sell Intelligence",
+    "grain": "global",
+    "formula_natural": "Sum of all items that are not flagged as primary per order divided by total orders",
+    "formula_sql": "SELECT SUM(CASE WHEN oi.is_primary_item = 0 THEN 1 ELSE 0 END)*1.0/COUNT(DISTINCT oi.order_id) AS cross_sell_attach_rate\nFROM order_items oi;",
+    "tables": [
+      "order_items"
+    ],
+    "columns": [
+      "order_items.is_primary_item",
+      "order_items.order_id"
+    ]
+  },
+  {
+    "id": "metric:companion_product_frequency",
+    "name": "Companion Product Frequency",
+    "description": "Most frequently purchased secondary products alongside each primary product",
+    "category": "Product Mix & Cross-Sell Intelligence",
+    "grain": "product",
+    "formula_natural": "For each primary product, count how often every other product is bought as a secondary item and rank them",
+    "formula_sql": "SELECT o.primary_product_id,\n       p.product_name AS primary_product,\n       oi2.product_id AS companion_product_id,\n       p2.product_name AS companion_product,\n       COUNT(*) AS companion_frequency\nFROM orders o\nJOIN order_items oi1 ON o.order_id = oi1.order_id AND o.primary_product_id = oi1.product_id AND oi1.is_primary_item = 1\nJOIN order_items oi2 ON o.order_id = oi2.order_id AND oi2.is_primary_item = 0\nJOIN products p ON o.primary_product_id = p.product_id\nJOIN products p2 ON oi2.product_id = p2.product_id\nGROUP BY o.primary_product_id, p.product_name, oi2.product_id, p2.product_name;",
+    "tables": [
+      "orders",
+      "order_items",
+      "products"
+    ],
+    "columns": [
+      "orders.primary_product_id",
+      "order_items.is_primary_item",
+      "order_items.product_id",
+      "products.product_name"
+    ]
+  },
+  {
+    "id": "metric:traffic_source_conversion_rate",
+    "name": "Traffic Source Conversion Rate",
+    "description": "Percentage of sessions from each traffic source that result in an order",
+    "category": "Traffic Attribution & Funnel Efficiency",
+    "grain": "traffic_source",
+    "formula_natural": "Divide the number of sessions with orders by the total sessions for each utm_source",
+    "formula_sql": "SELECT s.utm_source,\n       COUNT(DISTINCT o.session_id)*1.0/COUNT(DISTINCT s.session_id) AS conversion_rate\nFROM sessions s\nLEFT JOIN orders o ON s.session_id = o.session_id\nGROUP BY s.utm_source;",
+    "tables": [
+      "sessions",
+      "orders"
+    ],
+    "columns": [
+      "sessions.utm_source",
+      "orders.session_id"
+    ]
+  },
+  {
+    "id": "metric:campaign_funnel_drop_off",
+    "name": "Campaign Funnel Drop-Off",
+    "description": "Ratio of pageviews to orders for each campaign, indicating funnel friction",
+    "category": "Traffic Attribution & Funnel Efficiency",
+    "grain": "campaign",
+    "formula_natural": "Total pageviews divided by total orders for each utm_campaign",
+    "formula_sql": "SELECT s.utm_campaign,\n       COUNT(DISTINCT pv.pageview_id)*1.0/COUNT(DISTINCT o.order_id) AS funnel_drop_off_ratio\nFROM sessions s\nJOIN pageviews pv ON s.session_id = pv.session_id\nLEFT JOIN orders o ON s.session_id = o.session_id\nGROUP BY s.utm_campaign;",
+    "tables": [
+      "sessions",
+      "pageviews",
+      "orders"
+    ],
+    "columns": [
+      "sessions.utm_campaign",
+      "pageviews.pageview_id",
+      "orders.order_id"
+    ]
+  },
+  {
+    "id": "metric:repeat_session_value",
+    "name": "Repeat Session Value",
+    "description": "Average order value from repeat sessions versus new sessions by traffic source",
+    "category": "Traffic Attribution & Funnel Efficiency",
+    "grain": "traffic_source",
+    "formula_natural": "Average order price in USD segmented by utm_source and repeat-session flag",
+    "formula_sql": "SELECT s.utm_source,\n       s.is_repeat_session,\n       AVG(o.price_usd) AS avg_order_value_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nGROUP BY s.utm_source, s.is_repeat_session;",
+    "tables": [
+      "sessions",
+      "orders"
+    ],
+    "columns": [
+      "sessions.utm_source",
+      "sessions.is_repeat_session",
+      "orders.price_usd"
+    ]
+  },
+  {
+    "id": "metric:gross_margin_usd",
+    "name": "Gross Margin USD",
+    "description": "Average gross margin per order in USD after subtracting cost of goods sold.",
+    "category": "Revenue Quality & Profitability Analytics",
+    "grain": "order",
+    "formula_natural": "Sum of (price_usd - cogs_usd) for all orders divided by count of orders.",
+    "formula_sql": "SELECT AVG(price_usd - cogs_usd) AS gross_margin_usd FROM orders;",
     "tables": [
       "orders"
     ],
@@ -46,45 +231,63 @@
     ]
   },
   {
-    "id": "metric:total_refunds_usd",
-    "name": "Total Refunds (USD)",
-    "description": "Total amount refunded to customers in USD.",
-    "category": "cost",
-    "grain": "global",
-    "formula_natural": "Sum of refund_amount_usd from the refunds table.",
-    "formula_sql": "SELECT SUM(refund_amount_usd) AS total_refunds_usd FROM refunds;",
+    "id": "metric:refund_rate",
+    "name": "Refund Rate",
+    "description": "Percentage of order value that is refunded, indicating revenue leakage.",
+    "category": "Revenue Quality & Profitability Analytics",
+    "grain": "order",
+    "formula_natural": "Total refunded amount in USD divided by total order value in USD.",
+    "formula_sql": "SELECT SUM(r.refund_amount_usd) * 1.0 / SUM(o.price_usd) AS refund_rate FROM refunds r JOIN orders o ON r.order_id = o.order_id;",
     "tables": [
-      "refunds"
+      "refunds",
+      "orders"
     ],
     "columns": [
-      "refund_amount_usd"
+      "refund_amount_usd",
+      "price_usd"
     ]
   },
   {
-    "id": "metric:net_revenue_usd",
-    "name": "Net Revenue (USD)",
-    "description": "Revenue after subtracting refunds, expressed in USD.",
-    "category": "revenue",
-    "grain": "global",
-    "formula_natural": "Total order price_usd minus total refund_amount_usd.",
-    "formula_sql": "SELECT SUM(o.price_usd) - COALESCE(SUM(r.refund_amount_usd),0) AS net_revenue_usd FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "id": "metric:primary_attach_rate",
+    "name": "Primary Product Attach Rate",
+    "description": "Share of order items that are marked as the primary product, showing revenue concentration.",
+    "category": "Revenue Quality & Profitability Analytics",
+    "grain": "order_item",
+    "formula_natural": "Count of order items where is_primary_item = 1 divided by total order items.",
+    "formula_sql": "SELECT SUM(CAST(is_primary_item AS FLOAT)) / COUNT(*) AS primary_attach_rate FROM order_items;",
+    "tables": [
+      "order_items"
+    ],
+    "columns": [
+      "is_primary_item"
+    ]
+  },
+  {
+    "id": "metric:margin_after_refund",
+    "name": "Net Margin After Refunds",
+    "description": "Gross margin adjusted for refunds to show true profitability.",
+    "category": "Revenue Quality & Profitability Analytics",
+    "grain": "order",
+    "formula_natural": "Sum of (price_usd - cogs_usd - refund_amount_usd) across orders.",
+    "formula_sql": "SELECT SUM(o.price_usd - o.cogs_usd - ISNULL(r.refund_amount_usd,0)) AS net_margin_after_refunds FROM orders o LEFT JOIN (SELECT order_id, SUM(refund_amount_usd) AS refund_amount_usd FROM refunds GROUP BY order_id) r ON o.order_id = r.order_id;",
     "tables": [
       "orders",
       "refunds"
     ],
     "columns": [
       "price_usd",
+      "cogs_usd",
       "refund_amount_usd"
     ]
   },
   {
-    "id": "metric:average_order_value_usd",
-    "name": "Average Order Value (USD)",
-    "description": "Average revenue per order in USD.",
-    "category": "revenue",
-    "grain": "global",
-    "formula_natural": "Average of the price_usd column from the orders table.",
-    "formula_sql": "SELECT AVG(price_usd) AS average_order_value_usd FROM orders;",
+    "id": "metric:avg_order_value",
+    "name": "Average Order Value",
+    "description": "Mean revenue per order in USD, a core indicator of revenue quality.",
+    "category": "Revenue Quality & Profitability Analytics",
+    "grain": "order",
+    "formula_natural": "Total revenue in USD divided by number of orders.",
+    "formula_sql": "SELECT AVG(price_usd) AS avg_order_value_usd FROM orders;",
     "tables": [
       "orders"
     ],
@@ -93,13 +296,28 @@
     ]
   },
   {
-    "id": "metric:orders_per_user",
-    "name": "Orders per User",
-    "description": "Average number of orders placed by each distinct user.",
-    "category": "users",
-    "grain": "global",
-    "formula_natural": "Total number of orders divided by the count of distinct user_id in orders.",
-    "formula_sql": "SELECT CAST(COUNT(*) AS float) / NULLIF(COUNT(DISTINCT user_id),0) AS orders_per_user FROM orders;",
+    "id": "metric:repeat_session_rate",
+    "name": "Repeat Session Rate",
+    "description": "Proportion of sessions from returning users, indicating lifecycle depth.",
+    "category": "Customer Lifecycle & Cohort Economics",
+    "grain": "session",
+    "formula_natural": "Count of sessions where is_repeat_session = 1 divided by total sessions.",
+    "formula_sql": "SELECT AVG(CAST(is_repeat_session AS FLOAT)) AS repeat_session_rate FROM sessions;",
+    "tables": [
+      "sessions"
+    ],
+    "columns": [
+      "is_repeat_session"
+    ]
+  },
+  {
+    "id": "metric:user_lifetime_orders",
+    "name": "User Lifetime Orders",
+    "description": "Average number of orders placed per user over their lifetime.",
+    "category": "Customer Lifecycle & Cohort Economics",
+    "grain": "user",
+    "formula_natural": "Total orders divided by distinct users.",
+    "formula_sql": "SELECT COUNT(DISTINCT o.order_id) * 1.0 / COUNT(DISTINCT o.user_id) AS user_lifetime_orders FROM orders o;",
     "tables": [
       "orders"
     ],
@@ -109,114 +327,69 @@
     ]
   },
   {
-    "id": "metric:repeat_session_rate",
-    "name": "Repeat Session Rate",
-    "description": "Proportion of sessions that are marked as repeat sessions.",
-    "category": "users",
-    "grain": "global",
-    "formula_natural": "Number of sessions with is_repeat_session = 1 divided by total sessions.",
-    "formula_sql": "SELECT CAST(SUM(CASE WHEN is_repeat_session = 1 THEN 1 ELSE 0 END) AS float) / NULLIF(COUNT(*),0) AS repeat_session_rate FROM sessions;",
+    "id": "metric:first_to_second_order",
+    "name": "First-to-Second Order Conversion",
+    "description": "Share of users who placed more than one order, showing lifecycle progression.",
+    "category": "Customer Lifecycle & Cohort Economics",
+    "grain": "user",
+    "formula_natural": "Users with \u22652 orders divided by all users.",
+    "formula_sql": "SELECT SUM(CASE WHEN order_cnt >= 2 THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS first_to_second_order FROM (SELECT user_id, COUNT(*) AS order_cnt FROM orders GROUP BY user_id) t;",
+    "tables": [
+      "orders"
+    ],
+    "columns": [
+      "user_id"
+    ]
+  },
+  {
+    "id": "metric:days_since_last_order",
+    "name": "Days Since Last Order",
+    "description": "Average recency of user activity, indicating churn risk.",
+    "category": "Customer Lifecycle & Cohort Economics",
+    "grain": "user",
+    "formula_natural": "DATEDIFF(day, MAX(created_at), GETDATE()) averaged across users.",
+    "formula_sql": "SELECT AVG(DATEDIFF(day, last_order, GETDATE())) AS days_since_last_order FROM (SELECT user_id, MAX(created_at) AS last_order FROM orders GROUP BY user_id) t;",
+    "tables": [
+      "orders"
+    ],
+    "columns": [
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "id": "metric:utm_retention",
+    "name": "Campaign Retention Rate",
+    "description": "Repeat session rate broken down by original utm_campaign, measuring cohort stickiness.",
+    "category": "Customer Lifecycle & Cohort Economics",
+    "grain": "session",
+    "formula_natural": "Repeat sessions per utm_campaign divided by total sessions for that campaign.",
+    "formula_sql": "SELECT utm_campaign, AVG(CAST(is_repeat_session AS FLOAT)) AS campaign_retention_rate FROM sessions WHERE utm_campaign IS NOT NULL GROUP BY utm_campaign;",
     "tables": [
       "sessions"
     ],
     "columns": [
+      "utm_campaign",
       "is_repeat_session"
     ]
   },
   {
-    "id": "metric:pageviews_per_session",
-    "name": "Pageviews per Session",
-    "description": "Average number of pageviews recorded for each session.",
-    "category": "engagement",
-    "grain": "global",
-    "formula_natural": "Total pageview records divided by distinct session count in pageviews.",
-    "formula_sql": "SELECT CAST(COUNT(p.pageview_id) AS float) / NULLIF(COUNT(DISTINCT p.session_id),0) AS pageviews_per_session FROM pageviews p;",
-    "tables": [
-      "pageviews"
-    ],
-    "columns": [
-      "pageview_id",
-      "session_id"
-    ]
-  },
-  {
-    "id": "metric:primary_item_revenue_usd",
-    "name": "Primary Item Revenue (USD)",
-    "description": "Revenue generated by items flagged as primary in order_items.",
-    "category": "revenue",
-    "grain": "global",
-    "formula_natural": "Sum of price_usd from order_items where is_primary_item equals 1.",
-    "formula_sql": "SELECT SUM(price_usd) AS primary_item_revenue_usd FROM order_items WHERE is_primary_item = 1;",
-    "tables": [
-      "order_items"
-    ],
-    "columns": [
-      "price_usd",
-      "is_primary_item"
-    ]
-  },
-  {
-    "id": "metric:revenue_by_product_usd",
-    "name": "Revenue by Product (USD)",
-    "description": "Total revenue per product calculated from order_items.",
-    "category": "revenue",
-    "grain": "product",
-    "formula_natural": "Sum of price_usd for each product_id in order_items.",
-    "formula_sql": "SELECT product_id, SUM(price_usd) AS revenue_usd FROM order_items GROUP BY product_id;",
-    "tables": [
-      "order_items"
-    ],
-    "columns": [
-      "product_id",
-      "price_usd"
-    ]
-  },
-  {
-    "id": "metric:refund_rate",
-    "name": "Refund Rate",
-    "description": "Ratio of total refunds to total revenue.",
-    "category": "cost",
-    "grain": "global",
-    "formula_natural": "Total refund_amount_usd divided by total order price_usd.",
-    "formula_sql": "SELECT COALESCE(SUM(r.refund_amount_usd),0) / NULLIF(SUM(o.price_usd),0) AS refund_rate FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "id": "metric:cumulative_ltv",
+    "name": "Cumulative LTV per User",
+    "description": "Total gross profit (price - cogs - refunds) generated by each user cohort.",
+    "category": "Customer Lifecycle & Cohort Economics",
+    "grain": "user",
+    "formula_natural": "Sum of (price_usd - cogs_usd - refund_amount_usd) per user.",
+    "formula_sql": "SELECT o.user_id, SUM(o.price_usd - o.cogs_usd - ISNULL(r.refund_amount_usd,0)) AS cumulative_ltv FROM orders o LEFT JOIN (SELECT order_id, SUM(refund_amount_usd) AS refund_amount_usd FROM refunds GROUP BY order_id) r ON o.order_id = r.order_id GROUP BY o.user_id;",
     "tables": [
       "orders",
       "refunds"
     ],
     "columns": [
+      "user_id",
       "price_usd",
+      "cogs_usd",
       "refund_amount_usd"
-    ]
-  },
-  {
-    "id": "metric:session_to_order_conversion_rate",
-    "name": "Session-to-Order Conversion Rate",
-    "description": "Proportion of sessions that resulted in at least one order.",
-    "category": "funnel",
-    "grain": "global",
-    "formula_natural": "Distinct session IDs present in orders divided by distinct session IDs in sessions.",
-    "formula_sql": "SELECT CAST(COUNT(DISTINCT o.session_id) AS float) / NULLIF(COUNT(DISTINCT s.session_id),0) AS conversion_rate FROM sessions s LEFT JOIN orders o ON s.session_id = o.session_id;",
-    "tables": [
-      "sessions",
-      "orders"
-    ],
-    "columns": [
-      "session_id"
-    ]
-  },
-  {
-    "id": "metric:average_items_per_order",
-    "name": "Average Items per Order",
-    "description": "Mean number of items purchased per order.",
-    "category": "operations",
-    "grain": "global",
-    "formula_natural": "Average of the items_purchased column from orders.",
-    "formula_sql": "SELECT AVG(items_purchased) AS average_items_per_order FROM orders;",
-    "tables": [
-      "orders"
-    ],
-    "columns": [
-      "items_purchased"
     ]
   }
 ]

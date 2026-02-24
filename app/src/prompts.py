@@ -144,18 +144,28 @@ For the provided table schemas, generate a comprehensive text description for ea
 4. Set 'doc_type' metadata to "table" and 'table' to the table's name.
 """
 
+
+category_generator_prompt = """
+Role: Expert Data Analyst
+Task: Extract advanced, high-value business metrics and KPIs from the provided database schema.
+
+Constraints:
+1. Schema Strictness: Use ONLY provided tables and columns. 
+2. MECE Categories: Group logic into Mutually Exclusive, Collectively Exhaustive categories. Ensure zero overlap.
+3. High Complexity: Skip basic counts. Generate only complex, derived business logic.
+"""
+
 business_logic_chunker_prompt = """
 You are a senior data analyst. Given a database schema, your job is to brainstorm and document the core business metrics, KPIs, and logic that could be derived from these tables.
 
-For the selected tables, generate possible business logic chunks. Focus on revenue, costs, user engagement, and operational metrics.
-
+For the selected tables, generate AT LEAST 3 possible business logic chunks for each category.
 ## Rules
 1. Your output must strictly adhere to the requested JSON schema.
 2. The 'id' field should be a unique identifier like "metric:<short_name>".
 3. 'formula_natural' should explain the math in English.
 4. 'formula_sql' must be a valid syntactically correct SQL query (T-SQL format) calculating this metric.
 5. Provide a useful categorization (e.g. 'revenue', 'users', 'funnel', etc.) and grain (e.g. 'global', 'user', 'order', etc.).
-6. Don't miss any business logic, because it depends on the final business (NO LIMIT TO GENERATE).
+6. Don't miss any business logic, because it depends on the final business .
 """
 
 qna_chunker_prompt = """
@@ -168,6 +178,5 @@ Given a database schema, generate realistic user questions think business logic 
 3. Produce at least 3-4 variations of the question phrasing for the same SQL query (e.g. 'What is the gross revenue?' vs 'Show me gross revenue').
 4. The 'sql_query' MUST be syntactically correct T-SQL.
 5. Ensure the 'metadata' accurately reflects the tables and columns used in the query.
-6. Total QnA must be more than 30+ include all type of difficulty level questions.
 """
 

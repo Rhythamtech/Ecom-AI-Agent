@@ -57,3 +57,6 @@ class QnAChunk(BaseModel):
 
 class QnAResponse(BaseModel):
     chunks: List[QnAChunk]
+
+class CategoriesResponse(BaseModel):
+    categories: List[str]

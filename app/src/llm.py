@@ -4,11 +4,12 @@ from .prompts import (
     sql_system_prompt, data_analyst_prompt,
     query_validator_prompt, query_rewriter_prompt, query_planner_prompt,
     self_healer_prompt, schema_chunker_prompt, business_logic_chunker_prompt,
-    qna_chunker_prompt
+    qna_chunker_prompt, category_generator_prompt
 )
 from schema import (
     SqlResponse, QueryPlan, DBChunksResponse, 
-    BusinessLogicResponse, QnAResponse
+    BusinessLogicResponse, QnAResponse,
+    CategoriesResponse
 )
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
@@ -108,18 +109,25 @@ class SchemaChunkerAgent(BaseAgent):
         super().__init__(schema_chunker_prompt)
 
     def generate_chunks(self, schema_context: str) -> DBChunksResponse:
-        return self.base_agent(question="Generate DB table chunks based on this schema.", data=schema_context, schema=DBChunksResponse)
+        return self.base_agent(question="", data=schema_context, schema=DBChunksResponse)
 
 class BusinessLogicChunkerAgent(BaseAgent):
     def __init__(self):
         super().__init__(business_logic_chunker_prompt)
 
     def generate_business_logic(self, schema_context: str) -> BusinessLogicResponse:
-        return self.base_agent(question="Generate business logic metrics based on this schema.", data=schema_context, schema=BusinessLogicResponse)
+        return self.base_agent(question="", data=schema_context, schema=BusinessLogicResponse)
 
 class QnAChunkerAgent(BaseAgent):
     def __init__(self):
         super().__init__(qna_chunker_prompt)
 
     def generate_qna(self, schema_context: str) -> QnAResponse:
-        return self.base_agent(question="Generate QnA pairing SQL queries to user questions.", data=schema_context, schema=QnAResponse)
+        return self.base_agent(question="", data=schema_context, schema=QnAResponse)
+
+class CategoryGeneratorAgent(BaseAgent):
+    def __init__(self):
+        super().__init__(category_generator_prompt)
+
+    def generate_categories(self, schema_context: str) -> CategoriesResponse:
+        return self.base_agent(question="", data=schema_context, schema=CategoriesResponse)

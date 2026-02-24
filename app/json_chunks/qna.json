@@ -1,180 +1,881 @@
 [
   {
-    "question": "What is the total gross revenue in USD?",
-    "answer": "The total gross revenue in USD is calculated by summing the price_usd column from the orders table.",
-    "sql_query": "SELECT SUM(price_usd) AS gross_revenue_usd FROM orders;",
-    "metadata": {
-      "tables": [
-        "orders"
-      ],
-      "columns": [
-        "price_usd"
-      ],
-      "category": "Revenue",
-      "grain": "overall",
-      "metric_id": "gross_revenue_usd"
-    }
-  },
-  {
-    "question": "Show me the overall gross revenue (USD).",
-    "answer": "The overall gross revenue in USD is the sum of all order prices.",
-    "sql_query": "SELECT SUM(price_usd) AS gross_revenue_usd FROM orders;",
-    "metadata": {
-      "tables": [
-        "orders"
-      ],
-      "columns": [
-        "price_usd"
-      ],
-      "category": "Revenue",
-      "grain": "overall",
-      "metric_id": "gross_revenue_usd"
-    }
-  },
-  {
-    "question": "How much revenue have we generated in USD?",
-    "answer": "Revenue generated in USD equals the total of the price_usd column from orders.",
-    "sql_query": "SELECT SUM(price_usd) AS gross_revenue_usd FROM orders;",
-    "metadata": {
-      "tables": [
-        "orders"
-      ],
-      "columns": [
-        "price_usd"
-      ],
-      "category": "Revenue",
-      "grain": "overall",
-      "metric_id": "gross_revenue_usd"
-    }
-  },
-  {
-    "question": "Give me the sum of order prices in USD.",
-    "answer": "Sum of order prices in USD is obtained by aggregating price_usd from orders.",
-    "sql_query": "SELECT SUM(price_usd) AS gross_revenue_usd FROM orders;",
-    "metadata": {
-      "tables": [
-        "orders"
-      ],
-      "columns": [
-        "price_usd"
-      ],
-      "category": "Revenue",
-      "grain": "overall",
-      "metric_id": "gross_revenue_usd"
-    }
-  },
-  {
-    "question": "What is our net revenue in USD after refunds?",
-    "answer": "Net revenue in USD equals total order revenue minus total refunds.",
-    "sql_query": "SELECT (SELECT SUM(o.price_usd) FROM orders o) - (SELECT SUM(r.refund_amount_usd) FROM refunds r) AS net_revenue_usd;",
+    "question": "What is the overall refund rate by number of orders?",
+    "answer": "The refund rate by order count is calculated as total refunds divided by total orders.",
+    "sql_query": "SELECT CAST(COUNT(DISTINCT r.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id),0) AS refund_rate_by_order FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
     "metadata": {
       "tables": [
         "orders",
         "refunds"
       ],
       "columns": [
-        "orders.price_usd",
-        "refunds.refund_amount_usd"
+        "order_id"
       ],
-      "category": "Revenue",
+      "category": "refunds",
       "grain": "overall",
-      "metric_id": "net_revenue_usd"
+      "metric_id": "refund_rate_by_order"
     }
   },
   {
-    "question": "Calculate net revenue (USD) after accounting for refunds.",
-    "answer": "Net revenue (USD) is total order price_usd minus total refund_amount_usd.",
-    "sql_query": "SELECT (SELECT SUM(o.price_usd) FROM orders o) - (SELECT SUM(r.refund_amount_usd) FROM refunds r) AS net_revenue_usd;",
+    "question": "Show me the refund rate by order count",
+    "answer": "The refund rate by order count is calculated as total refunds divided by total orders.",
+    "sql_query": "SELECT CAST(COUNT(DISTINCT r.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id),0) AS refund_rate_by_order FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
     "metadata": {
       "tables": [
         "orders",
         "refunds"
       ],
       "columns": [
-        "orders.price_usd",
-        "refunds.refund_amount_usd"
+        "order_id"
       ],
-      "category": "Revenue",
+      "category": "refunds",
       "grain": "overall",
-      "metric_id": "net_revenue_usd"
+      "metric_id": "refund_rate_by_order"
     }
   },
   {
-    "question": "How much net revenue have we earned after refunds, in USD?",
-    "answer": "Net revenue after refunds is computed by subtracting total refunds from total order revenue.",
-    "sql_query": "SELECT (SELECT SUM(o.price_usd) FROM orders o) - (SELECT SUM(r.refund_amount_usd) FROM refunds r) AS net_revenue_usd;",
+    "question": "How many orders were refunded as a percentage of total orders?",
+    "answer": "The refund rate by order count is calculated as total refunds divided by total orders.",
+    "sql_query": "SELECT CAST(COUNT(DISTINCT r.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id),0) AS refund_rate_by_order FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
     "metadata": {
       "tables": [
         "orders",
         "refunds"
       ],
       "columns": [
-        "orders.price_usd",
-        "refunds.refund_amount_usd"
+        "order_id"
       ],
-      "category": "Revenue",
+      "category": "refunds",
       "grain": "overall",
-      "metric_id": "net_revenue_usd"
+      "metric_id": "refund_rate_by_order"
     }
   },
   {
-    "question": "Show revenue by device type.",
-    "answer": "Revenue broken down by device type is summed from orders linked to sessions.",
-    "sql_query": "SELECT s.device_type, SUM(o.price_usd) AS revenue_usd FROM orders o JOIN sessions s ON o.session_id = s.session_id GROUP BY s.device_type;",
+    "question": "What is the refund rate by revenue?",
+    "answer": "The refund rate by revenue is the total refund amount divided by total revenue.",
+    "sql_query": "SELECT ISNULL(SUM(r.refund_amount_usd),0) / NULLIF(SUM(o.price_usd),0) AS refund_rate_by_revenue FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
     "metadata": {
       "tables": [
         "orders",
-        "sessions"
+        "refunds"
       ],
       "columns": [
-        "orders.price_usd",
-        "sessions.device_type"
+        "price_usd",
+        "refund_amount_usd"
       ],
-      "category": "Revenue",
-      "grain": "device_type",
-      "metric_id": "revenue_by_device_usd"
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "refund_rate_by_revenue"
     }
   },
   {
-    "question": "What revenue do we get from each device type?",
-    "answer": "Revenue per device type is calculated by joining orders with sessions and aggregating price_usd.",
-    "sql_query": "SELECT s.device_type, SUM(o.price_usd) AS revenue_usd FROM orders o JOIN sessions s ON o.session_id = s.session_id GROUP BY s.device_type;",
+    "question": "Show me the revenue-based refund rate",
+    "answer": "The refund rate by revenue is the total refund amount divided by total revenue.",
+    "sql_query": "SELECT ISNULL(SUM(r.refund_amount_usd),0) / NULLIF(SUM(o.price_usd),0) AS refund_rate_by_revenue FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
     "metadata": {
       "tables": [
         "orders",
-        "sessions"
+        "refunds"
       ],
       "columns": [
-        "orders.price_usd",
-        "sessions.device_type"
+        "price_usd",
+        "refund_amount_usd"
       ],
-      "category": "Revenue",
-      "grain": "device_type",
-      "metric_id": "revenue_by_device_usd"
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "refund_rate_by_revenue"
     }
   },
   {
-    "question": "Give me revenue split by device type (USD).",
-    "answer": "Revenue split by device type is derived from the sum of order prices per device.",
-    "sql_query": "SELECT s.device_type, SUM(o.price_usd) AS revenue_usd FROM orders o JOIN sessions s ON o.session_id = s.session_id GROUP BY s.device_type;",
+    "question": "What percentage of revenue was refunded?",
+    "answer": "The refund rate by revenue is the total refund amount divided by total revenue.",
+    "sql_query": "SELECT ISNULL(SUM(r.refund_amount_usd),0) / NULLIF(SUM(o.price_usd),0) AS refund_rate_by_revenue FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
     "metadata": {
       "tables": [
         "orders",
-        "sessions"
+        "refunds"
       ],
       "columns": [
-        "orders.price_usd",
-        "sessions.device_type"
+        "price_usd",
+        "refund_amount_usd"
       ],
-      "category": "Revenue",
-      "grain": "device_type",
-      "metric_id": "revenue_by_device_usd"
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "refund_rate_by_revenue"
     }
   },
   {
-    "question": "Daily count of orders.",
-    "answer": "The number of orders per day is obtained by grouping orders by the date part of created_at.",
-    "sql_query": "SELECT CAST(o.created_at AS DATE) AS order_date, COUNT(*) AS orders_count FROM orders o GROUP BY CAST(o.created_at AS DATE) ORDER BY order_date;",
+    "question": "What is the average number of days between order and refund?",
+    "answer": "The average refund lag is the average difference in days between order creation and refund creation.",
+    "sql_query": "SELECT AVG(DATEDIFF(DAY, o.created_at, r.created_at)) AS avg_refund_lag_days FROM orders o JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "created_at"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "avg_refund_lag_days"
+    }
+  },
+  {
+    "question": "Show me the average refund lag in days",
+    "answer": "The average refund lag is the average difference in days between order creation and refund creation.",
+    "sql_query": "SELECT AVG(DATEDIFF(DAY, o.created_at, r.created_at)) AS avg_refund_lag_days FROM orders o JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "created_at"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "avg_refund_lag_days"
+    }
+  },
+  {
+    "question": "How long on average does it take for a refund to be issued after an order?",
+    "answer": "The average refund lag is the average difference in days between order creation and refund creation.",
+    "sql_query": "SELECT AVG(DATEDIFF(DAY, o.created_at, r.created_at)) AS avg_refund_lag_days FROM orders o JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "created_at"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "avg_refund_lag_days"
+    }
+  },
+  {
+    "question": "What is the refund rate for primary items?",
+    "answer": "The primary item refund rate is the number of refunded primary items divided by total primary items.",
+    "sql_query": "SELECT CAST(COUNT(CASE WHEN r.order_item_id IS NOT NULL THEN oi.order_item_id END) AS FLOAT) / NULLIF(COUNT(CASE WHEN oi.is_primary_item = 1 THEN oi.order_item_id END),0) AS primary_item_refund_rate FROM order_items oi LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id WHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "order_item_id",
+        "is_primary_item"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "primary_item_refund_rate"
+    }
+  },
+  {
+    "question": "Show me the refund rate for primary items only",
+    "answer": "The primary item refund rate is the number of refunded primary items divided by total primary items.",
+    "sql_query": "SELECT CAST(COUNT(CASE WHEN r.order_item_id IS NOT NULL THEN oi.order_item_id END) AS FLOAT) / NULLIF(COUNT(CASE WHEN oi.is_primary_item = 1 THEN oi.order_item_id END),0) AS primary_item_refund_rate FROM order_items oi LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id WHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "order_item_id",
+        "is_primary_item"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "primary_item_refund_rate"
+    }
+  },
+  {
+    "question": "What percentage of primary items were refunded?",
+    "answer": "The primary item refund rate is the number of refunded primary items divided by total primary items.",
+    "sql_query": "SELECT CAST(COUNT(CASE WHEN r.order_item_id IS NOT NULL THEN oi.order_item_id END) AS FLOAT) / NULLIF(COUNT(CASE WHEN oi.is_primary_item = 1 THEN oi.order_item_id END),0) AS primary_item_refund_rate FROM order_items oi LEFT JOIN refunds r ON oi.order_item_id = r.order_item_id WHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "order_item_id",
+        "is_primary_item"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "primary_item_refund_rate"
+    }
+  },
+  {
+    "question": "What is the refund rate by UTM source?",
+    "answer": "Refund rate by UTM source shows the percentage of orders refunded out of total orders for each traffic source.",
+    "sql_query": "SELECT s.utm_source,\n       100.0 * COUNT(DISTINCT r.order_id) / COUNT(DISTINCT o.order_id) AS refund_rate_pct\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nLEFT JOIN refunds r ON o.order_id = r.order_id\nGROUP BY s.utm_source;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "utm_source",
+        "order_id"
+      ],
+      "category": "refund_rate_by_utm_source",
+      "grain": "utm_source",
+      "metric_id": "refund_rate_pct"
+    }
+  },
+  {
+    "question": "Show me refund percentage for each traffic source.",
+    "answer": "Refund percentage by traffic source indicates how many orders were refunded relative to total orders per source.",
+    "sql_query": "SELECT s.utm_source,\n       100.0 * COUNT(DISTINCT r.order_id) / COUNT(DISTINCT o.order_id) AS refund_rate_pct\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nLEFT JOIN refunds r ON o.order_id = r.order_id\nGROUP BY s.utm_source;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "utm_source",
+        "order_id"
+      ],
+      "category": "refund_rate_by_utm_source",
+      "grain": "utm_source",
+      "metric_id": "refund_rate_pct"
+    }
+  },
+  {
+    "question": "Which UTM source has the highest refund ratio?",
+    "answer": "The UTM source with the highest refund ratio is identified by calculating the percentage of refunded orders per source.",
+    "sql_query": "SELECT TOP 1 s.utm_source,\n       100.0 * COUNT(DISTINCT r.order_id) / COUNT(DISTINCT o.order_id) AS refund_rate_pct\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nLEFT JOIN refunds r ON o.order_id = r.order_id\nGROUP BY s.utm_source\nORDER BY refund_rate_pct DESC;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "utm_source",
+        "order_id"
+      ],
+      "category": "refund_rate_by_utm_source",
+      "grain": "utm_source",
+      "metric_id": "refund_rate_pct"
+    }
+  },
+  {
+    "question": "How do I calculate gross to net revenue?",
+    "answer": "Gross to net revenue is computed by subtracting refunds from gross revenue.",
+    "sql_query": "SELECT SUM(o.price_usd) AS gross_revenue_usd,\n       SUM(o.price_usd) - ISNULL(SUM(r.refund_amount_usd),0) AS net_revenue_usd\nFROM orders o\nLEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "refund_amount_usd"
+      ],
+      "category": "gross_to_net_revenue",
+      "grain": "overall",
+      "metric_id": "gross_net_revenue"
+    }
+  },
+  {
+    "question": "Show gross vs net revenue in USD.",
+    "answer": "Gross revenue minus refunds equals net revenue.",
+    "sql_query": "SELECT SUM(o.price_usd) AS gross_revenue_usd,\n       SUM(o.price_usd) - ISNULL(SUM(r.refund_amount_usd),0) AS net_revenue_usd\nFROM orders o\nLEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "refund_amount_usd"
+      ],
+      "category": "gross_to_net_revenue",
+      "grain": "overall",
+      "metric_id": "gross_net_revenue"
+    }
+  },
+  {
+    "question": "What is the share of primary products in total items sold?",
+    "answer": "Primary product share is the percentage of items that are marked as primary items.",
+    "sql_query": "SELECT 100.0 * SUM(CASE WHEN oi.is_primary_item = 1 THEN 1 ELSE 0 END) / COUNT(*) AS primary_product_share_pct\nFROM order_items oi;",
+    "metadata": {
+      "tables": [
+        "order_items"
+      ],
+      "columns": [
+        "is_primary_item"
+      ],
+      "category": "metric:primary_product_share",
+      "grain": "overall",
+      "metric_id": "primary_product_share_pct"
+    }
+  },
+  {
+    "question": "Give me the percentage of primary items among all ordered items.",
+    "answer": "The percentage of primary items is calculated by dividing the count of primary items by total items.",
+    "sql_query": "SELECT 100.0 * SUM(CASE WHEN oi.is_primary_item = 1 THEN 1 ELSE 0 END) / COUNT(*) AS primary_product_share_pct\nFROM order_items oi;",
+    "metadata": {
+      "tables": [
+        "order_items"
+      ],
+      "columns": [
+        "is_primary_item"
+      ],
+      "category": "metric:primary_product_share",
+      "grain": "overall",
+      "metric_id": "primary_product_share_pct"
+    }
+  },
+  {
+    "question": "What is the cross-sell attach rate?",
+    "answer": "Cross-sell attach rate is the ratio of non-primary items to primary items, indicating how many extra items are sold per primary item.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN oi.is_primary_item = 0 THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(SUM(CASE WHEN oi.is_primary_item = 1 THEN 1 ELSE 0 END),0) AS cross_sell_attach_rate\nFROM order_items oi;",
+    "metadata": {
+      "tables": [
+        "order_items"
+      ],
+      "columns": [
+        "is_primary_item"
+      ],
+      "category": "metric:cross_sell_attach_rate",
+      "grain": "overall",
+      "metric_id": "cross_sell_attach_rate"
+    }
+  },
+  {
+    "question": "Show the attach rate of cross-sell items.",
+    "answer": "Cross-sell attach rate measures how many additional items are sold for each primary item.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN oi.is_primary_item = 0 THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(SUM(CASE WHEN oi.is_primary_item = 1 THEN 1 ELSE 0 END),0) AS cross_sell_attach_rate\nFROM order_items oi;",
+    "metadata": {
+      "tables": [
+        "order_items"
+      ],
+      "columns": [
+        "is_primary_item"
+      ],
+      "category": "metric:cross_sell_attach_rate",
+      "grain": "overall",
+      "metric_id": "cross_sell_attach_rate"
+    }
+  },
+  {
+    "question": "How many companion products are sold for every primary product?",
+    "answer": "On average, 0.45 companion products are sold for every primary product.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN is_primary_item = 0 THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(SUM(CASE WHEN is_primary_item = 1 THEN 1 ELSE 0 END),0) AS companion_per_primary FROM order_items;",
+    "metadata": {
+      "tables": [
+        "order_items"
+      ],
+      "columns": [
+        "is_primary_item"
+      ],
+      "category": "companion_product_frequency",
+      "grain": "overall",
+      "metric_id": "companion_per_primary"
+    }
+  },
+  {
+    "question": "What is the ratio of companion items to primary items in orders?",
+    "answer": "Roughly 0.45 companion products are sold for each primary product.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN is_primary_item = 0 THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(SUM(CASE WHEN is_primary_item = 1 THEN 1 ELSE 0 END),0) AS companion_per_primary FROM order_items;",
+    "metadata": {
+      "tables": [
+        "order_items"
+      ],
+      "columns": [
+        "is_primary_item"
+      ],
+      "category": "companion_product_frequency",
+      "grain": "overall",
+      "metric_id": "companion_per_primary"
+    }
+  },
+  {
+    "question": "Show me how often companion products are purchased alongside primary products.",
+    "answer": "Companion products are purchased at a frequency of 0.45 per primary product.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN is_primary_item = 0 THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(SUM(CASE WHEN is_primary_item = 1 THEN 1 ELSE 0 END),0) AS companion_per_primary FROM order_items;",
+    "metadata": {
+      "tables": [
+        "order_items"
+      ],
+      "columns": [
+        "is_primary_item"
+      ],
+      "category": "companion_product_frequency",
+      "grain": "overall",
+      "metric_id": "companion_per_primary"
+    }
+  },
+  {
+    "question": "What percent of sessions from Google convert into orders?",
+    "answer": "7.3 % of Google sessions convert into orders.",
+    "sql_query": "SELECT CAST(COUNT(DISTINCT o.session_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id),0) * 100 AS google_conversion_rate FROM sessions s LEFT JOIN orders o ON s.session_id = o.session_id WHERE s.utm_source = 'google';",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "utm_source",
+        "session_id"
+      ],
+      "category": "traffic_source_conversion_rate",
+      "grain": "overall",
+      "metric_id": "google_conversion_rate"
+    }
+  },
+  {
+    "question": "Calculate the conversion rate for traffic coming from Google.",
+    "answer": "Google traffic converts at 7.3 %.",
+    "sql_query": "SELECT CAST(COUNT(DISTINCT o.session_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id),0) * 100 AS google_conversion_rate FROM sessions s LEFT JOIN orders o ON s.session_id = o.session_id WHERE s.utm_source = 'google';",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "utm_source",
+        "session_id"
+      ],
+      "category": "traffic_source_conversion_rate",
+      "grain": "overall",
+      "metric_id": "google_conversion_rate"
+    }
+  },
+  {
+    "question": "How well does Google traffic turn into orders?",
+    "answer": "Google sessions convert into orders at a rate of 7.3 %.",
+    "sql_query": "SELECT CAST(COUNT(DISTINCT o.session_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id),0) * 100 AS google_conversion_rate FROM sessions s LEFT JOIN orders o ON s.session_id = o.session_id WHERE s.utm_source = 'google';",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "utm_source",
+        "session_id"
+      ],
+      "category": "traffic_source_conversion_rate",
+      "grain": "overall",
+      "metric_id": "google_conversion_rate"
+    }
+  },
+  {
+    "question": "What is the drop-off rate for the summer_sale campaign?",
+    "answer": "The summer_sale campaign drop-off rate is 92.7 %.",
+    "sql_query": "SELECT (1 - CAST(COUNT(DISTINCT o.session_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id),0)) * 100 AS campaign_dropoff FROM sessions s LEFT JOIN orders o ON s.session_id = o.session_id WHERE s.utm_campaign = 'summer_sale';",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "utm_campaign",
+        "session_id"
+      ],
+      "category": "campaign_funnel_drop_off",
+      "grain": "overall",
+      "metric_id": "summer_sale_dropoff"
+    }
+  },
+  {
+    "question": "How many sessions in the summer_sale campaign fail to convert?",
+    "answer": "92.7 % of summer_sale sessions do not convert into orders.",
+    "sql_query": "SELECT (1 - CAST(COUNT(DISTINCT o.session_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id),0)) * 100 AS campaign_dropoff FROM sessions s LEFT JOIN orders o ON s.session_id = o.session_id WHERE s.utm_campaign = 'summer_sale';",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "utm_campaign",
+        "session_id"
+      ],
+      "category": "campaign_funnel_drop_off",
+      "grain": "overall",
+      "metric_id": "summer_sale_dropoff"
+    }
+  },
+  {
+    "question": "Show the funnel drop-off for users coming through the summer_sale campaign.",
+    "answer": "The drop-off rate for summer_sale is 92.7 %.",
+    "sql_query": "SELECT (1 - CAST(COUNT(DISTINCT o.session_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id),0)) * 100 AS campaign_dropoff FROM sessions s LEFT JOIN orders o ON s.session_id = o.session_id WHERE s.utm_campaign = 'summer_sale';",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "utm_campaign",
+        "session_id"
+      ],
+      "category": "campaign_funnel_drop_off",
+      "grain": "overall",
+      "metric_id": "summer_sale_dropoff"
+    }
+  },
+  {
+    "question": "What is the average order value for repeat sessions?",
+    "answer": "Repeat sessions generate an average order value of $112.50.",
+    "sql_query": "SELECT AVG(o.price_usd) AS avg_order_value_repeat FROM sessions s JOIN orders o ON s.session_id = o.session_id WHERE s.is_repeat_session = 1;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "is_repeat_session",
+        "price_usd"
+      ],
+      "category": "repeat_session_value",
+      "grain": "overall",
+      "metric_id": "avg_order_value_repeat"
+    }
+  },
+  {
+    "question": "How much revenue does a repeat session bring on average?",
+    "answer": "Each repeat session yields an average order value of $112.50.",
+    "sql_query": "SELECT AVG(o.price_usd) AS avg_order_value_repeat FROM sessions s JOIN orders o ON s.session_id = o.session_id WHERE s.is_repeat_session = 1;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "is_repeat_session",
+        "price_usd"
+      ],
+      "category": "repeat_session_value",
+      "grain": "overall",
+      "metric_id": "avg_order_value_repeat"
+    }
+  },
+  {
+    "question": "Calculate the average spend from users in repeat sessions.",
+    "answer": "Repeat-session users spend $112.50 on average per order.",
+    "sql_query": "SELECT AVG(o.price_usd) AS avg_order_value_repeat FROM sessions s JOIN orders o ON s.session_id = o.session_id WHERE s.is_repeat_session = 1;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "is_repeat_session",
+        "price_usd"
+      ],
+      "category": "repeat_session_value",
+      "grain": "overall",
+      "metric_id": "avg_order_value_repeat"
+    }
+  },
+  {
+    "question": "What is the total gross margin in USD?",
+    "answer": "The total gross margin across all orders is the sum of every order\u2019s price minus its cost of goods sold, expressed in U.S. dollars.",
+    "sql_query": "SELECT SUM(price_usd - cogs_usd) AS gross_margin_usd FROM orders;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd"
+      ],
+      "category": "margin",
+      "grain": "total",
+      "metric_id": "gross_margin_usd"
+    }
+  },
+  {
+    "question": "Show me overall gross margin in dollars",
+    "answer": "The overall gross margin is calculated by subtracting total COGS from total revenue in USD.",
+    "sql_query": "SELECT SUM(price_usd - cogs_usd) AS gross_margin_usd FROM orders;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd"
+      ],
+      "category": "margin",
+      "grain": "total",
+      "metric_id": "gross_margin_usd"
+    }
+  },
+  {
+    "question": "How much gross margin did we make in total (USD)?",
+    "answer": "We compute gross margin as total revenue minus total cost of goods sold in USD.",
+    "sql_query": "SELECT SUM(price_usd - cogs_usd) AS gross_margin_usd FROM orders;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd"
+      ],
+      "category": "margin",
+      "grain": "total",
+      "metric_id": "gross_margin_usd"
+    }
+  },
+  {
+    "question": "Compute the aggregate gross margin for the entire business",
+    "answer": "Aggregate gross margin is the summed difference between price and COGS in USD.",
+    "sql_query": "SELECT SUM(price_usd - cogs_usd) AS gross_margin_usd FROM orders;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd"
+      ],
+      "category": "margin",
+      "grain": "total",
+      "metric_id": "gross_margin_usd"
+    }
+  },
+  {
+    "question": "What is the overall refund rate?",
+    "answer": "Refund rate is the ratio of total refund amount to total order revenue in USD.",
+    "sql_query": "SELECT CAST(SUM(r.refund_amount_usd) AS DECIMAL(18,4)) / NULLIF(SUM(o.price_usd),0) AS refund_rate FROM refunds r JOIN orders o ON r.order_id = o.order_id;",
+    "metadata": {
+      "tables": [
+        "refunds",
+        "orders"
+      ],
+      "columns": [
+        "refund_amount_usd",
+        "price_usd"
+      ],
+      "category": "refund",
+      "grain": "total",
+      "metric_id": "refund_rate"
+    }
+  },
+  {
+    "question": "Show me the percentage of revenue refunded",
+    "answer": "The refund rate equals total refunds divided by total revenue.",
+    "sql_query": "SELECT CAST(SUM(r.refund_amount_usd) AS DECIMAL(18,4)) / NULLIF(SUM(o.price_usd),0) AS refund_rate FROM refunds r JOIN orders o ON r.order_id = o.order_id;",
+    "metadata": {
+      "tables": [
+        "refunds",
+        "orders"
+      ],
+      "columns": [
+        "refund_amount_usd",
+        "price_usd"
+      ],
+      "category": "refund",
+      "grain": "total",
+      "metric_id": "refund_rate"
+    }
+  },
+  {
+    "question": "How high is our refund rate?",
+    "answer": "Refund rate is calculated as total refunded amount over total revenue.",
+    "sql_query": "SELECT CAST(SUM(r.refund_amount_usd) AS DECIMAL(18,4)) / NULLIF(SUM(o.price_usd),0) AS refund_rate FROM refunds r JOIN orders o ON r.order_id = o.order_id;",
+    "metadata": {
+      "tables": [
+        "refunds",
+        "orders"
+      ],
+      "columns": [
+        "refund_amount_usd",
+        "price_usd"
+      ],
+      "category": "refund",
+      "grain": "total",
+      "metric_id": "refund_rate"
+    }
+  },
+  {
+    "question": "Calculate the refund rate across all orders",
+    "answer": "Refund rate is the summed refund amounts divided by summed order revenue.",
+    "sql_query": "SELECT CAST(SUM(r.refund_amount_usd) AS DECIMAL(18,4)) / NULLIF(SUM(o.price_usd),0) AS refund_rate FROM refunds r JOIN orders o ON r.order_id = o.order_id;",
+    "metadata": {
+      "tables": [
+        "refunds",
+        "orders"
+      ],
+      "columns": [
+        "refund_amount_usd",
+        "price_usd"
+      ],
+      "category": "refund",
+      "grain": "total",
+      "metric_id": "refund_rate"
+    }
+  },
+  {
+    "question": "What is the primary attach rate?",
+    "answer": "Primary attach rate is the share of orders whose primary product is also the only item in the cart.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN o.primary_product_id = oi.product_id AND o.items_purchased = 1 THEN 1 ELSE 0 END) AS DECIMAL(18,4)) / NULLIF(COUNT(DISTINCT o.order_id),0) AS primary_attach_rate FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items"
+      ],
+      "columns": [
+        "primary_product_id",
+        "product_id",
+        "items_purchased",
+        "is_primary_item"
+      ],
+      "category": "attach",
+      "grain": "order",
+      "metric_id": "primary_attach_rate"
+    }
+  },
+  {
+    "question": "Show me the rate at which the primary product is the only item purchased",
+    "answer": "This metric counts orders where the primary product is the sole item purchased.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN o.primary_product_id = oi.product_id AND o.items_purchased = 1 THEN 1 ELSE 0 END) AS DECIMAL(18,4)) / NULLIF(COUNT(DISTINCT o.order_id),0) AS primary_attach_rate FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items"
+      ],
+      "columns": [
+        "primary_product_id",
+        "product_id",
+        "items_purchased",
+        "is_primary_item"
+      ],
+      "category": "attach",
+      "grain": "order",
+      "metric_id": "primary_attach_rate"
+    }
+  },
+  {
+    "question": "How often is the primary product the only item in an order?",
+    "answer": "We measure the proportion of orders where the primary product is the only item.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN o.primary_product_id = oi.product_id AND o.items_purchased = 1 THEN 1 ELSE 0 END) AS DECIMAL(18,4)) / NULLIF(COUNT(DISTINCT o.order_id),0) AS primary_attach_rate FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items"
+      ],
+      "columns": [
+        "primary_product_id",
+        "product_id",
+        "items_purchased",
+        "is_primary_item"
+      ],
+      "category": "attach",
+      "grain": "order",
+      "metric_id": "primary_attach_rate"
+    }
+  },
+  {
+    "question": "Compute the primary product solo rate",
+    "answer": "Solo rate is the fraction of orders containing only the primary product.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN o.primary_product_id = oi.product_id AND o.items_purchased = 1 THEN 1 ELSE 0 END) AS DECIMAL(18,4)) / NULLIF(COUNT(DISTINCT o.order_id),0) AS primary_attach_rate FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items"
+      ],
+      "columns": [
+        "primary_product_id",
+        "product_id",
+        "items_purchased",
+        "is_primary_item"
+      ],
+      "category": "attach",
+      "grain": "order",
+      "metric_id": "primary_attach_rate"
+    }
+  },
+  {
+    "question": "What is the margin after refunds in USD?",
+    "answer": "Margin after refunds subtracts refunded amounts from the original gross margin.",
+    "sql_query": "SELECT SUM(o.price_usd - o.cogs_usd) - ISNULL(SUM(r.refund_amount_usd),0) AS margin_after_refund_usd FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "refund_amount_usd"
+      ],
+      "category": "margin",
+      "grain": "total",
+      "metric_id": "margin_after_refund"
+    }
+  },
+  {
+    "question": "Show me net margin after accounting for refunds",
+    "answer": "Net margin is gross margin minus total refunds.",
+    "sql_query": "SELECT SUM(o.price_usd - o.cogs_usd) - ISNULL(SUM(r.refund_amount_usd),0) AS margin_after_refund_usd FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "refund_amount_usd"
+      ],
+      "category": "margin",
+      "grain": "total",
+      "metric_id": "margin_after_refund"
+    }
+  },
+  {
+    "question": "How much margin remains after refunds?",
+    "answer": "Remaining margin is original margin less refunded dollars.",
+    "sql_query": "SELECT SUM(o.price_usd - o.cogs_usd) - ISNULL(SUM(r.refund_amount_usd),0) AS margin_after_refund_usd FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "refund_amount_usd"
+      ],
+      "category": "margin",
+      "grain": "total",
+      "metric_id": "margin_after_refund"
+    }
+  },
+  {
+    "question": "Calculate post-refund margin in USD",
+    "answer": "Post-refund margin equals gross margin minus refunds.",
+    "sql_query": "SELECT SUM(o.price_usd - o.cogs_usd) - ISNULL(SUM(r.refund_amount_usd),0) AS margin_after_refund_usd FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "refund_amount_usd"
+      ],
+      "category": "margin",
+      "grain": "total",
+      "metric_id": "margin_after_refund"
+    }
+  },
+  {
+    "question": "How many days have passed since the most recent order?",
+    "answer": "The last order was placed 2 days ago.",
+    "sql_query": "SELECT DATEDIFF(DAY, MAX(CAST(created_at AS DATE)), CAST(GETDATE() AS DATE)) AS days_since_last_order FROM orders;",
     "metadata": {
       "tables": [
         "orders"
@@ -182,15 +883,15 @@
       "columns": [
         "created_at"
       ],
-      "category": "Orders",
-      "grain": "day",
-      "metric_id": "daily_order_count"
+      "category": "Recency",
+      "grain": "company-wide",
+      "metric_id": "days_since_last_order"
     }
   },
   {
-    "question": "How many orders do we have each day?",
-    "answer": "Orders per day are counted by grouping on the date of the order's creation.",
-    "sql_query": "SELECT CAST(o.created_at AS DATE) AS order_date, COUNT(*) AS orders_count FROM orders o GROUP BY CAST(o.created_at AS DATE) ORDER BY order_date;",
+    "question": "What is the gap in days between today and the latest order date?",
+    "answer": "There is a 2-day gap since the latest order.",
+    "sql_query": "SELECT DATEDIFF(DAY, MAX(CAST(created_at AS DATE)), CAST(GETDATE() AS DATE)) AS days_since_last_order FROM orders;",
     "metadata": {
       "tables": [
         "orders"
@@ -198,15 +899,15 @@
       "columns": [
         "created_at"
       ],
-      "category": "Orders",
-      "grain": "day",
-      "metric_id": "daily_order_count"
+      "category": "Recency",
+      "grain": "company-wide",
+      "metric_id": "days_since_last_order"
     }
   },
   {
-    "question": "Show the number of orders placed per day.",
-    "answer": "Number of orders per day is calculated using COUNT(*) grouped by order date.",
-    "sql_query": "SELECT CAST(o.created_at AS DATE) AS order_date, COUNT(*) AS orders_count FROM orders o GROUP BY CAST(o.created_at AS DATE) ORDER BY order_date;",
+    "question": "Show me how long ago our last order happened.",
+    "answer": "Our last order occurred 2 days ago.",
+    "sql_query": "SELECT DATEDIFF(DAY, MAX(CAST(created_at AS DATE)), CAST(GETDATE() AS DATE)) AS days_since_last_order FROM orders;",
     "metadata": {
       "tables": [
         "orders"
@@ -214,66 +915,1273 @@
       "columns": [
         "created_at"
       ],
-      "category": "Orders",
-      "grain": "day",
-      "metric_id": "daily_order_count"
+      "category": "Recency",
+      "grain": "company-wide",
+      "metric_id": "days_since_last_order"
     }
   },
   {
-    "question": "List the top 5 products by units sold.",
-    "answer": "Top 5 products are determined by counting order_items per product and ordering descending.",
-    "sql_query": "SELECT p.product_name, COUNT(oi.order_item_id) AS units_sold FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_name ORDER BY units_sold DESC OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;",
+    "question": "Which UTM source brings users back most frequently?",
+    "answer": "Google ads have the highest repeat-session rate.",
+    "sql_query": "SELECT TOP 1 utm_source, SUM(CAST(is_repeat_session AS INT)) * 1.0 / COUNT(*) AS utm_retention FROM sessions WHERE utm_source IS NOT NULL GROUP BY utm_source ORDER BY utm_retention DESC;",
     "metadata": {
       "tables": [
-        "order_items",
-        "products"
+        "sessions"
       ],
       "columns": [
-        "order_items.order_item_id",
-        "order_items.product_id",
-        "products.product_name"
+        "utm_source",
+        "is_repeat_session"
       ],
-      "category": "Product",
-      "grain": "product",
-      "metric_id": "top5_products_by_units"
+      "category": "Retention",
+      "grain": "per utm_source",
+      "metric_id": "utm_retention"
     }
   },
   {
-    "question": "What are the five best\u2011selling products by quantity?",
-    "answer": "The five best\u2011selling products are identified by the highest count of order items.",
-    "sql_query": "SELECT p.product_name, COUNT(oi.order_item_id) AS units_sold FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_name ORDER BY units_sold DESC OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;",
+    "question": "What is the repeat-session share by UTM source?",
+    "answer": "Google ads show the highest repeat-session share.",
+    "sql_query": "SELECT TOP 1 utm_source, SUM(CAST(is_repeat_session AS INT)) * 1.0 / COUNT(*) AS utm_retention FROM sessions WHERE utm_source IS NOT NULL GROUP BY utm_source ORDER BY utm_retention DESC;",
     "metadata": {
       "tables": [
-        "order_items",
-        "products"
+        "sessions"
       ],
       "columns": [
-        "order_items.order_item_id",
-        "order_items.product_id",
-        "products.product_name"
+        "utm_source",
+        "is_repeat_session"
       ],
-      "category": "Product",
-      "grain": "product",
-      "metric_id": "top5_products_by_units"
+      "category": "Retention",
+      "grain": "per utm_source",
+      "metric_id": "utm_retention"
     }
   },
   {
-    "question": "Give me the five products with the highest units sold.",
-    "answer": "Five products with highest units sold are retrieved by aggregating order_items per product.",
-    "sql_query": "SELECT p.product_name, COUNT(oi.order_item_id) AS units_sold FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_name ORDER BY units_sold DESC OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;",
+    "question": "Rank UTM sources by their ability to retain users.",
+    "answer": "Google ads top the list for user retention.",
+    "sql_query": "SELECT TOP 1 utm_source, SUM(CAST(is_repeat_session AS INT)) * 1.0 / COUNT(*) AS utm_retention FROM sessions WHERE utm_source IS NOT NULL GROUP BY utm_source ORDER BY utm_retention DESC;",
+    "metadata": {
+      "tables": [
+        "sessions"
+      ],
+      "columns": [
+        "utm_source",
+        "is_repeat_session"
+      ],
+      "category": "Retention",
+      "grain": "per utm_source",
+      "metric_id": "utm_retention"
+    }
+  },
+  {
+    "question": "What is the cumulative lifetime value of all users?",
+    "answer": "The cumulative LTV is $1.2 M.",
+    "sql_query": "SELECT SUM(price_usd) AS cumulative_ltv FROM orders;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd"
+      ],
+      "category": "LTV",
+      "grain": "company-wide",
+      "metric_id": "cumulative_ltv"
+    }
+  },
+  {
+    "question": "Show the total lifetime revenue across all customers.",
+    "answer": "Total lifetime revenue is $1.2 M.",
+    "sql_query": "SELECT SUM(price_usd) AS cumulative_ltv FROM orders;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd"
+      ],
+      "category": "LTV",
+      "grain": "company-wide",
+      "metric_id": "cumulative_ltv"
+    }
+  },
+  {
+    "question": "How much money have we made in total from all orders?",
+    "answer": "We have accumulated $1.2 M in total.",
+    "sql_query": "SELECT SUM(price_usd) AS cumulative_ltv FROM orders;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd"
+      ],
+      "category": "LTV",
+      "grain": "company-wide",
+      "metric_id": "cumulative_ltv"
+    }
+  },
+  {
+    "question": "How many orders were refunded last month?",
+    "answer": "Last month 1 847 orders had at least one refunded item.",
+    "sql_query": "SELECT COUNT(DISTINCT o.order_id) AS refunded_orders_last_month\nFROM   orders o\nJOIN   order_items oi ON o.order_id = oi.order_id\nJOIN   refunds r ON oi.order_item_id = r.order_item_id\nWHERE  r.created_at >= DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 1, 0)\n  AND  r.created_at < DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0);",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "orders.order_id",
+        "refunds.created_at"
+      ],
+      "category": "Refund",
+      "grain": "Monthly",
+      "metric_id": "refund_rate_by_order"
+    }
+  },
+  {
+    "question": "What percentage of orders placed in the last 30 days have been refunded?",
+    "answer": "4.9 % of orders placed in the last 30 days have at least one refunded item.",
+    "sql_query": "WITH recent_orders AS (\n    SELECT DISTINCT o.order_id\n    FROM   orders o\n    WHERE  o.created_at >= DATEADD(DAY, -30, GETDATE())\n),\nrefunded_orders AS (\n    SELECT DISTINCT o.order_id\n    FROM   recent_orders o\n    JOIN   order_items oi ON o.order_id = oi.order_id\n    JOIN   refunds r ON oi.order_item_id = r.order_item_id\n)\nSELECT CAST(COUNT(ro2.order_id) * 100.0 / NULLIF(COUNT(ro1.order_id),0) AS DECIMAL(5,2)) AS refund_rate_pct\nFROM   recent_orders ro1\nLEFT JOIN refunded_orders ro2 ON ro1.order_id = ro2.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "orders.order_id",
+        "orders.created_at",
+        "refunds.order_item_id"
+      ],
+      "category": "Refund",
+      "grain": "Daily",
+      "metric_id": "refund_rate_by_order"
+    }
+  },
+  {
+    "question": "Show me the refund rate by device type for orders placed this quarter.",
+    "answer": "Desktop 3.8 %, Mobile 5.2 %, Tablet 4.1 %.",
+    "sql_query": "WITH q_orders AS (\n    SELECT o.order_id, s.device_type\n    FROM   orders o\n    JOIN   sessions s ON o.session_id = s.session_id\n    WHERE  o.created_at >= DATEFROMPARTS(YEAR(GETDATE()), DATEPART(QUARTER, GETDATE()) * 3 - 2, 1)\n      AND  o.created_at < DATEADD(QUARTER, 1, DATEFROMPARTS(YEAR(GETDATE()), DATEPART(QUARTER, GETDATE()) * 3 - 2, 1))\n),\nq_refunds AS (\n    SELECT DISTINCT o.order_id, s.device_type\n    FROM   q_orders o\n    JOIN   order_items oi ON o.order_id = oi.order_id\n    JOIN   refunds r ON oi.order_item_id = r.order_item_id\n    JOIN   sessions s ON o.session_id = s.session_id\n)\nSELECT qo.device_type,\n       CAST(COUNT(qr.order_id) * 100.0 / NULLIF(COUNT(qo.order_id),0) AS DECIMAL(5,2)) AS refund_rate_pct\nFROM   q_orders qo\nLEFT JOIN q_refunds qr ON qo.order_id = qr.order_id AND qo.device_type = qr.device_type\nGROUP  BY qo.device_type\nORDER  BY refund_rate_pct DESC;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "sessions",
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "orders.order_id",
+        "orders.created_at",
+        "sessions.device_type",
+        "refunds.order_item_id"
+      ],
+      "category": "Refund",
+      "grain": "Quarterly",
+      "metric_id": "refund_rate_by_order"
+    }
+  },
+  {
+    "question": "What share of revenue was refunded in the last 90 days?",
+    "answer": "3.4 % of revenue was refunded in the last 90 days.",
+    "sql_query": "SELECT CAST(SUM(r.refund_amount_usd) * 100.0 / NULLIF(SUM(o.price_usd),0) AS DECIMAL(5,2)) AS refund_revenue_pct\nFROM   orders o\nJOIN   order_items oi ON o.order_id = oi.order_id\nJOIN   refunds r ON oi.order_item_id = r.order_item_id\nWHERE  o.created_at >= DATEADD(DAY, -90, GETDATE());",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "orders.price_usd",
+        "refunds.refund_amount_usd",
+        "orders.created_at"
+      ],
+      "category": "Refund",
+      "grain": "Daily",
+      "metric_id": "refund_rate_by_revenue"
+    }
+  },
+  {
+    "question": "Which device type has the highest refund rate by revenue this year?",
+    "answer": "Mobile has the highest refund rate by revenue at 4.1 %.",
+    "sql_query": "SELECT TOP 1 s.device_type,\n       CAST(SUM(r.refund_amount_usd) * 100.0 / NULLIF(SUM(o.price_usd),0) AS DECIMAL(5,2)) AS refund_revenue_pct\nFROM   orders o\nJOIN   sessions s ON o.session_id = s.session_id\nJOIN   order_items oi ON o.order_id = oi.order_id\nJOIN   refunds r ON oi.order_item_id = r.order_item_id\nWHERE  YEAR(o.created_at) = YEAR(GETDATE())\nGROUP  BY s.device_type\nORDER  BY refund_revenue_pct DESC;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "sessions",
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "orders.price_usd",
+        "orders.created_at",
+        "sessions.device_type",
+        "refunds.refund_amount_usd"
+      ],
+      "category": "Refund",
+      "grain": "Yearly",
+      "metric_id": "refund_rate_by_revenue"
+    }
+  },
+  {
+    "question": "On average, how many days after purchase do refunds happen?",
+    "answer": "Refunds occur on average 12 days after the order was placed.",
+    "sql_query": "SELECT AVG(DATEDIFF(DAY, o.created_at, r.created_at)) AS avg_refund_lag_days\nFROM   orders o\nJOIN   order_items oi ON o.order_id = oi.order_id\nJOIN   refunds r ON oi.order_item_id = r.order_item_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "orders.created_at",
+        "refunds.created_at"
+      ],
+      "category": "Refund",
+      "grain": "Overall",
+      "metric_id": "avg_refund_lag_days"
+    }
+  },
+  {
+    "question": "What is the average refund lag for primary items vs non-primary items?",
+    "answer": "Primary items: 11 days, Non-primary items: 15 days.",
+    "sql_query": "SELECT CASE WHEN oi.is_primary_item = 1 THEN 'Primary' ELSE 'Non-primary' END AS item_type,\n       AVG(DATEDIFF(DAY, o.created_at, r.created_at)) AS avg_refund_lag_days\nFROM   orders o\nJOIN   order_items oi ON o.order_id = oi.order_id\nJOIN   refunds r ON oi.order_item_id = r.order_item_id\nGROUP  BY CASE WHEN oi.is_primary_item = 1 THEN 'Primary' ELSE 'Non-primary' END;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "orders.created_at",
+        "order_items.is_primary_item",
+        "refunds.created_at"
+      ],
+      "category": "Refund",
+      "grain": "Overall",
+      "metric_id": "avg_refund_lag_days"
+    }
+  },
+  {
+    "question": "How often are primary items refunded compared to non-primary items?",
+    "answer": "Primary items are refunded in 4.2 % of orders while non-primary items are refunded in 6.7 % of orders.",
+    "sql_query": "SELECT CASE WHEN oi.is_primary_item = 1 THEN 'Primary' ELSE 'Non-primary' END AS item_type,\n       CAST(COUNT(r.order_item_id) * 100.0 / NULLIF(COUNT(*),0) AS DECIMAL(5,2)) AS refund_rate_pct\nFROM   order_items oi\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nGROUP  BY CASE WHEN oi.is_primary_item = 1 THEN 'Primary' ELSE 'Non-primary' END;",
     "metadata": {
       "tables": [
         "order_items",
-        "products"
+        "refunds"
       ],
       "columns": [
-        "order_items.order_item_id",
-        "order_items.product_id",
-        "products.product_name"
+        "order_items.is_primary_item",
+        "refunds.order_item_id"
+      ],
+      "category": "Refund",
+      "grain": "Overall",
+      "metric_id": "primary_item_refund_rate"
+    }
+  },
+  {
+    "question": "Which product had the highest primary-item refund rate this month?",
+    "answer": "Product \u2018Eco Bottle 1 L\u2019 had a 9.3 % primary-item refund rate this month.",
+    "sql_query": "SELECT TOP 1 p.product_name,\n       CAST(COUNT(r.order_item_id) * 100.0 / NULLIF(COUNT(*),0) AS DECIMAL(5,2)) AS primary_refund_rate_pct\nFROM   order_items oi\nJOIN   products p ON oi.product_id = p.product_id\nLEFT JOIN refunds r ON oi.order_item_id = r.order_item_id\nWHERE  oi.is_primary_item = 1\n  AND  oi.created_at >= DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0)\nGROUP  BY p.product_name\nORDER  BY primary_refund_rate_pct DESC;",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "products",
+        "refunds"
+      ],
+      "columns": [
+        "order_items.is_primary_item",
+        "order_items.created_at",
+        "products.product_name",
+        "refunds.order_item_id"
+      ],
+      "category": "Refund",
+      "grain": "Monthly",
+      "metric_id": "primary_item_refund_rate"
+    }
+  },
+  {
+    "question": "What is the overall refund rate by order for the past 6 months?",
+    "answer": "5.1 % of orders placed in the past 6 months have at least one refunded item.",
+    "sql_query": "WITH six_mo_orders AS (\n    SELECT DISTINCT order_id\n    FROM   orders\n    WHERE  created_at >= DATEADD(MONTH, -6, GETDATE())\n),\nsix_mo_refunds AS (\n    SELECT DISTINCT o.order_id\n    FROM   orders o\n    JOIN   order_items oi ON o.order_id = oi.order_id\n    JOIN   refunds r ON oi.order_item_id = r.order_item_id\n    WHERE  o.created_at >= DATEADD(MONTH, -6, GETDATE())\n)\nSELECT CAST(COUNT(smr.order_id) * 100.0 / NULLIF(COUNT(smo.order_id),0) AS DECIMAL(5,2)) AS refund_rate_by_order_pct\nFROM   six_mo_orders smo\nLEFT JOIN six_mo_refunds smr ON smo.order_id = smr.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "orders.order_id",
+        "orders.created_at",
+        "refunds.order_item_id"
+      ],
+      "category": "Refund",
+      "grain": "Monthly",
+      "metric_id": "refund_rate_by_order"
+    }
+  },
+  {
+    "question": "What is the gross margin in USD for all orders last month?",
+    "answer": "The gross margin for last month was $312,400.",
+    "sql_query": "SELECT SUM(price_usd - cogs_usd) AS gross_margin_usd\nFROM orders\nWHERE created_at >= DATEADD(month, -1, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1))\n  AND created_at < DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1);",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "created_at"
+      ],
+      "category": "P&L",
+      "grain": "month",
+      "metric_id": "gross_margin_usd"
+    }
+  },
+  {
+    "question": "Show me gross margin in dollars",
+    "answer": "The cumulative gross margin is $1.24 M.",
+    "sql_query": "SELECT SUM(price_usd - cogs_usd) AS gross_margin_usd\nFROM orders;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd"
+      ],
+      "category": "P&L",
+      "grain": "all-time",
+      "metric_id": "gross_margin_usd"
+    }
+  },
+  {
+    "question": "How much gross margin did we make in USD?",
+    "answer": "Gross margin totals $1.24 M.",
+    "sql_query": "SELECT SUM(price_usd - cogs_usd) AS gross_margin_usd\nFROM orders;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd"
+      ],
+      "category": "P&L",
+      "grain": "all-time",
+      "metric_id": "gross_margin_usd"
+    }
+  },
+  {
+    "question": "Calculate refund rate for completed orders this year",
+    "answer": "The refund rate is 4.8 %.",
+    "sql_query": "SELECT CAST(SUM(r.refund_amount_usd) AS FLOAT) * 100 / NULLIF(SUM(o.price_usd), 0) AS refund_rate\nFROM orders o\nLEFT JOIN refunds r ON r.order_id = o.order_id\nWHERE o.created_at >= DATEFROMPARTS(YEAR(GETDATE()), 1, 1);",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "refund_amount_usd",
+        "created_at"
+      ],
+      "category": "P&L",
+      "grain": "year-to-date",
+      "metric_id": "refund_rate"
+    }
+  },
+  {
+    "question": "What percentage of sales were refunded?",
+    "answer": "4.8 % of sales have been refunded.",
+    "sql_query": "SELECT CAST(SUM(r.refund_amount_usd) AS FLOAT) * 100 / NULLIF(SUM(o.price_usd), 0) AS refund_rate\nFROM orders o\nLEFT JOIN refunds r ON r.order_id = o.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "refund_amount_usd"
+      ],
+      "category": "P&L",
+      "grain": "all-time",
+      "metric_id": "refund_rate"
+    }
+  },
+  {
+    "question": "Show refund rate by month",
+    "answer": "Refund rates vary between 3 % and 6 % each month.",
+    "sql_query": "SELECT FORMAT(o.created_at, 'yyyy-MM') AS month,\n       CAST(SUM(r.refund_amount_usd) AS FLOAT) * 100 / NULLIF(SUM(o.price_usd), 0) AS refund_rate\nFROM orders o\nLEFT JOIN refunds r ON r.order_id = o.order_id\nGROUP BY FORMAT(o.created_at, 'yyyy-MM')\nORDER BY month;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "refund_amount_usd",
+        "created_at"
+      ],
+      "category": "P&L",
+      "grain": "monthly",
+      "metric_id": "refund_rate"
+    }
+  },
+  {
+    "question": "What is the primary attach rate for add-on items?",
+    "answer": "The primary attach rate is 68 %.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN oi.is_primary_item = 0 THEN 1 ELSE 0 END) AS FLOAT) * 100 / NULLIF(SUM(CASE WHEN oi.is_primary_item = 1 THEN 1 ELSE 0 END), 0) AS primary_attach_rate\nFROM order_items oi\nJOIN orders o ON o.order_id = oi.order_id;",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "orders"
+      ],
+      "columns": [
+        "is_primary_item"
       ],
       "category": "Product",
-      "grain": "product",
-      "metric_id": "top5_products_by_units"
+      "grain": "all-time",
+      "metric_id": "primary_attach_rate"
+    }
+  },
+  {
+    "question": "How often do customers buy additional items with the primary product?",
+    "answer": "Additional items are attached 68 % of the time.",
+    "sql_query": "SELECT CAST(SUM(CASE WHEN oi.is_primary_item = 0 THEN 1 ELSE 0 END) AS FLOAT) * 100 / NULLIF(SUM(CASE WHEN oi.is_primary_item = 1 THEN 1 ELSE 0 END), 0) AS primary_attach_rate\nFROM order_items oi;",
+    "metadata": {
+      "tables": [
+        "order_items"
+      ],
+      "columns": [
+        "is_primary_item"
+      ],
+      "category": "Product",
+      "grain": "all-time",
+      "metric_id": "primary_attach_rate"
+    }
+  },
+  {
+    "question": "Show primary attach rate by device type",
+    "answer": "Mobile leads with 72 %, desktop 65 %, tablet 60 %.",
+    "sql_query": "SELECT s.device_type,\n       CAST(SUM(CASE WHEN oi.is_primary_item = 0 THEN 1 ELSE 0 END) AS FLOAT) * 100 / NULLIF(SUM(CASE WHEN oi.is_primary_item = 1 THEN 1 ELSE 0 END), 0) AS primary_attach_rate\nFROM order_items oi\nJOIN orders o ON o.order_id = oi.order_id\nJOIN sessions s ON s.session_id = o.session_id\nGROUP BY s.device_type;",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "orders",
+        "sessions"
+      ],
+      "columns": [
+        "is_primary_item",
+        "device_type"
+      ],
+      "category": "Product",
+      "grain": "device",
+      "metric_id": "primary_attach_rate"
+    }
+  },
+  {
+    "question": "Compute margin after refund for Q1",
+    "answer": "Margin after refund was $298,300.",
+    "sql_query": "SELECT SUM(o.price_usd - o.cogs_usd - ISNULL(r.refund_amount_usd, 0)) AS margin_after_refund\nFROM orders o\nLEFT JOIN refunds r ON r.order_id = o.order_id\nWHERE o.created_at >= DATEFROMPARTS(YEAR(GETDATE()), 1, 1)\n  AND o.created_at < DATEFROMPARTS(YEAR(GETDATE()), 4, 1);",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "refund_amount_usd",
+        "created_at"
+      ],
+      "category": "P&L",
+      "grain": "quarterly",
+      "metric_id": "margin_after_refund"
+    }
+  },
+  {
+    "question": "What is the net margin after accounting for refunds?",
+    "answer": "Net margin after refunds is $1.18 M.",
+    "sql_query": "SELECT SUM(o.price_usd - o.cogs_usd - ISNULL(r.refund_amount_usd, 0)) AS margin_after_refund\nFROM orders o\nLEFT JOIN refunds r ON r.order_id = o.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "refund_amount_usd"
+      ],
+      "category": "P&L",
+      "grain": "all-time",
+      "metric_id": "margin_after_refund"
+    }
+  },
+  {
+    "question": "Display margin after refunds by campaign",
+    "answer": "Summer-sale campaign achieved the highest post-refund margin of $54,200.",
+    "sql_query": "SELECT s.utm_campaign,\n       SUM(o.price_usd - o.cogs_usd - ISNULL(r.refund_amount_usd, 0)) AS margin_after_refund\nFROM orders o\nLEFT JOIN refunds r ON r.order_id = o.order_id\nJOIN sessions s ON s.session_id = o.session_id\nGROUP BY s.utm_campaign\nORDER BY margin_after_refund DESC;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds",
+        "sessions"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "refund_amount_usd",
+        "utm_campaign"
+      ],
+      "category": "P&L",
+      "grain": "campaign",
+      "metric_id": "margin_after_refund"
+    }
+  },
+  {
+    "question": "What is the overall refund rate by order count?",
+    "answer": "Roughly 7.3 % of all orders have been refunded.",
+    "sql_query": "SELECT CAST(COUNT(DISTINCT r.order_id) AS float) / NULLIF(COUNT(DISTINCT o.order_id),0) AS refund_rate_by_order\nFROM orders o\nLEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "order_id"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "refund_rate_by_order"
+    }
+  },
+  {
+    "question": "Show me the percentage of orders that were refunded",
+    "answer": "7.3 % of orders have at least one refunded item.",
+    "sql_query": "SELECT CAST(COUNT(DISTINCT CASE WHEN r.refund_id IS NOT NULL THEN o.order_id END) AS float) / NULLIF(COUNT(DISTINCT o.order_id),0) AS refund_rate_by_order\nFROM orders o\nLEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "order_id",
+        "refund_id"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "refund_rate_by_order"
+    }
+  },
+  {
+    "question": "How many orders out of every 100 end up being refunded?",
+    "answer": "About 7 orders per 100 are refunded.",
+    "sql_query": "SELECT ROUND(CAST(COUNT(DISTINCT r.order_id) AS float) / NULLIF(COUNT(DISTINCT o.order_id),0) * 100,1) AS refund_rate_by_order\nFROM orders o\nLEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "order_id"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "refund_rate_by_order"
+    }
+  },
+  {
+    "question": "What share of total revenue has been refunded?",
+    "answer": "Approximately 5.6 % of revenue has been returned.",
+    "sql_query": "SELECT ISNULL(SUM(r.refund_amount_usd),0) / NULLIF(SUM(o.price_usd),0) AS refund_rate_by_revenue\nFROM orders o\nLEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "refund_amount_usd"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "refund_rate_by_revenue"
+    }
+  },
+  {
+    "question": "Show me the refund rate expressed as a percentage of gross sales",
+    "answer": "5.6 % of gross sales have been refunded.",
+    "sql_query": "SELECT ROUND(ISNULL(SUM(r.refund_amount_usd),0) / NULLIF(SUM(o.price_usd),0) * 100,1) AS refund_rate_by_revenue\nFROM orders o\nLEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "refund_amount_usd"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "refund_rate_by_revenue"
+    }
+  },
+  {
+    "question": "What percentage of our top-line revenue do refunds represent?",
+    "answer": "Refunds account for 5.6 % of top-line revenue.",
+    "sql_query": "SELECT CAST(ISNULL(SUM(r.refund_amount_usd),0) AS float) / NULLIF(SUM(o.price_usd),0) * 100 AS refund_rate_by_revenue\nFROM orders o\nLEFT JOIN refunds r ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "refund_amount_usd"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "refund_rate_by_revenue"
+    }
+  },
+  {
+    "question": "How long on average does it take between purchase and refund?",
+    "answer": "The average refund lag is 13 days.",
+    "sql_query": "SELECT AVG(DATEDIFF(day, o.created_at, r.created_at)) AS avg_refund_lag_days\nFROM refunds r\nJOIN orders o ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "created_at"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "avg_refund_lag_days"
+    }
+  },
+  {
+    "question": "What is the mean number of days from order to refund?",
+    "answer": "On average refunds happen 13 days after the order.",
+    "sql_query": "SELECT CAST(AVG(DATEDIFF(day, o.created_at, r.created_at)) AS int) AS avg_refund_lag_days\nFROM refunds r\nJOIN orders o ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "created_at"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "avg_refund_lag_days"
+    }
+  },
+  {
+    "question": "Show the average delay between order date and refund date",
+    "answer": "The typical delay is 13 days.",
+    "sql_query": "SELECT ROUND(AVG(DATEDIFF(day, o.created_at, r.created_at)),0) AS avg_refund_lag_days\nFROM refunds r\nJOIN orders o ON o.order_id = r.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "created_at"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "avg_refund_lag_days"
+    }
+  },
+  {
+    "question": "What is the refund rate for primary items only?",
+    "answer": "Primary items have a 6.8 % refund rate by revenue.",
+    "sql_query": "SELECT ISNULL(SUM(r.refund_amount_usd),0) / NULLIF(SUM(CASE WHEN oi.is_primary_item = 1 THEN oi.price_usd END),0) AS primary_item_refund_rate\nFROM order_items oi\nLEFT JOIN refunds r ON r.order_item_id = oi.order_item_id\nWHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "is_primary_item",
+        "price_usd",
+        "refund_amount_usd"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "primary_item_refund_rate"
+    }
+  },
+  {
+    "question": "Show me the refund ratio restricted to primary products",
+    "answer": "Primary products see 6.8 % of their revenue refunded.",
+    "sql_query": "SELECT CAST(ISNULL(SUM(r.refund_amount_usd),0) AS float) / NULLIF(SUM(oi.price_usd),0) * 100 AS primary_item_refund_rate\nFROM order_items oi\nLEFT JOIN refunds r ON r.order_item_id = oi.order_item_id\nWHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "is_primary_item",
+        "price_usd",
+        "refund_amount_usd"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "primary_item_refund_rate"
+    }
+  },
+  {
+    "question": "What percentage of primary-item revenue gets refunded?",
+    "answer": "6.8 % of primary-item revenue is refunded.",
+    "sql_query": "SELECT ROUND(ISNULL(SUM(r.refund_amount_usd),0) / NULLIF(SUM(oi.price_usd),0) * 100,1) AS primary_item_refund_rate\nFROM order_items oi\nJOIN refunds r ON r.order_item_id = oi.order_item_id\nWHERE oi.is_primary_item = 1;",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "refunds"
+      ],
+      "columns": [
+        "is_primary_item",
+        "price_usd",
+        "refund_amount_usd"
+      ],
+      "category": "refunds",
+      "grain": "overall",
+      "metric_id": "primary_item_refund_rate"
+    }
+  },
+  {
+    "question": "What is the average number of companion products purchased alongside primary items per order?",
+    "answer": "On average, each order contains 1.7 companion products in addition to the primary item.",
+    "sql_query": "SELECT \n    CAST(SUM(CASE WHEN is_primary_item = 0 THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id), 0) AS avg_companion_products_per_order\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items"
+      ],
+      "columns": [
+        "is_primary_item",
+        "order_id"
+      ],
+      "category": "companion_product_frequency",
+      "grain": "order",
+      "metric_id": "avg_companion_products_per_order"
+    }
+  },
+  {
+    "question": "How often do customers add companion products to orders that contain a primary item?",
+    "answer": "Roughly 68 % of orders with a primary item also include at least one companion product.",
+    "sql_query": "SELECT \n    CAST(COUNT(DISTINCT CASE WHEN oi_comp.order_item_id IS NOT NULL THEN o.order_id END) AS FLOAT) / NULLIF(COUNT(DISTINCT o.order_id), 0) * 100 AS pct_orders_with_companion\nFROM orders o\nJOIN order_items oi_prim ON o.order_id = oi_prim.order_id AND oi_prim.is_primary_item = 1\nLEFT JOIN order_items oi_comp ON o.order_id = oi_comp.order_id AND oi_comp.is_primary_item = 0;",
+    "metadata": {
+      "tables": [
+        "orders",
+        "order_items"
+      ],
+      "columns": [
+        "order_id",
+        "is_primary_item"
+      ],
+      "category": "companion_product_frequency",
+      "grain": "order",
+      "metric_id": "pct_orders_with_companion"
+    }
+  },
+  {
+    "question": "Which traffic sources yield the highest conversion rate from session to purchase?",
+    "answer": "Email campaigns produce the highest conversion rate at 4.9 %, followed by paid search at 3.2 %.",
+    "sql_query": "SELECT \n    s.utm_source,\n    CAST(COUNT(DISTINCT o.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id), 0) * 100 AS conversion_rate_pct\nFROM sessions s\nLEFT JOIN orders o ON s.session_id = o.session_id\nGROUP BY s.utm_source\nORDER BY conversion_rate_pct DESC;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "utm_source",
+        "session_id",
+        "order_id"
+      ],
+      "category": "traffic_source_conversion_rate",
+      "grain": "session",
+      "metric_id": "conversion_rate_by_source"
+    }
+  },
+  {
+    "question": "Show me the conversion rate broken down by campaign and content.",
+    "answer": "Campaign 'SummerSale2023' with content 'hero-banner' converts at 5.6 %, outperforming all other combinations.",
+    "sql_query": "SELECT \n    s.utm_campaign,\n    s.utm_content,\n    CAST(COUNT(DISTINCT o.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id), 0) * 100 AS conversion_rate_pct\nFROM sessions s\nLEFT JOIN orders o ON s.session_id = o.session_id\nGROUP BY s.utm_campaign, s.utm_content\nORDER BY conversion_rate_pct DESC;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "utm_campaign",
+        "utm_content",
+        "session_id",
+        "order_id"
+      ],
+      "category": "traffic_source_conversion_rate",
+      "grain": "session",
+      "metric_id": "conversion_rate_by_campaign_content"
+    }
+  },
+  {
+    "question": "Where in the funnel do users drop off between landing and purchase during a campaign?",
+    "answer": "For campaign 'BlackFriday23', 72 % of sessions reach the product page but only 6 % complete a purchase.",
+    "sql_query": "SELECT \n    s.utm_campaign,\n    COUNT(DISTINCT s.session_id) AS sessions,\n    COUNT(DISTINCT pv.session_id) AS sessions_with_pageview,\nn    COUNT(DISTINCT o.order_id) AS orders,\nn    CAST(COUNT(DISTINCT pv.session_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id), 0) * 100 AS landing_to_pageview_pct,\nn    CAST(COUNT(DISTINCT o.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT pv.session_id), 0) * 100 AS pageview_to_order_pct\nFROM sessions s\nLEFT JOIN pageviews pv ON s.session_id = pv.session_id\nLEFT JOIN orders o ON s.session_id = o.session_id\nWHERE s.utm_campaign = 'BlackFriday23'\nGROUP BY s.utm_campaign;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "pageviews",
+        "orders"
+      ],
+      "columns": [
+        "utm_campaign",
+        "session_id",
+        "order_id",
+        "pageview_url"
+      ],
+      "category": "campaign_funnel_drop_off",
+      "grain": "session",
+      "metric_id": "funnel_drop_off_blackfriday"
+    }
+  },
+  {
+    "question": "What is the average order value for repeat sessions compared to first-time sessions?",
+    "answer": "Repeat sessions generate an AOV of USD 142, while first-time sessions average USD 89.",
+    "sql_query": "SELECT \n    s.is_repeat_session,\n    AVG(o.price_usd) AS avg_order_value_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nGROUP BY s.is_repeat_session;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "is_repeat_session",
+        "price_usd"
+      ],
+      "category": "repeat_session_value",
+      "grain": "session",
+      "metric_id": "aov_by_repeat_flag"
+    }
+  },
+  {
+    "question": "How much higher is lifetime revenue for users who start as repeat sessions?",
+    "answer": "Users whose initial session is flagged as repeat have a lifetime revenue of USD 486 vs USD 203 for users whose first session is not repeat.",
+    "sql_query": "SELECT \n    s.is_repeat_session,\n    SUM(o.price_usd) AS lifetime_revenue_usd\nFROM sessions s\nJOIN orders o ON s.session_id = o.session_id\nGROUP BY s.is_repeat_session;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "is_repeat_session",
+        "price_usd"
+      ],
+      "category": "repeat_session_value",
+      "grain": "user",
+      "metric_id": "lifetime_revenue_by_repeat_flag"
+    }
+  },
+  {
+    "question": "Which device types show the largest difference in conversion rate between new and repeat sessions?",
+    "answer": "On mobile, repeat sessions convert at 8.1 % compared to 2.9 % for new sessions, a 5.2-point lift.",
+    "sql_query": "SELECT \n    s.device_type,\n    s.is_repeat_session,\n    CAST(COUNT(DISTINCT o.order_id) AS FLOAT) / NULLIF(COUNT(DISTINCT s.session_id), 0) * 100 AS conversion_rate_pct\nFROM sessions s\nLEFT JOIN orders o ON s.session_id = o.session_id\nGROUP BY s.device_type, s.is_repeat_session\nORDER BY device_type, is_repeat_session DESC;",
+    "metadata": {
+      "tables": [
+        "sessions",
+        "orders"
+      ],
+      "columns": [
+        "device_type",
+        "is_repeat_session",
+        "session_id",
+        "order_id"
+      ],
+      "category": "repeat_session_value",
+      "grain": "session",
+      "metric_id": "conversion_rate_by_device_repeat_flag"
+    }
+  },
+  {
+    "question": "What is the gross margin in USD for the last 30 days?",
+    "answer": "The gross margin in USD for the last 30 days is calculated by subtracting the total cost of goods sold (COGS) in USD from the total price in USD for all orders within that period.",
+    "sql_query": "SELECT SUM(price_usd) - SUM(cogs_usd) AS gross_margin_usd FROM orders WHERE created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "created_at"
+      ],
+      "category": "Financial",
+      "grain": "Daily",
+      "metric_id": "gross_margin_usd"
+    }
+  },
+  {
+    "question": "Show me the gross margin in USD for the past month",
+    "answer": "The gross margin in USD for the past month is calculated by subtracting the total cost of goods sold (COGS) in USD from the total price in USD for all orders within that period.",
+    "sql_query": "SELECT SUM(price_usd) - SUM(cogs_usd) AS gross_margin_usd FROM orders WHERE created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "created_at"
+      ],
+      "category": "Financial",
+      "grain": "Daily",
+      "metric_id": "gross_margin_usd"
+    }
+  },
+  {
+    "question": "Calculate the gross margin in USD for the last 30 days",
+    "answer": "The gross margin in USD for the last 30 days is calculated by subtracting the total cost of goods sold (COGS) in USD from the total price in USD for all orders within that period.",
+    "sql_query": "SELECT SUM(price_usd) - SUM(cogs_usd) AS gross_margin_usd FROM orders WHERE created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "created_at"
+      ],
+      "category": "Financial",
+      "grain": "Daily",
+      "metric_id": "gross_margin_usd"
+    }
+  },
+  {
+    "question": "What is the refund rate for orders in the last 30 days?",
+    "answer": "The refund rate for orders in the last 30 days is calculated by dividing the total refund amount in USD by the total order price in USD for that period.",
+    "sql_query": "SELECT SUM(r.refund_amount_usd) * 1.0 / SUM(o.price_usd) AS refund_rate FROM refunds r JOIN orders o ON r.order_id = o.order_id WHERE o.created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "refunds",
+        "orders"
+      ],
+      "columns": [
+        "refund_amount_usd",
+        "price_usd",
+        "created_at"
+      ],
+      "category": "Financial",
+      "grain": "Daily",
+      "metric_id": "refund_rate"
+    }
+  },
+  {
+    "question": "Show me the refund rate for the past month",
+    "answer": "The refund rate for the past month is calculated by dividing the total refund amount in USD by the total order price in USD for that period.",
+    "sql_query": "SELECT SUM(r.refund_amount_usd) * 1.0 / SUM(o.price_usd) AS refund_rate FROM refunds r JOIN orders o ON r.order_id = o.order_id WHERE o.created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "refunds",
+        "orders"
+      ],
+      "columns": [
+        "refund_amount_usd",
+        "price_usd",
+        "created_at"
+      ],
+      "category": "Financial",
+      "grain": "Daily",
+      "metric_id": "refund_rate"
+    }
+  },
+  {
+    "question": "Calculate the refund rate for orders in the last 30 days",
+    "answer": "The refund rate for orders in the last 30 days is calculated by dividing the total refund amount in USD by the total order price in USD for that period.",
+    "sql_query": "SELECT SUM(r.refund_amount_usd) * 1.0 / SUM(o.price_usd) AS refund_rate FROM refunds r JOIN orders o ON r.order_id = o.order_id WHERE o.created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "refunds",
+        "orders"
+      ],
+      "columns": [
+        "refund_amount_usd",
+        "price_usd",
+        "created_at"
+      ],
+      "category": "Financial",
+      "grain": "Daily",
+      "metric_id": "refund_rate"
+    }
+  },
+  {
+    "question": "What is the primary attach rate for the last 30 days?",
+    "answer": "The primary attach rate for the last 30 days is calculated by dividing the number of primary items by the total number of items purchased.",
+    "sql_query": "SELECT SUM(CASE WHEN is_primary_item = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS primary_attach_rate FROM order_items oi JOIN orders o ON oi.order_id = o.order_id WHERE o.created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "orders"
+      ],
+      "columns": [
+        "is_primary_item",
+        "created_at"
+      ],
+      "category": "Product",
+      "grain": "Daily",
+      "metric_id": "primary_attach_rate"
+    }
+  },
+  {
+    "question": "Show me the primary attach rate for the past month",
+    "answer": "The primary attach rate for the past month is calculated by dividing the number of primary items by the total number of items purchased.",
+    "sql_query": "SELECT SUM(CASE WHEN is_primary_item = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS primary_attach_rate FROM order_items oi JOIN orders o ON oi.order_id = o.order_id WHERE o.created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "orders"
+      ],
+      "columns": [
+        "is_primary_item",
+        "created_at"
+      ],
+      "category": "Product",
+      "grain": "Daily",
+      "metric_id": "primary_attach_rate"
+    }
+  },
+  {
+    "question": "Calculate the primary attach rate for the last 30 days",
+    "answer": "The primary attach rate for the last 30 days is calculated by dividing the number of primary items by the total number of items purchased.",
+    "sql_query": "SELECT SUM(CASE WHEN is_primary_item = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS primary_attach_rate FROM order_items oi JOIN orders o ON oi.order_id = o.order_id WHERE o.created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "order_items",
+        "orders"
+      ],
+      "columns": [
+        "is_primary_item",
+        "created_at"
+      ],
+      "category": "Product",
+      "grain": "Daily",
+      "metric_id": "primary_attach_rate"
+    }
+  },
+  {
+    "question": "What is the margin after refund in USD for the last 30 days?",
+    "answer": "The margin after refund in USD for the last 30 days is calculated by subtracting the total cost of goods sold (COGS) and the total refund amount in USD from the total price in USD for all orders within that period.",
+    "sql_query": "SELECT SUM(o.price_usd) - SUM(o.cogs_usd) - SUM(r.refund_amount_usd) AS margin_after_refund FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id WHERE o.created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "refund_amount_usd",
+        "created_at"
+      ],
+      "category": "Financial",
+      "grain": "Daily",
+      "metric_id": "margin_after_refund"
+    }
+  },
+  {
+    "question": "Show me the margin after refund in USD for the past month",
+    "answer": "The margin after refund in USD for the past month is calculated by subtracting the total cost of goods sold (COGS) and the total refund amount in USD from the total price in USD for all orders within that period.",
+    "sql_query": "SELECT SUM(o.price_usd) - SUM(o.cogs_usd) - SUM(r.refund_amount_usd) AS margin_after_refund FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id WHERE o.created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "refund_amount_usd",
+        "created_at"
+      ],
+      "category": "Financial",
+      "grain": "Daily",
+      "metric_id": "margin_after_refund"
+    }
+  },
+  {
+    "question": "Calculate the margin after refund in USD for the last 30 days",
+    "answer": "The margin after refund in USD for the last 30 days is calculated by subtracting the total cost of goods sold (COGS) and the total refund amount in USD from the total price in USD for all orders within that period.",
+    "sql_query": "SELECT SUM(o.price_usd) - SUM(o.cogs_usd) - SUM(r.refund_amount_usd) AS margin_after_refund FROM orders o LEFT JOIN refunds r ON o.order_id = r.order_id WHERE o.created_at >= DATEADD(DAY, -30, GETDATE())",
+    "metadata": {
+      "tables": [
+        "orders",
+        "refunds"
+      ],
+      "columns": [
+        "price_usd",
+        "cogs_usd",
+        "refund_amount_usd",
+        "created_at"
+      ],
+      "category": "Financial",
+      "grain": "Daily",
+      "metric_id": "margin_after_refund"
+    }
+  },
+  {
+    "question": "How many days have passed since each customer\u2019s most recent order?",
+    "answer": "The query returns one row per customer with the number of days between today and their latest order date.",
+    "sql_query": "SELECT user_id, DATEDIFF(DAY, MAX(o.created_at), GETDATE()) AS days_since_last_order FROM orders o GROUP BY user_id;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "user_id",
+        "created_at"
+      ],
+      "category": "Customer Analytics",
+      "grain": "user_id",
+      "metric_id": "days_since_last_order"
+    }
+  },
+  {
+    "question": "Show me the days since last purchase for every user.",
+    "answer": "Returns a list of users and how many days have elapsed since their most recent purchase.",
+    "sql_query": "SELECT user_id, DATEDIFF(DAY, MAX(created_at), GETDATE()) AS days_since_last_order FROM orders GROUP BY user_id;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "user_id",
+        "created_at"
+      ],
+      "category": "Customer Analytics",
+      "grain": "user_id",
+      "metric_id": "days_since_last_order"
+    }
+  },
+  {
+    "question": "Which customers haven\u2019t ordered in the last 30 days?",
+    "answer": "Lists users whose most recent order was more than 30 days ago.",
+    "sql_query": "SELECT user_id, DATEDIFF(DAY, MAX(created_at), GETDATE()) AS days_since_last_order FROM orders GROUP BY user_id HAVING DATEDIFF(DAY, MAX(created_at), GETDATE()) > 30;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "user_id",
+        "created_at"
+      ],
+      "category": "Customer Analytics",
+      "grain": "user_id",
+      "metric_id": "days_since_last_order"
+    }
+  },
+  {
+    "question": "What is the UTM source that brings users back most often?",
+    "answer": "Returns the utm_source with the highest share of repeat sessions.",
+    "sql_query": "SELECT TOP 1 utm_source, CAST(SUM(CAST(is_repeat_session AS INT)) AS FLOAT) * 100 / NULLIF(COUNT(*), 0) AS utm_retention FROM sessions WHERE utm_source IS NOT NULL GROUP BY utm_source ORDER BY utm_retention DESC;",
+    "metadata": {
+      "tables": [
+        "sessions"
+      ],
+      "columns": [
+        "utm_source",
+        "is_repeat_session"
+      ],
+      "category": "Marketing Attribution",
+      "grain": "utm_source",
+      "metric_id": "utm_retention"
+    }
+  },
+  {
+    "question": "Show retention rate by UTM campaign.",
+    "answer": "Percent of sessions that are repeat sessions broken out by utm_campaign.",
+    "sql_query": "SELECT utm_campaign, CAST(SUM(CAST(is_repeat_session AS INT)) AS FLOAT) * 100 / NULLIF(COUNT(*), 0) AS utm_retention FROM sessions WHERE utm_campaign IS NOT NULL GROUP BY utm_campaign;",
+    "metadata": {
+      "tables": [
+        "sessions"
+      ],
+      "columns": [
+        "utm_campaign",
+        "is_repeat_session"
+      ],
+      "category": "Marketing Attribution",
+      "grain": "utm_campaign",
+      "metric_id": "utm_retention"
+    }
+  },
+  {
+    "question": "Which UTM content yields the highest visitor retention?",
+    "answer": "Identifies the utm_content value with the greatest proportion of repeat sessions.",
+    "sql_query": "SELECT TOP 1 utm_content, CAST(SUM(CAST(is_repeat_session AS INT)) AS FLOAT) * 100 / NULLIF(COUNT(*), 0) AS utm_retention FROM sessions WHERE utm_content IS NOT NULL GROUP BY utm_content ORDER BY utm_retention DESC;",
+    "metadata": {
+      "tables": [
+        "sessions"
+      ],
+      "columns": [
+        "utm_content",
+        "is_repeat_session"
+      ],
+      "category": "Marketing Attribution",
+      "grain": "utm_content",
+      "metric_id": "utm_retention"
+    }
+  },
+  {
+    "question": "What is the lifetime value of each customer up to today?",
+    "answer": "Returns cumulative gross revenue (price_usd) per user across all their orders.",
+    "sql_query": "SELECT user_id, SUM(price_usd) AS cumulative_ltv FROM orders GROUP BY user_id;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "user_id",
+        "price_usd"
+      ],
+      "category": "Revenue Metrics",
+      "grain": "user_id",
+      "metric_id": "cumulative_ltv"
+    }
+  },
+  {
+    "question": "Show cumulative LTV in INR for every user.",
+    "answer": "Lists users with their total spend in Indian rupees.",
+    "sql_query": "SELECT user_id, SUM(price_inr) AS cumulative_ltv FROM orders GROUP BY user_id;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "user_id",
+        "price_inr"
+      ],
+      "category": "Revenue Metrics",
+      "grain": "user_id",
+      "metric_id": "cumulative_ltv"
+    }
+  },
+  {
+    "question": "Which customers have a cumulative LTV above 1000 USD?",
+    "answer": "Identifies high-value users whose total order value exceeds 1000 USD.",
+    "sql_query": "SELECT user_id, SUM(price_usd) AS cumulative_ltv FROM orders GROUP BY user_id HAVING SUM(price_usd) > 1000;",
+    "metadata": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "user_id",
+        "price_usd"
+      ],
+      "category": "Revenue Metrics",
+      "grain": "user_id",
+      "metric_id": "cumulative_ltv"
     }
   }
 ]
