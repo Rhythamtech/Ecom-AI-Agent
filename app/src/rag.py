@@ -30,7 +30,6 @@ class RAGPipeline:
 
         except json.JSONDecodeError as e:
             logging.error(f"Failed to decode JSON: {e}")
-            logging.error(f"Invalid JSON string: {response.choices[0].message.content}")
 
 
         QdrantVectorStore.from_documents(
